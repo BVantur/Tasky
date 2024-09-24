@@ -83,3 +83,14 @@ android {
         debugImplementation(compose.uiTooling)
     }
 }
+
+val codeAnalysisGitHook by tasks.registering(Copy::class) {
+    from("../code-analysis-config/code-analysis-pre-commit")
+    into("../.git/hooks")
+    rename { "pre-commit" }
+    fileMode = 0b111101101
+}
+
+tasks.named("preBuild").configure {
+    dependsOn(codeAnalysisGitHook)
+}
