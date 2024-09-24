@@ -1,0 +1,35 @@
+name: CodeAnalysisCheck
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, ready_for_review, synchronize]
+    branches:
+      - main
+
+jobs:
+  codeAnalysisCheck:
+    name: Code analysis check
+    runs-on: macos-12
+
+    steps:
+      - name: Checking out branch
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: Run Detekt
+        run: ./gradlew detekt --gradle-user-home .gradle
+
+      - name: Run Ktlint
+        run: ./gradlew ktlintCheck --gradle-user-home .gradle
+
+      - name: Run konsist tests
+        run: ./gradlew :konsistTest:jvmTest --gradle-user-home .gradle
