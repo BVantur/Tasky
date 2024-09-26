@@ -1,4 +1,4 @@
-package sp.bvantur.tasky.ui.theme
+package sp.bvantur.tasky.core.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes

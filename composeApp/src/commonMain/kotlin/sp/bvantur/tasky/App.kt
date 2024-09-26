@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import sp.bvantur.tasky.ui.theme.TaskyTheme
+import sp.bvantur.tasky.core.ui.theme.TaskyTheme
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.compose_multiplatform
 
