@@ -14,11 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
-import sp.bvantur.tasky.core.ui.components.ConfirmationButton
-import sp.bvantur.tasky.core.ui.components.EmailTextField
-import sp.bvantur.tasky.core.ui.components.HyperlinkText
-import sp.bvantur.tasky.core.ui.components.PasswordTextField
-import sp.bvantur.tasky.core.ui.components.TitleText
+import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
+import sp.bvantur.tasky.core.ui.components.TaskyEmailTextField
+import sp.bvantur.tasky.core.ui.components.TaskyHyperlinkText
+import sp.bvantur.tasky.core.ui.components.TaskyPasswordTextField
+import sp.bvantur.tasky.core.ui.components.TaskyTitleText
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.email_address
 import tasky.composeapp.generated.resources.login
@@ -39,7 +39,7 @@ fun LoginScreen() {
             .background(MaterialTheme.colorScheme.primary),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TitleText(
+        TaskyTitleText(
             text = stringResource(Res.string.welcome_back),
             modifier = Modifier.padding(top = 50.dp)
                 .padding(horizontal = 16.dp)
@@ -55,7 +55,7 @@ fun LoginScreen() {
                     .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                EmailTextField(
+                TaskyEmailTextField(
                     value = "", // TODO
                     onValueChange = {
                         // TODO
@@ -65,7 +65,7 @@ fun LoginScreen() {
                     placeholder = stringResource(Res.string.email_address)
                 )
 
-                PasswordTextField(
+                TaskyPasswordTextField(
                     value = "", // TODO
                     onValueChange = {
                         // TODO
@@ -75,7 +75,7 @@ fun LoginScreen() {
                     placeholder = stringResource(Res.string.password)
                 )
 
-                ConfirmationButton(
+                TaskyConfirmationButton(
                     modifier = Modifier.fillMaxWidth()
                         .padding(top = 25.dp)
                         .defaultMinSize(minHeight = 56.dp),
@@ -87,7 +87,7 @@ fun LoginScreen() {
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                HyperlinkText(
+                TaskyHyperlinkText(
                     allText = stringResource(Res.string.no_account_sign_up),
                     hyperlinkText = stringResource(Res.string.sign_up),
                     modifier = Modifier.padding(bottom = 40.dp),

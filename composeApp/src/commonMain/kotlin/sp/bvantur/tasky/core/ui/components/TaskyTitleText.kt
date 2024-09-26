@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun TitleText(modifier: Modifier = Modifier, text: String, color: Color = MaterialTheme.colorScheme.onPrimary) {
+fun TaskyTitleText(modifier: Modifier = Modifier, text: String, color: Color = MaterialTheme.colorScheme.onPrimary) {
     Text(
         modifier = modifier,
         text = text,

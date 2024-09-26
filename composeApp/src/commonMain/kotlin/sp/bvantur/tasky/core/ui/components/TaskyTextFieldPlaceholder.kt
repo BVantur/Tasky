@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun TextFieldPlaceholder(text: String, modifier: Modifier = Modifier) {
+fun TaskyTextFieldPlaceholder(text: String, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         style = MaterialTheme.typography.labelMedium,

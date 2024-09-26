@@ -9,7 +9,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 
 @Composable
-fun HyperlinkText(modifier: Modifier = Modifier, allText: String, hyperlinkText: String, onClick: () -> Unit) {
+fun TaskyHyperlinkText(modifier: Modifier = Modifier, allText: String, hyperlinkText: String, onClick: () -> Unit) {
     val annotation = "clickable"
 
     val annotatedString = buildAnnotatedString {

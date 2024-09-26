@@ -25,7 +25,7 @@ private fun interFamily() = FontFamily(
 )
 
 @Composable
-fun InspektifyTypography() = Typography(
+fun TaskyTypography() = Typography(
     displayLarge = TextStyle(
         fontFamily = interFamily(),
         fontWeight = FontWeight.Bold,

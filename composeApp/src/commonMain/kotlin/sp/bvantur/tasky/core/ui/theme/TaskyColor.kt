@@ -3,7 +3,7 @@ package sp.bvantur.tasky.core.ui.theme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-val InspektifyColorPalette = lightColorScheme(
+val TaskyColorPalette = lightColorScheme(
     primary = Color(0xFF000000),
     onPrimary = Color(0xFFEEF6FF),
     secondary = Color(0xFFB7C6DE),

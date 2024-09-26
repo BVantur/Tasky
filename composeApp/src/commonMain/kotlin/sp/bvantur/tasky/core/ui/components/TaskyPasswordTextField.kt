@@ -19,7 +19,7 @@ import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.password_visibility_icon
 
 @Composable
-fun PasswordTextField(
+fun TaskyPasswordTextField(
     value: String,
     placeholder: String,
     onValueChange: (String) -> Unit,
@@ -40,7 +40,7 @@ fun PasswordTextField(
             errorBorderColor = MaterialTheme.colorScheme.error
         ),
         placeholder = {
-            TextFieldPlaceholder(text = placeholder)
+            TaskyTextFieldPlaceholder(text = placeholder)
         },
         visualTransformation = if (!showPassword.value) {
             PasswordVisualTransformation()
