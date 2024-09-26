@@ -134,7 +134,8 @@ fun RegisterScreen() {
                     onClick = {
                         keyboardController?.hide()
                         // TODO
-                    })
+                    }
+                )
             }
         }
     }
