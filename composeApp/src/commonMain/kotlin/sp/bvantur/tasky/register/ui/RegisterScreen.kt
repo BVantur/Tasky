@@ -1,4 +1,4 @@
-package sp.bvantur.tasky.login.ui
+package sp.bvantur.tasky.register.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -17,40 +17,41 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
+import sp.bvantur.tasky.core.ui.components.BackButton
 import sp.bvantur.tasky.core.ui.components.ConfirmationButton
-import sp.bvantur.tasky.core.ui.components.HyperlinkText
 import sp.bvantur.tasky.core.ui.components.PasswordTextField
 import sp.bvantur.tasky.core.ui.components.TitleText
 import sp.bvantur.tasky.core.ui.components.UserDataTextField
 import sp.bvantur.tasky.core.ui.components.UserOnboardingSurface
 import tasky.composeapp.generated.resources.Res
+import tasky.composeapp.generated.resources.create_your_account
 import tasky.composeapp.generated.resources.email_address
-import tasky.composeapp.generated.resources.login
-import tasky.composeapp.generated.resources.no_account_sign_up
+import tasky.composeapp.generated.resources.get_started
+import tasky.composeapp.generated.resources.name
 import tasky.composeapp.generated.resources.password
-import tasky.composeapp.generated.resources.sign_up
-import tasky.composeapp.generated.resources.welcome_back
 
 @Composable
-fun LoginRoute() {
-    LoginScreen()
+fun RegisterRoute() {
+    RegisterScreen()
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginScreen() {
-    val (passwordRequester) = FocusRequester.createRefs()
+fun RegisterScreen() {
+    val (emailRequester, passwordRequester) = FocusRequester.createRefs()
     val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = Modifier.fillMaxSize()
             .background(MaterialTheme.colorScheme.primary),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TitleText(
-            text = stringResource(Res.string.welcome_back),
+            text = stringResource(Res.string.create_your_account),
             modifier = Modifier.padding(top = 50.dp)
                 .padding(horizontal = 16.dp)
         )
@@ -72,6 +73,24 @@ fun LoginScreen() {
                     modifier = Modifier.fillMaxWidth()
                         .padding(top = 50.dp),
                     placeholder = stringResource(Res.string.email_address),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.Words,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    onKeyboardImeAction = {
+                        emailRequester.requestFocus()
+                    }
+                )
+                UserDataTextField(
+                    value = "", // TODO
+                    onValueChange = {
+                        // TODO
+                    },
+                    modifier = Modifier.focusRequester(emailRequester)
+                        .fillMaxWidth()
+                        .padding(top = 15.dp),
+                    placeholder = stringResource(Res.string.name),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next
@@ -100,7 +119,7 @@ fun LoginScreen() {
                     modifier = Modifier.fillMaxWidth()
                         .padding(top = 25.dp)
                         .defaultMinSize(minHeight = 56.dp),
-                    text = stringResource(Res.string.login),
+                    text = stringResource(Res.string.get_started),
                     onClick = {
                         keyboardController?.hide()
                         // TODO
@@ -109,15 +128,10 @@ fun LoginScreen() {
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                HyperlinkText(
-                    allText = stringResource(Res.string.no_account_sign_up),
-                    hyperlinkText = stringResource(Res.string.sign_up),
-                    modifier = Modifier.padding(bottom = 40.dp),
-                    onClick = {
-                        keyboardController?.hide()
-                        // TODO
-                    }
-                )
+                BackButton(modifier = Modifier.padding(bottom = 40.dp).align(Alignment.Start), onClick = {
+                    keyboardController?.hide()
+                    // TODO
+                })
             }
         }
     }
