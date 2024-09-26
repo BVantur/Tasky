@@ -10,6 +10,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -25,7 +26,7 @@ fun TaskyPasswordTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val showPassword = rememberSaveable { mutableStateOf(false) }
+    val showPassword = remember { mutableStateOf(false) }
 
     OutlinedTextField(
         value = value,
@@ -42,10 +43,10 @@ fun TaskyPasswordTextField(
         placeholder = {
             TaskyTextFieldPlaceholder(text = placeholder)
         },
-        visualTransformation = if (!showPassword.value) {
-            PasswordVisualTransformation()
-        } else {
+        visualTransformation = if (showPassword.value) {
             VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
         },
         trailingIcon = {
             val icon = if (showPassword.value) {

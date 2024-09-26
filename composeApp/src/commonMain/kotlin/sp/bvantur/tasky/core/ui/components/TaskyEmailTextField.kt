@@ -7,7 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun TaskyEmailTextField(value: String, placeholder: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
+fun TaskyEmailTextField(
+    value: String,
+    placeholder: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
