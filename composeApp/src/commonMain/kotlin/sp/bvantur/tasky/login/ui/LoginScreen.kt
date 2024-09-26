@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -20,12 +20,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
-import sp.bvantur.tasky.core.ui.components.ConfirmationButton
-import sp.bvantur.tasky.core.ui.components.HyperlinkText
-import sp.bvantur.tasky.core.ui.components.PasswordTextField
-import sp.bvantur.tasky.core.ui.components.TitleText
-import sp.bvantur.tasky.core.ui.components.UserDataTextField
-import sp.bvantur.tasky.core.ui.components.UserOnboardingSurface
+import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
+import sp.bvantur.tasky.core.ui.components.TaskyHyperlinkText
+import sp.bvantur.tasky.core.ui.components.TaskyPasswordTextField
+import sp.bvantur.tasky.core.ui.components.TaskyTitleText
+import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
+import sp.bvantur.tasky.core.ui.components.TaskyUserOnboardingSurface
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.email_address
 import tasky.composeapp.generated.resources.login
@@ -39,23 +39,22 @@ fun LoginRoute() {
     LoginScreen()
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen() {
-    val (passwordRequester) = FocusRequester.createRefs()
+    val passwordRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier = Modifier.fillMaxSize()
             .background(MaterialTheme.colorScheme.primary),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TitleText(
+        TaskyTitleText(
             text = stringResource(Res.string.welcome_back),
             modifier = Modifier.padding(top = 50.dp)
                 .padding(horizontal = 16.dp)
         )
 
-        UserOnboardingSurface(
+        TaskyUserOnboardingSurface(
             modifier = Modifier.fillMaxSize()
                 .padding(top = 42.dp)
         ) {
@@ -64,7 +63,7 @@ fun LoginScreen() {
                     .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                UserDataTextField(
+                TaskyUserDataTextField(
                     value = "", // TODO
                     onValueChange = {
                         // TODO
@@ -81,7 +80,7 @@ fun LoginScreen() {
                     }
                 )
 
-                PasswordTextField(
+                TaskyPasswordTextField(
                     value = "", // TODO
                     onValueChange = {
                         // TODO
@@ -96,7 +95,7 @@ fun LoginScreen() {
                     }
                 )
 
-                ConfirmationButton(
+                TaskyConfirmationButton(
                     modifier = Modifier.fillMaxWidth()
                         .padding(top = 25.dp)
                         .defaultMinSize(minHeight = 56.dp),
@@ -109,7 +108,7 @@ fun LoginScreen() {
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                HyperlinkText(
+                TaskyHyperlinkText(
                     allText = stringResource(Res.string.no_account_sign_up),
                     hyperlinkText = stringResource(Res.string.sign_up),
                     modifier = Modifier.padding(bottom = 40.dp),

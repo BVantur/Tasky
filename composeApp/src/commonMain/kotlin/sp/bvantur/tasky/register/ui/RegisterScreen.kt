@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -21,12 +22,12 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
-import sp.bvantur.tasky.core.ui.components.BackButton
-import sp.bvantur.tasky.core.ui.components.ConfirmationButton
-import sp.bvantur.tasky.core.ui.components.PasswordTextField
-import sp.bvantur.tasky.core.ui.components.TitleText
-import sp.bvantur.tasky.core.ui.components.UserDataTextField
-import sp.bvantur.tasky.core.ui.components.UserOnboardingSurface
+import sp.bvantur.tasky.core.ui.components.TaskyBackButton
+import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
+import sp.bvantur.tasky.core.ui.components.TaskyPasswordTextField
+import sp.bvantur.tasky.core.ui.components.TaskyTitleText
+import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
+import sp.bvantur.tasky.core.ui.components.TaskyUserOnboardingSurface
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.create_your_account
 import tasky.composeapp.generated.resources.email_address
@@ -42,7 +43,7 @@ fun RegisterRoute() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen() {
-    val (emailRequester, passwordRequester) = FocusRequester.createRefs()
+    val (emailRequester, passwordRequester) = remember { FocusRequester.createRefs() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
@@ -50,13 +51,13 @@ fun RegisterScreen() {
             .background(MaterialTheme.colorScheme.primary),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TitleText(
+        TaskyTitleText(
             text = stringResource(Res.string.create_your_account),
             modifier = Modifier.padding(top = 50.dp)
                 .padding(horizontal = 16.dp)
         )
 
-        UserOnboardingSurface(
+        TaskyUserOnboardingSurface(
             modifier = Modifier.fillMaxSize()
                 .padding(top = 42.dp)
         ) {
@@ -65,7 +66,7 @@ fun RegisterScreen() {
                     .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                UserDataTextField(
+                TaskyUserDataTextField(
                     value = "", // TODO
                     onValueChange = {
                         // TODO
@@ -82,7 +83,7 @@ fun RegisterScreen() {
                         emailRequester.requestFocus()
                     }
                 )
-                UserDataTextField(
+                TaskyUserDataTextField(
                     value = "", // TODO
                     onValueChange = {
                         // TODO
@@ -100,7 +101,7 @@ fun RegisterScreen() {
                     }
                 )
 
-                PasswordTextField(
+                TaskyPasswordTextField(
                     value = "", // TODO
                     onValueChange = {
                         // TODO
@@ -115,7 +116,7 @@ fun RegisterScreen() {
                     }
                 )
 
-                ConfirmationButton(
+                TaskyConfirmationButton(
                     modifier = Modifier.fillMaxWidth()
                         .padding(top = 25.dp)
                         .defaultMinSize(minHeight = 56.dp),
@@ -128,10 +129,12 @@ fun RegisterScreen() {
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                BackButton(modifier = Modifier.padding(bottom = 40.dp).align(Alignment.Start), onClick = {
-                    keyboardController?.hide()
-                    // TODO
-                })
+                TaskyBackButton(
+                    modifier = Modifier.padding(bottom = 40.dp).align(Alignment.Start),
+                    onClick = {
+                        keyboardController?.hide()
+                        // TODO
+                    })
             }
         }
     }

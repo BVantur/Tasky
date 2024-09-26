@@ -16,7 +16,7 @@ import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.back_icon
 
 @Composable
-fun BackButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun TaskyBackButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(
         modifier = modifier.defaultMinSize(minWidth = 56.dp, minHeight = 56.dp),
         onClick = onClick,

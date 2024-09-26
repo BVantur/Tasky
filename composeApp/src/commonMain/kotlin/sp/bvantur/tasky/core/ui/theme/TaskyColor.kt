@@ -32,7 +32,7 @@ private val Brown = Color(0xFF40492D)
 @Suppress("UnusedPrivateProperty")
 private val Orange = Color(0xFFFDEFA8)
 
-val InspektifyColorPalette = lightColorScheme(
+val TaskyColorPalette = lightColorScheme(
     primary = Black,
     onPrimary = Light,
     secondary = LightBlue,

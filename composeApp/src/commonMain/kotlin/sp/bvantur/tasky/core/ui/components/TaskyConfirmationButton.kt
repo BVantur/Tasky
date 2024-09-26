@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun ConfirmationButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun TaskyConfirmationButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(
         modifier = modifier,
         onClick = onClick,

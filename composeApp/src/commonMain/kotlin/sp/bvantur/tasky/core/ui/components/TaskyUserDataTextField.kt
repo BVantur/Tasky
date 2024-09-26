@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun UserDataTextField(
+fun TaskyUserDataTextField(
     value: String,
     placeholder: String,
     onValueChange: (String) -> Unit,
@@ -31,7 +31,7 @@ fun UserDataTextField(
             errorBorderColor = MaterialTheme.colorScheme.error
         ),
         placeholder = {
-            TextFieldPlaceholder(text = placeholder)
+            TaskyTextFieldPlaceholder(text = placeholder)
         },
         shape = MaterialTheme.shapes.medium,
         keyboardOptions = keyboardOptions,
