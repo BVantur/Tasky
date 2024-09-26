@@ -4,7 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 
 @Composable
-internal fun TaskyTheme(content: @Composable () -> Unit) {
+fun TaskyTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = InspektifyColorPalette,
         typography = InspektifyTypography(),
