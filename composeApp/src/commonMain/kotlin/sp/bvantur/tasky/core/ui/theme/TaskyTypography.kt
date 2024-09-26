@@ -1,4 +1,4 @@
-package sp.bvantur.tasky.ui.theme
+package sp.bvantur.tasky.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
@@ -28,9 +28,15 @@ private fun interFamily() = FontFamily(
 fun InspektifyTypography() = Typography(
     displayLarge = TextStyle(
         fontFamily = interFamily(),
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontStyle = FontStyle.Normal,
         fontSize = 28.sp
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = interFamily(),
+        fontWeight = FontWeight.Bold,
+        fontStyle = FontStyle.Normal,
+        fontSize = 16.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = interFamily(),
@@ -38,11 +44,17 @@ fun InspektifyTypography() = Typography(
         fontStyle = FontStyle.Normal,
         fontSize = 18.sp
     ),
-    labelMedium = TextStyle(
+    labelLarge = TextStyle(
         fontFamily = interFamily(),
         fontWeight = FontWeight.Light,
         fontStyle = FontStyle.Normal,
         fontSize = 18.sp
+    ),
+    labelMedium = TextStyle(
+        fontFamily = interFamily(),
+        fontWeight = FontWeight.Normal,
+        fontStyle = FontStyle.Normal,
+        fontSize = 16.sp
     ),
     labelSmall = TextStyle(
         fontFamily = interFamily(),
