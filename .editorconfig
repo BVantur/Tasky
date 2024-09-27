@@ -11,3 +11,7 @@ ktlint_standard_trailing-comma-on-declaration-site = disabled
 ; remove wildcard imports from kotlin files
 ij_kotlin_name_count_to_use_star_import=1024
 ij_kotlin_name_count_to_use_star_import_for_members=1024
+
+[**/commonTest/**.kt]
+# Apply rules for test files
+max_line_length = off

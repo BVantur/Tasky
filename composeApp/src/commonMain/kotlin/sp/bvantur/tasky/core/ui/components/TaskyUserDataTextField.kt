@@ -16,19 +16,22 @@ fun TaskyUserDataTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions,
-    onKeyboardImeAction: KeyboardActionScope.() -> Unit = {}
+    onKeyboardImeAction: KeyboardActionScope.() -> Unit = {},
+    isError: Boolean = false
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         textStyle = MaterialTheme.typography.labelMedium,
         modifier = modifier,
+        isError = isError,
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedContainerColor = MaterialTheme.colorScheme.background,
             focusedContainerColor = MaterialTheme.colorScheme.background,
             unfocusedBorderColor = MaterialTheme.colorScheme.background,
             focusedBorderColor = MaterialTheme.colorScheme.secondary,
-            errorBorderColor = MaterialTheme.colorScheme.error
+            errorBorderColor = MaterialTheme.colorScheme.error,
+            errorContainerColor = MaterialTheme.colorScheme.background
         ),
         placeholder = {
             TaskyTextFieldPlaceholder(text = placeholder)
