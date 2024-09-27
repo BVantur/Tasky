@@ -4,8 +4,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
-val InspektifyShapes = Shapes(
+val TaskyShapes = Shapes(
     small = RoundedCornerShape(4.dp),
-    medium = RoundedCornerShape(4.dp),
-    large = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
+    medium = RoundedCornerShape(10.dp),
+    large = RoundedCornerShape(38.dp),
+    extraLarge = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
 )
