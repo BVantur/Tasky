@@ -1,0 +1,4 @@
+<resources>
+    <string name="password_visibility_icon">Password visibility icon</string>
+    <string name="back_icon">Back icon</string>
+</resources>
