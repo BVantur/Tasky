@@ -1,5 +1,8 @@
 package sp.bvantur.tasky.core.ui.components
 
+import androidx.compose.foundation.text.KeyboardActionScope
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -7,11 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun TaskyEmailTextField(
+fun TaskyUserDataTextField(
     value: String,
     placeholder: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    keyboardOptions: KeyboardOptions,
+    onKeyboardImeAction: KeyboardActionScope.() -> Unit = {}
 ) {
     OutlinedTextField(
         value = value,
@@ -28,6 +33,8 @@ fun TaskyEmailTextField(
         placeholder = {
             TaskyTextFieldPlaceholder(text = placeholder)
         },
-        shape = MaterialTheme.shapes.medium
+        shape = MaterialTheme.shapes.medium,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = KeyboardActions(onAny = onKeyboardImeAction)
     )
 }
