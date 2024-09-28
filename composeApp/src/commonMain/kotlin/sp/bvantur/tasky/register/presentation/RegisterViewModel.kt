@@ -16,6 +16,7 @@ import sp.bvantur.tasky.core.domain.ValidatePasswordUseCase
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandlerImpl
+import sp.bvantur.tasky.register.domain.RegisterUserUseCase
 import kotlin.time.Duration.Companion.milliseconds
 
 typealias OnRegisterUserAction = (RegisterUserAction) -> Unit
@@ -25,7 +26,8 @@ class RegisterViewModel(
     private val dispatcherProvider: DispatcherProvider,
     private val validateNameUseCase: ValidateNameUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
+    private val registerUserUseCase: RegisterUserUseCase
 ) : ViewModel(),
     ViewModelUserActionHandler<RegisterUserAction>,
     ViewModelViewStateHandler<RegisterViewState> by ViewModelViewStateHandlerImpl(
@@ -51,6 +53,15 @@ class RegisterViewModel(
             is RegisterUserAction.PasswordChanged -> onPasswordChanged(userAction.value)
             is RegisterUserAction.RegisterUser -> onRegisterUser(userAction.name, userAction.email, userAction.password)
             RegisterUserAction.NavigateBack -> onNavigateBack()
+            RegisterUserAction.DismissErrorDialog -> onDismissErrorDialog()
+        }
+    }
+
+    private fun onDismissErrorDialog() {
+        viewModelScope.launch {
+            emitViewState(
+                viewStateFlow.value.copy(showErrorDialog = false)
+            )
         }
     }
 
@@ -110,7 +121,19 @@ class RegisterViewModel(
                 return@launch
             }
 
-            // TODO perform register logic and react depending on the backend result
+            val response = registerUserUseCase(
+                name = name,
+                email = email,
+                password = password
+            )
+            if (response.isFailure) {
+                emitViewState(
+                    viewStateFlow.value.copy(showErrorDialog = true, errorMessage = response.exceptionOrNull()?.message)
+                )
+                return@launch
+            }
+
+            onNavigateBack()
         }
     }
 

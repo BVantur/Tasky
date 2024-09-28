@@ -1,5 +1,7 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.konan.properties.loadProperties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -7,6 +9,8 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 kotlin {
@@ -33,6 +37,7 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
+            implementation(libs.ktor.client.okHttp)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -46,6 +51,14 @@ kotlin {
             implementation(libs.jetbrains.lifecycle.runtime.compose)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.contentNegotiation)
+            implementation(libs.ktor.serialization.json)
+            implementation(libs.bvantur.inspektify)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.ios)
         }
 
         commonTest.dependencies {
@@ -100,4 +113,20 @@ val codeAnalysisGitHook by tasks.registering(Copy::class) {
 
 tasks.named("preBuild").configure {
     dependsOn(codeAnalysisGitHook)
+}
+
+buildkonfig {
+    packageName = "sp.bvantur.tasky"
+    objectName = "TaskyBuildKonfig"
+
+    defaultConfigs {
+        val properties = loadProperties("secrets.properties")
+
+        buildConfigField(
+            type = FieldSpec.Type.STRING,
+            name = "API_KEY",
+            value = properties.getProperty("api.key"),
+            const = true
+        )
+    }
 }

@@ -10,7 +10,9 @@ import sp.bvantur.tasky.register.di.registerModule
 fun initKoin(): KoinApplication = startKoin {
     modules(
         appModule,
+        dataModule,
         domainModule,
+        platformModule,
         registerModule
     )
 }

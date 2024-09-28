@@ -38,6 +38,6 @@ fun TaskyHyperlinkText(modifier: Modifier = Modifier, allText: String, hyperlink
                 onClick()
             }
         },
-        style = MaterialTheme.typography.bodyMedium
+        style = MaterialTheme.typography.bodyLarge
     )
 }
