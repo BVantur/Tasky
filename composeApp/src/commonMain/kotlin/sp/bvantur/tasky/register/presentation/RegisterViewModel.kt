@@ -103,7 +103,7 @@ class RegisterViewModel(
             )
             if (response.isFailure) {
                 emitViewState(
-                    viewStateFlow.value.copy(showErrorDialog = true, errorMessage = response.exceptionOrNull()?.message)
+                    viewStateFlow.value.copy(showErrorDialog = true)
                 )
                 return@launch
             }
