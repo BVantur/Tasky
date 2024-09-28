@@ -2,25 +2,15 @@ package sp.bvantur.tasky.register.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import sp.bvantur.tasky.core.DispatcherProvider
 import sp.bvantur.tasky.core.domain.ValidateEmailUseCase
-import sp.bvantur.tasky.core.domain.ValidateNameUseCase
 import sp.bvantur.tasky.core.domain.ValidatePasswordUseCase
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandlerImpl
-import kotlin.time.Duration.Companion.milliseconds
+import sp.bvantur.tasky.register.domain.ValidateNameUseCase
 
-typealias OnRegisterUserAction = (RegisterUserAction) -> Unit
-
-@OptIn(FlowPreview::class)
 class RegisterViewModel(
     private val dispatcherProvider: DispatcherProvider,
     private val validateNameUseCase: ValidateNameUseCase,
@@ -32,72 +22,63 @@ class RegisterViewModel(
         RegisterViewState(),
         dispatcherProvider
     ) {
-
-    private val textDebounceFlow = MutableSharedFlow<Pair<String, suspend (String) -> Unit>>()
-
-    init {
-        textDebounceFlow
-            .debounce(500.milliseconds)
-            .onEach { (text, action) ->
-                action(text)
-            }
-            .launchIn(CoroutineScope(dispatcherProvider.default))
-    }
-
     override fun onUserAction(userAction: RegisterUserAction) {
         when (userAction) {
             is RegisterUserAction.NameChanged -> onNameChanged(userAction.value)
             is RegisterUserAction.EmailChanged -> onEmailChanged(userAction.value)
             is RegisterUserAction.PasswordChanged -> onPasswordChanged(userAction.value)
-            is RegisterUserAction.RegisterUser -> onRegisterUser(userAction.name, userAction.email, userAction.password)
+            RegisterUserAction.RegisterUser -> onRegisterUser()
             RegisterUserAction.NavigateBack -> onNavigateBack()
         }
     }
 
     private fun onNameChanged(value: String) {
         viewModelScope.launch {
-            textDebounceFlow.emit(
-                value to {
-                    val isValid = validateNameUseCase.invoke(it)
-                    emitViewState(
-                        viewStateFlow.value.copy(isNameError = !isValid)
-                    )
-                }
+            emitViewState(
+                viewStateFlow.value.copy(
+                    name = value
+                )
+            )
+            val isValid = validateNameUseCase.invoke(value)
+            emitViewState(
+                viewStateFlow.value.copy(
+                    isNameError = !isValid,
+                )
             )
         }
     }
 
     private fun onEmailChanged(value: String) {
         viewModelScope.launch {
-            textDebounceFlow.emit(
-                value to {
-                    val isValid = validateEmailUseCase.invoke(it)
-                    emitViewState(
-                        viewStateFlow.value.copy(isEmailError = !isValid)
-                    )
-                }
+            emitViewState(
+                viewStateFlow.value.copy(
+                    email = value
+                )
+            )
+            val isValid = validateEmailUseCase.invoke(value)
+            emitViewState(
+                viewStateFlow.value.copy(
+                    isEmailError = !isValid,
+                )
             )
         }
     }
 
     private fun onPasswordChanged(value: String) {
         viewModelScope.launch {
-            textDebounceFlow.emit(
-                value to {
-                    val isValid = validatePasswordUseCase.invoke(it)
-                    emitViewState(
-                        viewStateFlow.value.copy(isPasswordError = !isValid)
-                    )
-                }
+            emitViewState(
+                viewStateFlow.value.copy(
+                    password = value
+                )
             )
         }
     }
 
-    private fun onRegisterUser(name: String, email: String, password: String) {
-        viewModelScope.launch(dispatcherProvider.main) {
-            val isNameValid = validateNameUseCase.invoke(name)
-            val isEmailValid = validateEmailUseCase.invoke(email)
-            val isPasswordValid = validatePasswordUseCase.invoke(password)
+    private fun onRegisterUser() {
+        viewModelScope.launch {
+            val isNameValid = validateNameUseCase.invoke(viewStateFlow.value.name)
+            val isEmailValid = validateEmailUseCase.invoke(viewStateFlow.value.email)
+            val isPasswordValid = validatePasswordUseCase.invoke(viewStateFlow.value.password)
 
             if (!isNameValid || !isEmailValid || !isPasswordValid) {
                 emitViewState(

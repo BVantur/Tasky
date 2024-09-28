@@ -36,7 +36,7 @@ class UseCaseKonsistTest {
         Konsist
             .scopeFromProduction()
             .classes()
-            .withNameEndingWith("UseCaseImpl")
+            .withNameEndingWith("UseCase")
             .assertTrue {
                 it.hasTest()
             }

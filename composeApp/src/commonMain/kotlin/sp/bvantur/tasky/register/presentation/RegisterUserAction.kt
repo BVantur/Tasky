@@ -6,6 +6,6 @@ sealed class RegisterUserAction : UserAction {
     data class NameChanged(val value: String) : RegisterUserAction()
     data class EmailChanged(val value: String) : RegisterUserAction()
     data class PasswordChanged(val value: String) : RegisterUserAction()
-    data class RegisterUser(val name: String, val email: String, val password: String) : RegisterUserAction()
+    data object RegisterUser : RegisterUserAction()
     data object NavigateBack : RegisterUserAction()
 }

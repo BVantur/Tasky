@@ -11,11 +11,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -33,7 +30,6 @@ import sp.bvantur.tasky.core.ui.components.TaskyPasswordTextField
 import sp.bvantur.tasky.core.ui.components.TaskyTitleText
 import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
 import sp.bvantur.tasky.core.ui.components.TaskyUserOnboardingSurface
-import sp.bvantur.tasky.register.presentation.OnRegisterUserAction
 import sp.bvantur.tasky.register.presentation.RegisterUserAction
 import sp.bvantur.tasky.register.presentation.RegisterViewModel
 import sp.bvantur.tasky.register.presentation.RegisterViewState
@@ -55,13 +51,8 @@ fun RegisterRoute() {
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RegisterScreen(viewState: RegisterViewState, onUserAction: OnRegisterUserAction) {
-    val name = rememberSaveable { mutableStateOf("") }
-    val email = rememberSaveable { mutableStateOf("") }
-    val password = rememberSaveable { mutableStateOf("") }
-
+fun RegisterScreen(viewState: RegisterViewState, onUserAction: (RegisterUserAction) -> Unit) {
     val (emailRequester, passwordRequester) = remember { FocusRequester.createRefs() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -86,9 +77,8 @@ fun RegisterScreen(viewState: RegisterViewState, onUserAction: OnRegisterUserAct
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TaskyUserDataTextField(
-                    value = name.value,
+                    value = viewState.name,
                     onValueChange = { value ->
-                        name.value = value
                         onUserAction(RegisterUserAction.NameChanged(value))
                     },
                     modifier = Modifier.fillMaxWidth()
@@ -105,9 +95,8 @@ fun RegisterScreen(viewState: RegisterViewState, onUserAction: OnRegisterUserAct
                     isError = viewState.isNameError
                 )
                 TaskyUserDataTextField(
-                    value = email.value,
+                    value = viewState.email,
                     onValueChange = { value ->
-                        email.value = value
                         onUserAction(RegisterUserAction.EmailChanged(value))
                     },
                     modifier = Modifier.focusRequester(emailRequester)
@@ -125,9 +114,8 @@ fun RegisterScreen(viewState: RegisterViewState, onUserAction: OnRegisterUserAct
                 )
 
                 TaskyPasswordTextField(
-                    value = password.value,
+                    value = viewState.password,
                     onValueChange = { value ->
-                        password.value = value
                         onUserAction(RegisterUserAction.PasswordChanged(value))
                     },
                     modifier = Modifier.focusRequester(passwordRequester)
@@ -137,11 +125,7 @@ fun RegisterScreen(viewState: RegisterViewState, onUserAction: OnRegisterUserAct
                     onKeyboardImeAction = {
                         keyboardController?.hide()
                         onUserAction(
-                            RegisterUserAction.RegisterUser(
-                                name = name.value,
-                                email = email.value,
-                                password = password.value
-                            )
+                            RegisterUserAction.RegisterUser
                         )
                     },
                     isError = viewState.isPasswordError
@@ -155,11 +139,7 @@ fun RegisterScreen(viewState: RegisterViewState, onUserAction: OnRegisterUserAct
                     onClick = {
                         keyboardController?.hide()
                         onUserAction(
-                            RegisterUserAction.RegisterUser(
-                                name = name.value,
-                                email = email.value,
-                                password = password.value
-                            )
+                            RegisterUserAction.RegisterUser
                         )
                     }
                 )
