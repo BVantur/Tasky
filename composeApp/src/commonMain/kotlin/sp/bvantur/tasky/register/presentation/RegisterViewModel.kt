@@ -72,7 +72,7 @@ class RegisterViewModel(
             val isValid = validatePasswordUseCase.invoke(value)
             emitViewState(
                 viewStateFlow.value.copy(
-                    isPasswordError = isValid,
+                    isPasswordError = !isValid,
                     password = value
                 )
             )
