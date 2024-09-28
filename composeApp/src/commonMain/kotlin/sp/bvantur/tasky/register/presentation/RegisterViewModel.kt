@@ -34,15 +34,11 @@ class RegisterViewModel(
 
     private fun onNameChanged(value: String) {
         viewModelScope.launch {
-            emitViewState(
-                viewStateFlow.value.copy(
-                    name = value
-                )
-            )
             val isValid = validateNameUseCase.invoke(value)
             emitViewState(
                 viewStateFlow.value.copy(
                     isNameError = !isValid,
+                    name = value
                 )
             )
         }
@@ -50,15 +46,11 @@ class RegisterViewModel(
 
     private fun onEmailChanged(value: String) {
         viewModelScope.launch {
-            emitViewState(
-                viewStateFlow.value.copy(
-                    email = value
-                )
-            )
             val isValid = validateEmailUseCase.invoke(value)
             emitViewState(
                 viewStateFlow.value.copy(
                     isEmailError = !isValid,
+                    email = value
                 )
             )
         }
@@ -66,8 +58,10 @@ class RegisterViewModel(
 
     private fun onPasswordChanged(value: String) {
         viewModelScope.launch {
+            val isValid = validatePasswordUseCase.invoke(value)
             emitViewState(
                 viewStateFlow.value.copy(
+                    isPasswordError = isValid,
                     password = value
                 )
             )
