@@ -39,7 +39,7 @@ class UseCaseKonsistTest {
         Konsist
             .scopeFromProduction()
             .classes()
-            .withNameEndingWith("UseCaseImpl", "UseCase")
+            .withNameEndingWith("UseCase")
             .filter {
                 !allowedUseCasesWithoutTests.contains(it.name)
             }
