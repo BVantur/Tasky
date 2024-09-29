@@ -32,6 +32,8 @@ import sp.bvantur.tasky.core.ui.components.TaskyPasswordTextField
 import sp.bvantur.tasky.core.ui.components.TaskyTitleText
 import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
 import sp.bvantur.tasky.core.ui.components.TaskyUserOnboardingSurface
+import sp.bvantur.tasky.core.ui.utils.CollectSingleEventsWithLifecycle
+import sp.bvantur.tasky.register.presentation.RegisterSingleEvent
 import sp.bvantur.tasky.register.presentation.RegisterUserAction
 import sp.bvantur.tasky.register.presentation.RegisterViewModel
 import sp.bvantur.tasky.register.presentation.RegisterViewState
@@ -46,9 +48,15 @@ import tasky.composeapp.generated.resources.name
 import tasky.composeapp.generated.resources.password
 
 @Composable
-fun RegisterRoute() {
+fun RegisterRoute(onNavigateBack: () -> Unit) {
     val viewModel = koinViewModel<RegisterViewModel>()
     val viewState: RegisterViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
+
+    CollectSingleEventsWithLifecycle(singleEventFlow = viewModel.singleEventFlow) { singleEvent ->
+        when (singleEvent) {
+            RegisterSingleEvent.NavigateBack -> onNavigateBack()
+        }
+    }
 
     RegisterScreen(
         viewState = viewState,
@@ -57,7 +65,8 @@ fun RegisterRoute() {
 }
 
 @Composable
-fun RegisterScreen(viewState: RegisterViewState, onUserAction: (RegisterUserAction) -> Unit) {
+fun RegisterScreen(viewState: RegisterViewState,
+                   onUserAction: (RegisterUserAction) -> Unit) {
     val (emailRequester, passwordRequester) = remember { FocusRequester.createRefs() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
