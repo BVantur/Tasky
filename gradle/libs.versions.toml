@@ -1,7 +1,7 @@
 [versions]
 # GENERAL dependencies
 agp = "8.2.2"
-compose-plugin = "1.6.11"
+compose-plugin = "1.7.0-beta02"
 kotlin = "2.0.20"
 
 # ANDROID PORJECT dependencies
@@ -10,7 +10,7 @@ android-minSdk = "24"
 android-targetSdk = "34"
 
 # ANDROID-X dependencies
-androidx-activityCompose = "1.9.1"
+androidx-activityCompose = "1.9.2"
 androidx-appcompat = "1.7.0"
 androidx-constraintlayout = "2.1.4"
 androidx-core-ktx = "1.13.1"
@@ -21,6 +21,9 @@ androidx-test-junit = "1.2.1"
 
 # JETBRAINS dependencies
 jetbrains-lifecycle = "2.8.2"
+
+# KOIN dependencies
+koin = "4.0.0"
 
 # TEST dependencies
 junit = "4.13.2"
@@ -44,6 +47,10 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 # JETBRAINS dependencies
 jetbrains-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "jetbrains-lifecycle" }
 jetbrains-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "jetbrains-lifecycle" }
+
+# KOIN dependencies
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
 
 # CODE ANALYSIS dependencies
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }

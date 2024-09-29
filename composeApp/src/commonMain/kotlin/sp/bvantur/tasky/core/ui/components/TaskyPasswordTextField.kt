@@ -30,7 +30,8 @@ fun TaskyPasswordTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     imeAction: ImeAction = ImeAction.Done,
-    onKeyboardImeAction: KeyboardActionScope.() -> Unit = {}
+    onKeyboardImeAction: KeyboardActionScope.() -> Unit = {},
+    isError: Boolean = false
 ) {
     val showPassword = remember { mutableStateOf(false) }
 
@@ -39,12 +40,14 @@ fun TaskyPasswordTextField(
         onValueChange = onValueChange,
         textStyle = MaterialTheme.typography.labelMedium,
         modifier = modifier,
+        isError = isError,
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedContainerColor = MaterialTheme.colorScheme.background,
             focusedContainerColor = MaterialTheme.colorScheme.background,
             unfocusedBorderColor = MaterialTheme.colorScheme.background,
             focusedBorderColor = MaterialTheme.colorScheme.secondary,
-            errorBorderColor = MaterialTheme.colorScheme.error
+            errorBorderColor = MaterialTheme.colorScheme.error,
+            errorContainerColor = MaterialTheme.colorScheme.background
         ),
         placeholder = {
             TaskyTextFieldPlaceholder(text = placeholder)
