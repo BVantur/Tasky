@@ -8,7 +8,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.http.path
-import sp.bvantur.tasky.core.DispatcherProvider
 import sp.bvantur.tasky.core.data.safeApiCall
 
 class RegisterRemoteDataSource(private val httpClient: HttpClient) {
