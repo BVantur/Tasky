@@ -24,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
+import sp.bvantur.tasky.core.ui.components.TaskyErrorDialog
 import sp.bvantur.tasky.core.ui.components.TaskyHyperlinkText
 import sp.bvantur.tasky.core.ui.components.TaskyPasswordTextField
 import sp.bvantur.tasky.core.ui.components.TaskyTitleText
@@ -34,14 +35,17 @@ import sp.bvantur.tasky.login.presentation.LoginViewModel
 import sp.bvantur.tasky.login.presentation.LoginViewState
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.email_address
+import tasky.composeapp.generated.resources.error_general_message
+import tasky.composeapp.generated.resources.error_with_login
 import tasky.composeapp.generated.resources.login
 import tasky.composeapp.generated.resources.no_account_sign_up
 import tasky.composeapp.generated.resources.password
 import tasky.composeapp.generated.resources.sign_up
 import tasky.composeapp.generated.resources.welcome_back
 
+@Suppress("UnusedParameter") // TODO remove this one
 @Composable
-fun LoginRoute(onNavigateToRegister: () -> Unit) {
+fun LoginRoute(onNavigateToRegister: () -> Unit, onSuccessLogin: () -> Unit) {
     val viewModel = koinViewModel<LoginViewModel>()
 
     val viewState: LoginViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
@@ -135,5 +139,19 @@ fun LoginScreen(viewState: LoginViewState, onNavigateToRegister: () -> Unit, onU
                 )
             }
         }
+    }
+
+    if (viewState.showErrorDialog) {
+        TaskyErrorDialog(
+            title = stringResource(Res.string.error_with_login), // TODO fix texts
+            message = stringResource(Res.string.error_general_message),
+            onDismissAction = {
+                onUserAction(LoginUserAction.DismissErrorDialog)
+            },
+            onConfirmAction = {
+                onUserAction(LoginUserAction.DismissErrorDialog)
+            }
+
+        )
     }
 }

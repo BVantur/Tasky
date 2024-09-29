@@ -3,6 +3,7 @@ package sp.bvantur.tasky.core.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import sp.bvantur.tasky.core.ui.navigation.home.homeScreen
 import sp.bvantur.tasky.core.ui.navigation.login.LOGIN_NAVIGATION_ROUTE
 import sp.bvantur.tasky.core.ui.navigation.login.loginScreen
 import sp.bvantur.tasky.core.ui.navigation.register.navigateToRegister
@@ -17,5 +18,6 @@ internal fun TaskyNavHost() {
     ) {
         loginScreen(navigateToRegister = navController::navigateToRegister)
         registerScreen(onNavigateBack = navController::navigateUp)
+        homeScreen()
     }
 }

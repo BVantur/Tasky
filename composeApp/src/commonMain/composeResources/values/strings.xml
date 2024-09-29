@@ -10,6 +10,7 @@
     <string name="name">Name</string>
     <string name="get_started">Get started</string>
     <string name="error_with_registration">Error with registration</string>
-    <string name="error_with_registration_message">Something went wrong. Please, try again</string>
+    <string name="error_with_login">Error with login</string>
+    <string name="error_general_message">Something went wrong. Please, try again</string>
     <string name="close">Close</string>
 </resources>

@@ -6,4 +6,5 @@ sealed class LoginUserAction : UserAction {
     data class EmailChanged(val value: String) : LoginUserAction()
     data class PasswordChanged(val value: String) : LoginUserAction()
     data object OnLogin : LoginUserAction()
+    data object DismissErrorDialog : LoginUserAction()
 }

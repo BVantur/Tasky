@@ -57,6 +57,7 @@ kotlin {
             implementation(libs.ktor.client.contentNegotiation)
             implementation(libs.ktor.serialization.json)
             implementation(libs.bvantur.inspektify)
+            implementation(libs.liftric.kvault)
         }
 
         iosMain.dependencies {

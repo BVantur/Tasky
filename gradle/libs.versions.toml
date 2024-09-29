@@ -29,11 +29,14 @@ ktor = "3.0.0-rc-1"
 # CODINGFELINE dependencies
 buildKonfig = "0.15.2"
 
-# BVANTUR dependencies
-inspektify = "1.0.0-beta02"
-
 # KOIN dependencies
 koin = "4.0.0"
+
+# LIFTRIC dependencies
+kvault = "1.12.0"
+
+# BVANTUR dependencies
+inspektify = "1.0.0-beta02"
 
 # TEST dependencies
 junit = "4.13.2"
@@ -69,6 +72,9 @@ ktor-client-ios = { group = "io.ktor", name = "ktor-client-ios", version.ref = "
 # KOIN dependencies
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
+
+# LIFTRIC dependencies
+liftric-kvault = { group = "com.liftric", name = "kvault", version.ref = "kvault" }
 
 # BVANTUR dependencies
 bvantur-inspektify = { group = "io.github.bvantur", name = "inspektify-ktor3", version.ref = "inspektify" }

@@ -10,6 +10,6 @@ internal fun NavGraphBuilder.loginScreen(navigateToRegister: () -> Unit) {
     composable(
         route = LOGIN_NAVIGATION_ROUTE
     ) { _ ->
-        LoginRoute(navigateToRegister)
+        LoginRoute(navigateToRegister, {}) // TODO add navigation to home screen
     }
 }
