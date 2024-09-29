@@ -7,6 +7,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.io.IOException
+import kotlin.coroutines.cancellation.CancellationException
 
 @Suppress("TooGenericExceptionCaught")
 suspend inline fun <reified T> safeApiCall(apiCall: () -> HttpResponse): Result<T> = try {
@@ -25,6 +26,8 @@ suspend inline fun <reified T> safeApiCall(apiCall: () -> HttpResponse): Result<
     Result.failure(Exception("Network error", e))
 } catch (e: TimeoutCancellationException) {
     Result.failure(Exception("Request timeout", e))
+} catch (e: CancellationException) {
+    throw e
 } catch (e: Exception) {
     Result.failure(e)
 }

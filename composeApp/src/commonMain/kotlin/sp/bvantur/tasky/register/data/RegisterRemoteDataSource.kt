@@ -8,21 +8,18 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.http.path
-import kotlinx.coroutines.withContext
 import sp.bvantur.tasky.core.DispatcherProvider
 import sp.bvantur.tasky.core.data.safeApiCall
 
-class RegisterRemoteDataSource(private val httpClient: HttpClient, private val dispatcherProvider: DispatcherProvider) {
+class RegisterRemoteDataSource(private val httpClient: HttpClient) {
     suspend fun register(registerUserData: RegisterUserDataRequest): Result<Unit> = safeApiCall {
-        withContext(dispatcherProvider.io) {
-            httpClient.request {
-                url {
-                    method = HttpMethod.Post
-                    path("register")
-                    contentType(ContentType.Application.Json)
-                    setBody(registerUserData)
-                }
-            }.body()
-        }
+        httpClient.request {
+            url {
+                method = HttpMethod.Post
+                path("register")
+                contentType(ContentType.Application.Json)
+                setBody(registerUserData)
+            }
+        }.body()
     }
 }
