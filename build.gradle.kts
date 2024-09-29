@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply true
+    alias(libs.plugins.buildKonfig) apply false
 }
 
 subprojects {

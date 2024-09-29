@@ -32,17 +32,23 @@ fun TaskyTypography() = Typography(
         fontStyle = FontStyle.Normal,
         fontSize = 28.sp
     ),
-    bodyLarge = TextStyle(
+    titleMedium = TextStyle(
         fontFamily = interFamily(),
         fontWeight = FontWeight.Bold,
         fontStyle = FontStyle.Normal,
-        fontSize = 16.sp
+        fontSize = 22.sp
     ),
-    bodyMedium = TextStyle(
+    bodyLarge = TextStyle(
         fontFamily = interFamily(),
         fontWeight = FontWeight.Light,
         fontStyle = FontStyle.Normal,
         fontSize = 18.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = interFamily(),
+        fontWeight = FontWeight.Bold,
+        fontStyle = FontStyle.Normal,
+        fontSize = 16.sp
     ),
     labelLarge = TextStyle(
         fontFamily = interFamily(),

@@ -8,4 +8,5 @@ sealed class RegisterUserAction : UserAction {
     data class PasswordChanged(val value: String) : RegisterUserAction()
     data object RegisterUser : RegisterUserAction()
     data object NavigateBack : RegisterUserAction()
+    data object DismissErrorDialog : RegisterUserAction()
 }

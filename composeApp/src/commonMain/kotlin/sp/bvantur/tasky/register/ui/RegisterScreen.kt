@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -34,8 +36,11 @@ import sp.bvantur.tasky.register.presentation.RegisterUserAction
 import sp.bvantur.tasky.register.presentation.RegisterViewModel
 import sp.bvantur.tasky.register.presentation.RegisterViewState
 import tasky.composeapp.generated.resources.Res
+import tasky.composeapp.generated.resources.close
 import tasky.composeapp.generated.resources.create_your_account
 import tasky.composeapp.generated.resources.email_address
+import tasky.composeapp.generated.resources.error_with_registration
+import tasky.composeapp.generated.resources.error_with_registration_message
 import tasky.composeapp.generated.resources.get_started
 import tasky.composeapp.generated.resources.name
 import tasky.composeapp.generated.resources.password
@@ -155,5 +160,34 @@ fun RegisterScreen(viewState: RegisterViewState, onUserAction: (RegisterUserActi
                 )
             }
         }
+    }
+
+    if (viewState.showErrorDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                onUserAction(RegisterUserAction.DismissErrorDialog)
+            },
+            title = {
+                Text(
+                    text = stringResource(Res.string.error_with_registration),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(Res.string.error_with_registration_message),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            },
+            confirmButton = {
+                TaskyConfirmationButton(
+                    text = stringResource(Res.string.close),
+                    onClick = {
+                        onUserAction(RegisterUserAction.DismissErrorDialog)
+                    }
+                )
+            },
+            shape = MaterialTheme.shapes.medium
+        )
     }
 }
