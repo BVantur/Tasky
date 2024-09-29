@@ -5,6 +5,7 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import sp.bvantur.tasky.core.DispatcherProvider
 import sp.bvantur.tasky.core.TaskyDispatcherProvider
+import sp.bvantur.tasky.login.di.loginModule
 import sp.bvantur.tasky.register.di.registerModule
 
 fun initKoin(): KoinApplication = startKoin {
@@ -13,7 +14,8 @@ fun initKoin(): KoinApplication = startKoin {
         dataModule,
         domainModule,
         platformModule,
-        registerModule
+        registerModule,
+        loginModule
     )
 }
 

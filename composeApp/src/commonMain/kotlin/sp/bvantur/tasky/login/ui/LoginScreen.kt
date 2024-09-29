@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,13 +20,18 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
 import sp.bvantur.tasky.core.ui.components.TaskyHyperlinkText
 import sp.bvantur.tasky.core.ui.components.TaskyPasswordTextField
 import sp.bvantur.tasky.core.ui.components.TaskyTitleText
 import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
 import sp.bvantur.tasky.core.ui.components.TaskyUserOnboardingSurface
+import sp.bvantur.tasky.login.presentation.LoginUserAction
+import sp.bvantur.tasky.login.presentation.LoginViewModel
+import sp.bvantur.tasky.login.presentation.LoginViewState
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.email_address
 import tasky.composeapp.generated.resources.login
@@ -36,11 +42,19 @@ import tasky.composeapp.generated.resources.welcome_back
 
 @Composable
 fun LoginRoute(onNavigateToRegister: () -> Unit) {
-    LoginScreen(onNavigateToRegister)
+    val viewModel = koinViewModel<LoginViewModel>()
+
+    val viewState: LoginViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
+
+    LoginScreen(
+        viewState = viewState,
+        onNavigateToRegister = onNavigateToRegister,
+        onUserAction = viewModel::onUserAction
+    )
 }
 
 @Composable
-fun LoginScreen(onNavigateToRegister: () -> Unit) {
+fun LoginScreen(viewState: LoginViewState, onNavigateToRegister: () -> Unit, onUserAction: (LoginUserAction) -> Unit) {
     val passwordRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
@@ -64,9 +78,10 @@ fun LoginScreen(onNavigateToRegister: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TaskyUserDataTextField(
-                    value = "", // TODO
+                    value = viewState.email,
+                    isError = viewState.isEmailError,
                     onValueChange = {
-                        // TODO
+                        onUserAction(LoginUserAction.EmailChanged(it))
                     },
                     modifier = Modifier.fillMaxWidth()
                         .padding(top = 50.dp),
@@ -81,9 +96,10 @@ fun LoginScreen(onNavigateToRegister: () -> Unit) {
                 )
 
                 TaskyPasswordTextField(
-                    value = "", // TODO
+                    value = viewState.password,
+                    isError = viewState.isPasswordError,
                     onValueChange = {
-                        // TODO
+                        onUserAction(LoginUserAction.PasswordChanged(it))
                     },
                     modifier = Modifier.focusRequester(passwordRequester)
                         .fillMaxWidth()
@@ -91,7 +107,7 @@ fun LoginScreen(onNavigateToRegister: () -> Unit) {
                     placeholder = stringResource(Res.string.password),
                     onKeyboardImeAction = {
                         keyboardController?.hide()
-                        // TODO
+                        onUserAction(LoginUserAction.OnLogin)
                     }
                 )
 
@@ -102,7 +118,7 @@ fun LoginScreen(onNavigateToRegister: () -> Unit) {
                     text = stringResource(Res.string.login),
                     onClick = {
                         keyboardController?.hide()
-                        // TODO
+                        onUserAction(LoginUserAction.OnLogin)
                     }
                 )
 
