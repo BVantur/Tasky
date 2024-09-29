@@ -12,9 +12,8 @@ internal interface SingleEventHandler<Event : SingleEvent> {
     suspend fun emitSingleEvent(singleEvent: Event)
 }
 
-internal class SingleEventHandlerImpl<Event : SingleEvent>(
-    private val dispatcherProvider: DispatcherProvider
-) : SingleEventHandler<Event> {
+internal class SingleEventHandlerImpl<Event : SingleEvent>(private val dispatcherProvider: DispatcherProvider) :
+    SingleEventHandler<Event> {
     private val mutableSingleEventChannel = Channel<Event>(capacity = Channel.BUFFERED)
     override val singleEventFlow = mutableSingleEventChannel.receiveAsFlow()
 

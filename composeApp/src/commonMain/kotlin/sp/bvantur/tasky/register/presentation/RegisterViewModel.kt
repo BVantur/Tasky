@@ -25,7 +25,8 @@ class RegisterViewModel(
     ViewModelViewStateHandler<RegisterViewState> by ViewModelViewStateHandlerImpl(
         RegisterViewState(),
         dispatcherProvider
-    ), SingleEventHandler<RegisterSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
+    ),
+    SingleEventHandler<RegisterSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
     override fun onUserAction(userAction: RegisterUserAction) {
         when (userAction) {
             is RegisterUserAction.NameChanged -> onNameChanged(userAction.value)

@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 import sp.bvantur.tasky.core.presentation.SingleEvent
 
 @Composable
-fun <T: SingleEvent> CollectSingleEventsWithLifecycle(
+fun <T : SingleEvent> CollectSingleEventsWithLifecycle(
     lifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
     singleEventFlow: Flow<T>,
     handleSingleEvent: (T) -> Unit
