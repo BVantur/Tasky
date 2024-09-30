@@ -8,6 +8,7 @@ import sp.bvantur.tasky.core.DispatcherProvider
 import sp.bvantur.tasky.core.TaskyDispatcherProvider
 import sp.bvantur.tasky.login.di.loginModule
 import sp.bvantur.tasky.register.di.registerModule
+import sp.bvantur.tasky.splash.di.splashModule
 
 fun initKoin(targetModule: Module = module { }): KoinApplication = startKoin {
     modules(
@@ -16,6 +17,7 @@ fun initKoin(targetModule: Module = module { }): KoinApplication = startKoin {
         dataModule,
         domainModule,
         platformModule,
+        splashModule,
         registerModule,
         loginModule
     )

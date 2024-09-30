@@ -30,6 +30,8 @@ import sp.bvantur.tasky.core.ui.components.TaskyPasswordTextField
 import sp.bvantur.tasky.core.ui.components.TaskyTitleText
 import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
 import sp.bvantur.tasky.core.ui.components.TaskyUserOnboardingSurface
+import sp.bvantur.tasky.core.ui.utils.CollectSingleEventsWithLifecycle
+import sp.bvantur.tasky.login.presentation.LoginSingleEvent
 import sp.bvantur.tasky.login.presentation.LoginUserAction
 import sp.bvantur.tasky.login.presentation.LoginViewModel
 import sp.bvantur.tasky.login.presentation.LoginViewState
@@ -43,12 +45,17 @@ import tasky.composeapp.generated.resources.password
 import tasky.composeapp.generated.resources.sign_up
 import tasky.composeapp.generated.resources.welcome_back
 
-@Suppress("UnusedParameter") // TODO remove this one
 @Composable
-fun LoginRoute(onNavigateToRegister: () -> Unit, onSuccessLogin: () -> Unit) {
+fun LoginRoute(onNavigateToRegister: () -> Unit, onOpenHome: () -> Unit) {
     val viewModel = koinViewModel<LoginViewModel>()
 
     val viewState: LoginViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
+
+    CollectSingleEventsWithLifecycle(singleEventFlow = viewModel.singleEventFlow) { singleEvent ->
+        when (singleEvent) {
+            LoginSingleEvent.OpenHome -> onOpenHome()
+        }
+    }
 
     LoginScreen(
         viewState = viewState,
@@ -143,7 +150,7 @@ fun LoginScreen(viewState: LoginViewState, onNavigateToRegister: () -> Unit, onU
 
     if (viewState.showErrorDialog) {
         TaskyErrorDialog(
-            title = stringResource(Res.string.error_with_login), // TODO fix texts
+            title = stringResource(Res.string.error_with_login),
             message = stringResource(Res.string.error_general_message),
             onDismissAction = {
                 onUserAction(LoginUserAction.DismissErrorDialog)
