@@ -79,3 +79,5 @@ xcuserdata/
 .fleet/
 
 .build
+
+secrets.properties
