@@ -6,6 +6,8 @@ import kotlinx.coroutines.launch
 import sp.bvantur.tasky.core.DispatcherProvider
 import sp.bvantur.tasky.core.domain.ValidateEmailUseCase
 import sp.bvantur.tasky.core.domain.ValidatePasswordUseCase
+import sp.bvantur.tasky.core.presentation.SingleEventHandler
+import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandlerImpl
@@ -23,7 +25,8 @@ class RegisterViewModel(
     ViewModelViewStateHandler<RegisterViewState> by ViewModelViewStateHandlerImpl(
         RegisterViewState(),
         dispatcherProvider
-    ) {
+    ),
+    SingleEventHandler<RegisterSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
     override fun onUserAction(userAction: RegisterUserAction) {
         when (userAction) {
             is RegisterUserAction.NameChanged -> onNameChanged(userAction.value)
@@ -113,6 +116,8 @@ class RegisterViewModel(
     }
 
     private fun onNavigateBack() {
-        // TODO perform navigation back to the previous screen
+        viewModelScope.launch {
+            emitSingleEvent(RegisterSingleEvent.NavigateBack)
+        }
     }
 }

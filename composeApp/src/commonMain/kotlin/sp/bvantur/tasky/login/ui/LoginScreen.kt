@@ -35,12 +35,12 @@ import tasky.composeapp.generated.resources.sign_up
 import tasky.composeapp.generated.resources.welcome_back
 
 @Composable
-fun LoginRoute() {
-    LoginScreen()
+fun LoginRoute(onNavigateToRegister: () -> Unit) {
+    LoginScreen(onNavigateToRegister)
 }
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(onNavigateToRegister: () -> Unit) {
     val passwordRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
@@ -114,7 +114,7 @@ fun LoginScreen() {
                     modifier = Modifier.padding(bottom = 40.dp),
                     onClick = {
                         keyboardController?.hide()
-                        // TODO
+                        onNavigateToRegister()
                     }
                 )
             }
