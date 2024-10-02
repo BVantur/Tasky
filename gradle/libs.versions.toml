@@ -30,7 +30,7 @@ ktor = "3.0.0-rc-1"
 buildKonfig = "0.15.2"
 
 # BVANTUR dependencies
-inspektify = "1.0.0-beta01"
+inspektify = "1.0.0-beta02"
 
 # KOIN dependencies
 koin = "4.0.0"

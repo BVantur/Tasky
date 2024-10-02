@@ -3,7 +3,7 @@ package sp.bvantur.tasky.register.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import sp.bvantur.tasky.core.DispatcherProvider
+import sp.bvantur.tasky.core.domain.DispatcherProvider
 import sp.bvantur.tasky.core.domain.ValidateEmailUseCase
 import sp.bvantur.tasky.core.domain.ValidatePasswordUseCase
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
@@ -40,45 +40,45 @@ class RegisterViewModel(
 
     private fun onDismissErrorDialog() {
         viewModelScope.launch {
-            emitViewState(
-                viewStateFlow.value.copy(showErrorDialog = false)
-            )
+            emitViewState { viewState ->
+                viewState.copy(showErrorDialog = false)
+            }
         }
     }
 
     private fun onNameChanged(value: String) {
         viewModelScope.launch {
             val isValid = validateNameUseCase.invoke(value)
-            emitViewState(
-                viewStateFlow.value.copy(
+            emitViewState { viewState ->
+                viewState.copy(
                     isNameError = !isValid,
                     name = value
                 )
-            )
+            }
         }
     }
 
     private fun onEmailChanged(value: String) {
         viewModelScope.launch {
             val isValid = validateEmailUseCase.invoke(value)
-            emitViewState(
-                viewStateFlow.value.copy(
+            emitViewState { viewState ->
+                viewState.copy(
                     isEmailError = !isValid,
                     email = value
                 )
-            )
+            }
         }
     }
 
     private fun onPasswordChanged(value: String) {
         viewModelScope.launch {
             val isValid = validatePasswordUseCase.invoke(value)
-            emitViewState(
-                viewStateFlow.value.copy(
+            emitViewState { viewState ->
+                viewState.copy(
                     isPasswordError = !isValid,
                     password = value
                 )
-            )
+            }
         }
     }
 
@@ -89,13 +89,13 @@ class RegisterViewModel(
             val isPasswordValid = validatePasswordUseCase.invoke(viewStateFlow.value.password)
 
             if (!isNameValid || !isEmailValid || !isPasswordValid) {
-                emitViewState(
-                    viewStateFlow.value.copy(
+                emitViewState { viewState ->
+                    viewState.copy(
                         isNameError = !isNameValid,
                         isEmailError = !isEmailValid,
                         isPasswordError = !isPasswordValid
                     )
-                )
+                }
                 return@launch
             }
 
@@ -105,9 +105,9 @@ class RegisterViewModel(
                 password = viewStateFlow.value.password
             )
             if (response.isFailure) {
-                emitViewState(
-                    viewStateFlow.value.copy(showErrorDialog = true)
-                )
+                emitViewState { viewState ->
+                    viewState.copy(showErrorDialog = true)
+                }
                 return@launch
             }
 

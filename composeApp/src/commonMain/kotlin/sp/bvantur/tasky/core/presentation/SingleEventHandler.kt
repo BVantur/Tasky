@@ -4,7 +4,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.withContext
-import sp.bvantur.tasky.core.DispatcherProvider
+import sp.bvantur.tasky.core.domain.DispatcherProvider
 
 internal interface SingleEventHandler<Event : SingleEvent> {
     val singleEventFlow: Flow<Event>
