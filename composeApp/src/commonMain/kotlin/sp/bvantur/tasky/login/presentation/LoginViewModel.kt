@@ -3,7 +3,7 @@ package sp.bvantur.tasky.login.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import sp.bvantur.tasky.core.DispatcherProvider
+import sp.bvantur.tasky.core.domain.DispatcherProvider
 import sp.bvantur.tasky.core.domain.ValidateEmailUseCase
 import sp.bvantur.tasky.core.domain.ValidatePasswordUseCase
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
@@ -34,12 +34,12 @@ class LoginViewModel(
             val isPasswordValid = validateEmailUseCase.invoke(viewStateFlow.value.email)
 
             if (!isEmailValid || !isPasswordValid) {
-                emitViewState(
-                    viewStateFlow.value.copy(
+                emitViewState { viewState ->
+                    viewState.copy(
                         isEmailError = !isEmailValid,
                         isPasswordError = !isPasswordValid
                     )
-                )
+                }
                 return@launch
             }
 
@@ -50,24 +50,24 @@ class LoginViewModel(
     private fun onEmailChanged(value: String) {
         viewModelScope.launch {
             val isValid = validateEmailUseCase.invoke(value)
-            emitViewState(
-                viewStateFlow.value.copy(
+            emitViewState { viewState ->
+                viewState.copy(
                     isEmailError = !isValid,
                     email = value
                 )
-            )
+            }
         }
     }
 
     private fun onPasswordChanged(value: String) {
         viewModelScope.launch {
             val isValid = validatePasswordUseCase.invoke(value)
-            emitViewState(
-                viewStateFlow.value.copy(
+            emitViewState { viewState ->
+                viewState.copy(
                     isPasswordError = !isValid,
                     password = value
                 )
-            )
+            }
         }
     }
 }
