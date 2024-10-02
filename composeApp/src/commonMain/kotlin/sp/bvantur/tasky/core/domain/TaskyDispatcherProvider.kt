@@ -1,16 +1,9 @@
-package sp.bvantur.tasky.core
+package sp.bvantur.tasky.core.domain
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainCoroutineDispatcher
-
-interface DispatcherProvider {
-    val main: MainCoroutineDispatcher
-    val io: CoroutineDispatcher
-    val default: CoroutineDispatcher
-    val unconfined: CoroutineDispatcher
-}
 
 class TaskyDispatcherProvider(
     override val main: MainCoroutineDispatcher = Dispatchers.Main,

@@ -4,8 +4,8 @@ import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import sp.bvantur.tasky.core.DispatcherProvider
-import sp.bvantur.tasky.core.TaskyDispatcherProvider
+import sp.bvantur.tasky.core.domain.DispatcherProvider
+import sp.bvantur.tasky.core.domain.TaskyDispatcherProvider
 import sp.bvantur.tasky.login.di.loginModule
 import sp.bvantur.tasky.register.di.registerModule
 import sp.bvantur.tasky.splash.di.splashModule
