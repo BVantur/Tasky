@@ -22,6 +22,7 @@ androidx-test-junit = "1.2.1"
 # JETBRAINS dependencies
 jetbrains-lifecycle = "2.8.2"
 jetbrains-navigation-compose = "2.8.0-alpha10"
+jetbrains-coroutine-test = "1.9.0"
 
 # KTOR dependencies
 ktor = "3.0.0-rc-1"
@@ -29,14 +30,18 @@ ktor = "3.0.0-rc-1"
 # CODINGFELINE dependencies
 buildKonfig = "0.15.2"
 
-# BVANTUR dependencies
-inspektify = "1.0.0-beta02"
-
 # KOIN dependencies
 koin = "4.0.0"
 
+# LIFTRIC dependencies
+kvault = "1.12.0"
+
+# BVANTUR dependencies
+inspektify = "1.0.0-beta02"
+
 # TEST dependencies
 junit = "4.13.2"
+mokkery = "2.3.0"
 
 # CODE ANALYSIS dependencies
 ktlint = "12.1.1"
@@ -70,6 +75,9 @@ ktor-client-ios = { group = "io.ktor", name = "ktor-client-ios", version.ref = "
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
 
+# LIFTRIC dependencies
+liftric-kvault = { group = "com.liftric", name = "kvault", version.ref = "kvault" }
+
 # BVANTUR dependencies
 bvantur-inspektify = { group = "io.github.bvantur", name = "inspektify-ktor3", version.ref = "inspektify" }
 
@@ -81,6 +89,7 @@ konsist-test = { module = "com.lemonappdev:konsist", version.ref = "konsist" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+jetbrain-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "jetbrains-coroutine-test" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -97,3 +106,6 @@ buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig"
 # CODE ANALYSIS plugins
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
+# TEST plugins
+mokkery = { id = "dev.mokkery", version.ref = "mokkery" }

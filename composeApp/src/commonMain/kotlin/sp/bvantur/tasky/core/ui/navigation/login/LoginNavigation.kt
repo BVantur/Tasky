@@ -6,10 +6,10 @@ import sp.bvantur.tasky.login.ui.LoginRoute
 
 internal const val LOGIN_NAVIGATION_ROUTE = "login_navigation_route"
 
-internal fun NavGraphBuilder.loginScreen(navigateToRegister: () -> Unit) {
+internal fun NavGraphBuilder.loginScreen(navigateToRegister: () -> Unit, navigateToHome: () -> Unit) {
     composable(
         route = LOGIN_NAVIGATION_ROUTE
     ) { _ ->
-        LoginRoute(navigateToRegister)
+        LoginRoute(navigateToRegister, navigateToHome)
     }
 }

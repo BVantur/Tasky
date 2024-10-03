@@ -79,3 +79,5 @@ xcuserdata/
 .fleet/
 
 .build
+
+composeApp/keys/secrets.properties

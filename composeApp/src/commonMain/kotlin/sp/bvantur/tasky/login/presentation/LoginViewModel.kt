@@ -6,25 +6,31 @@ import kotlinx.coroutines.launch
 import sp.bvantur.tasky.core.domain.DispatcherProvider
 import sp.bvantur.tasky.core.domain.ValidateEmailUseCase
 import sp.bvantur.tasky.core.domain.ValidatePasswordUseCase
+import sp.bvantur.tasky.core.presentation.SingleEventHandler
+import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandlerImpl
+import sp.bvantur.tasky.login.domain.LoginRepository
 
 class LoginViewModel(
     private val dispatcherProvider: DispatcherProvider,
     private val validateEmailUseCase: ValidateEmailUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
+    private val loginRepository: LoginRepository
 ) : ViewModel(),
     ViewModelUserActionHandler<LoginUserAction>,
     ViewModelViewStateHandler<LoginViewState> by ViewModelViewStateHandlerImpl(
         LoginViewState(),
         dispatcherProvider
-    ) {
+    ),
+    SingleEventHandler<LoginSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
     override fun onUserAction(userAction: LoginUserAction) {
         when (userAction) {
             is LoginUserAction.EmailChanged -> onEmailChanged(userAction.value)
             is LoginUserAction.PasswordChanged -> onPasswordChanged(userAction.value)
             LoginUserAction.OnLogin -> onLogin()
+            LoginUserAction.DismissErrorDialog -> onDismissErrorDialog()
         }
     }
 
@@ -43,7 +49,20 @@ class LoginViewModel(
                 return@launch
             }
 
-            // TODO implement backend communication
+            val result = loginRepository.login(
+                viewStateFlow.value.email,
+                viewStateFlow.value.password
+            )
+
+            if (result) {
+                emitSingleEvent(LoginSingleEvent.OpenHome)
+            } else {
+                emitViewState { viewState ->
+                    viewState.copy(
+                        showErrorDialog = true
+                    )
+                }
+            }
         }
     }
 
@@ -67,6 +86,14 @@ class LoginViewModel(
                     isPasswordError = !isValid,
                     password = value
                 )
+            }
+        }
+    }
+
+    private fun onDismissErrorDialog() {
+        viewModelScope.launch {
+            emitViewState { viewState ->
+                viewState.copy(showErrorDialog = false)
             }
         }
     }

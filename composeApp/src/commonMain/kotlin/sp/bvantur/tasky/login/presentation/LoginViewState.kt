@@ -6,5 +6,6 @@ data class LoginViewState(
     val email: String = "",
     val isEmailError: Boolean = false,
     val password: String = "",
-    val isPasswordError: Boolean = false
+    val isPasswordError: Boolean = false,
+    val showErrorDialog: Boolean = false
 ) : ViewState
