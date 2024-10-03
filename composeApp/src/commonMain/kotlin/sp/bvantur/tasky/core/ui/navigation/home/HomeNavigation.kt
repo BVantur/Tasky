@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import sp.bvantur.tasky.core.ui.navigation.login.LOGIN_NAVIGATION_ROUTE
-import sp.bvantur.tasky.home.ui.HomeScreen
+import sp.bvantur.tasky.home.ui.HomeRoute
 
 const val HOME_NAVIGATION_ROUTE = "home_navigation_route"
 
@@ -22,6 +22,6 @@ internal fun NavGraphBuilder.homeScreen() {
     composable(
         route = HOME_NAVIGATION_ROUTE
     ) { _ ->
-        HomeScreen()
+        HomeRoute()
     }
 }

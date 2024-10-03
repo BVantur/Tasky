@@ -15,7 +15,7 @@ fun HomeRoute() {
 }
 
 @Composable
-fun HomeScreen() {
+private fun HomeScreen() {
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
         Text("Home screen", modifier = Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.onSurface)
     }

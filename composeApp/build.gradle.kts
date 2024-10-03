@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.buildKonfig)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.mokkery)
 }
 
 kotlin {
@@ -66,6 +67,7 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.jetbrain.coroutines.test)
         }
     }
 }
@@ -123,7 +125,7 @@ buildkonfig {
     objectName = "TaskyBuildKonfig"
 
     defaultConfigs {
-        val properties = loadProperties("secrets.properties")
+        val properties = loadProperties("$projectDir/keys/secrets.properties")
 
         buildConfigField(
             type = FieldSpec.Type.STRING,

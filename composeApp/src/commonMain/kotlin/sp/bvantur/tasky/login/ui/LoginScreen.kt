@@ -65,7 +65,11 @@ fun LoginRoute(onNavigateToRegister: () -> Unit, onOpenHome: () -> Unit) {
 }
 
 @Composable
-fun LoginScreen(viewState: LoginViewState, onNavigateToRegister: () -> Unit, onUserAction: (LoginUserAction) -> Unit) {
+private fun LoginScreen(
+    viewState: LoginViewState,
+    onNavigateToRegister: () -> Unit,
+    onUserAction: (LoginUserAction) -> Unit
+) {
     val passwordRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(

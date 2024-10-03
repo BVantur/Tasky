@@ -1,9 +1,6 @@
 package sp.bvantur.tasky.core.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import org.koin.compose.viewmodel.koinViewModel
@@ -20,14 +17,10 @@ import sp.bvantur.tasky.splash.presentation.SplashViewModel
 internal fun TaskyNavHost() {
     val navController = rememberNavController()
     val viewModel = koinViewModel<SplashViewModel>()
-    val startDestination by remember {
-        mutableStateOf(
-            if (viewModel.isUserAuthorized()) {
-                HOME_NAVIGATION_ROUTE
-            } else {
-                LOGIN_NAVIGATION_ROUTE
-            }
-        )
+    val startDestination = if (viewModel.isUserAuthorized()) {
+        HOME_NAVIGATION_ROUTE
+    } else {
+        LOGIN_NAVIGATION_ROUTE
     }
 
     NavHost(

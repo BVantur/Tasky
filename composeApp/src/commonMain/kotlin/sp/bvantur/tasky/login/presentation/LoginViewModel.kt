@@ -11,13 +11,13 @@ import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandlerImpl
-import sp.bvantur.tasky.login.domain.LoginUseCase
+import sp.bvantur.tasky.login.domain.LoginRepository
 
 class LoginViewModel(
     private val dispatcherProvider: DispatcherProvider,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val loginUseCase: LoginUseCase
+    private val loginRepository: LoginRepository
 ) : ViewModel(),
     ViewModelUserActionHandler<LoginUserAction>,
     ViewModelViewStateHandler<LoginViewState> by ViewModelViewStateHandlerImpl(
@@ -49,7 +49,7 @@ class LoginViewModel(
                 return@launch
             }
 
-            val result = loginUseCase(
+            val result = loginRepository.login(
                 viewStateFlow.value.email,
                 viewStateFlow.value.password
             )
@@ -57,11 +57,11 @@ class LoginViewModel(
             if (result) {
                 emitSingleEvent(LoginSingleEvent.OpenHome)
             } else {
-                emitViewState(
-                    viewStateFlow.value.copy(
+                emitViewState { viewState ->
+                    viewState.copy(
                         showErrorDialog = true
                     )
-                )
+                }
             }
         }
     }
@@ -92,9 +92,9 @@ class LoginViewModel(
 
     private fun onDismissErrorDialog() {
         viewModelScope.launch {
-            emitViewState(
-                viewStateFlow.value.copy(showErrorDialog = false)
-            )
+            emitViewState { viewState ->
+                viewState.copy(showErrorDialog = false)
+            }
         }
     }
 }

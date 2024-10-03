@@ -64,7 +64,7 @@ fun RegisterRoute(onNavigateBack: () -> Unit) {
 }
 
 @Composable
-fun RegisterScreen(viewState: RegisterViewState, onUserAction: (RegisterUserAction) -> Unit) {
+private fun RegisterScreen(viewState: RegisterViewState, onUserAction: (RegisterUserAction) -> Unit) {
     val (emailRequester, passwordRequester) = remember { FocusRequester.createRefs() }
     val keyboardController = LocalSoftwareKeyboardController.current
 

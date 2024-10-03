@@ -11,7 +11,7 @@ import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandler
 import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandlerImpl
-import sp.bvantur.tasky.register.domain.RegisterUserUseCase
+import sp.bvantur.tasky.register.domain.RegisterRepository
 import sp.bvantur.tasky.register.domain.ValidateNameUseCase
 
 class RegisterViewModel(
@@ -19,7 +19,7 @@ class RegisterViewModel(
     private val validateNameUseCase: ValidateNameUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val registerUserUseCase: RegisterUserUseCase
+    private val registerRepository: RegisterRepository
 ) : ViewModel(),
     ViewModelUserActionHandler<RegisterUserAction>,
     ViewModelViewStateHandler<RegisterViewState> by ViewModelViewStateHandlerImpl(
@@ -99,7 +99,7 @@ class RegisterViewModel(
                 return@launch
             }
 
-            val response = registerUserUseCase(
+            val response = registerRepository.register(
                 name = viewStateFlow.value.name,
                 email = viewStateFlow.value.email,
                 password = viewStateFlow.value.password
