@@ -24,7 +24,7 @@ jobs:
 
       - name: Create secrets.properties file
         run: |
-          echo "$SECRETS_PROPERTIES_CONTENT" > ./composeApp/keys/secrets.properties
+          echo "$SECRETS_PROPERTIES_CONTENT" > /composeApp/keys/secrets.properties
         env:
           SECRETS_PROPERTIES_CONTENT: ${{ secrets.SECRETS_PROPERTIES_CONTENT }}
 
