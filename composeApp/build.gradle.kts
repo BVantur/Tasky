@@ -125,7 +125,11 @@ buildkonfig {
     objectName = "TaskyBuildKonfig"
 
     defaultConfigs {
-        val properties = loadProperties("$projectDir/keys/secrets.properties")
+        val properties = try {
+            loadProperties("$projectDir/keys/secrets.properties")
+        } catch (_: Exception) {
+            loadProperties("$projectDir/keys/dummysecrets.properties")
+        }
 
         buildConfigField(
             type = FieldSpec.Type.STRING,
