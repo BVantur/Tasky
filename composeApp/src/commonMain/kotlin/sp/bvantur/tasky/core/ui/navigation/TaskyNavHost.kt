@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import org.koin.compose.viewmodel.koinViewModel
+import sp.bvantur.tasky.core.ui.navigation.event.createEvent
+import sp.bvantur.tasky.core.ui.navigation.event.navigateToCreateEvent
 import sp.bvantur.tasky.core.ui.navigation.home.HOME_NAVIGATION_ROUTE
 import sp.bvantur.tasky.core.ui.navigation.home.homeScreen
 import sp.bvantur.tasky.core.ui.navigation.home.navigateToHome
@@ -32,6 +34,7 @@ internal fun TaskyNavHost() {
             navigateToHome = navController::navigateToHome
         )
         registerScreen(onNavigateBack = navController::navigateUp)
-        homeScreen()
+        homeScreen(onCreateEventAction = navController::navigateToCreateEvent)
+        createEvent(onNavigateBack = navController::navigateUp)
     }
 }

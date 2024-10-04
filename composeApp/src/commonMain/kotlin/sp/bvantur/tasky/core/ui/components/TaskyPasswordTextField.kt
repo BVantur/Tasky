@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import org.jetbrains.compose.resources.stringResource
+import sp.bvantur.tasky.core.ui.theme.textFieldPlaceholder
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.password_visibility_icon
 
@@ -42,12 +43,12 @@ fun TaskyPasswordTextField(
         modifier = modifier,
         isError = isError,
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.colorScheme.background,
-            focusedContainerColor = MaterialTheme.colorScheme.background,
-            unfocusedBorderColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+            focusedContainerColor = MaterialTheme.colorScheme.tertiary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.tertiary,
             focusedBorderColor = MaterialTheme.colorScheme.secondary,
             errorBorderColor = MaterialTheme.colorScheme.error,
-            errorContainerColor = MaterialTheme.colorScheme.background
+            errorContainerColor = MaterialTheme.colorScheme.tertiary
         ),
         placeholder = {
             TaskyTextFieldPlaceholder(text = placeholder)
@@ -67,7 +68,7 @@ fun TaskyPasswordTextField(
                 Icon(
                     imageVector = icon,
                     contentDescription = stringResource(Res.string.password_visibility_icon),
-                    tint = MaterialTheme.colorScheme.onBackground
+                    tint = MaterialTheme.colorScheme.textFieldPlaceholder
                 )
             }
         },

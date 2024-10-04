@@ -10,13 +10,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.back_icon
 
 @Composable
-fun TaskyBackButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun TaskyIconButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    imageVector: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    contentDescription: String? = stringResource(Res.string.back_icon)
+) {
     Button(
         modifier = modifier.defaultMinSize(minWidth = 56.dp, minHeight = 56.dp),
         onClick = onClick,
@@ -27,8 +33,8 @@ fun TaskyBackButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
         shape = MaterialTheme.shapes.small
     ) {
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = stringResource(Res.string.back_icon),
+            imageVector = imageVector,
+            contentDescription = contentDescription,
             tint = MaterialTheme.colorScheme.onPrimary
         )
     }

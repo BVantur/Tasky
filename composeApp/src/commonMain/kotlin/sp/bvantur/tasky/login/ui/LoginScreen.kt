@@ -24,12 +24,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
+import sp.bvantur.tasky.core.ui.components.TaskyContentSurface
 import sp.bvantur.tasky.core.ui.components.TaskyErrorDialog
 import sp.bvantur.tasky.core.ui.components.TaskyHyperlinkText
 import sp.bvantur.tasky.core.ui.components.TaskyPasswordTextField
 import sp.bvantur.tasky.core.ui.components.TaskyTitleText
 import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
-import sp.bvantur.tasky.core.ui.components.TaskyUserOnboardingSurface
 import sp.bvantur.tasky.core.ui.utils.CollectSingleEventsWithLifecycle
 import sp.bvantur.tasky.login.presentation.LoginSingleEvent
 import sp.bvantur.tasky.login.presentation.LoginUserAction
@@ -83,7 +83,7 @@ private fun LoginScreen(
                 .padding(horizontal = 16.dp)
         )
 
-        TaskyUserOnboardingSurface(
+        TaskyContentSurface(
             modifier = Modifier.fillMaxSize()
                 .padding(top = 42.dp)
         ) {

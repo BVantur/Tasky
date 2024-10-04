@@ -26,12 +26,12 @@ fun TaskyUserDataTextField(
         modifier = modifier,
         isError = isError,
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.colorScheme.background,
-            focusedContainerColor = MaterialTheme.colorScheme.background,
-            unfocusedBorderColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+            focusedContainerColor = MaterialTheme.colorScheme.tertiary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.tertiary,
             focusedBorderColor = MaterialTheme.colorScheme.secondary,
             errorBorderColor = MaterialTheme.colorScheme.error,
-            errorContainerColor = MaterialTheme.colorScheme.background
+            errorContainerColor = MaterialTheme.colorScheme.tertiary
         ),
         placeholder = {
             TaskyTextFieldPlaceholder(text = placeholder)

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -25,13 +24,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import sp.bvantur.tasky.core.ui.components.TaskyBackButton
 import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
+import sp.bvantur.tasky.core.ui.components.TaskyContentSurface
 import sp.bvantur.tasky.core.ui.components.TaskyErrorDialog
+import sp.bvantur.tasky.core.ui.components.TaskyIconButton
 import sp.bvantur.tasky.core.ui.components.TaskyPasswordTextField
 import sp.bvantur.tasky.core.ui.components.TaskyTitleText
 import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
-import sp.bvantur.tasky.core.ui.components.TaskyUserOnboardingSurface
 import sp.bvantur.tasky.core.ui.utils.CollectSingleEventsWithLifecycle
 import sp.bvantur.tasky.register.presentation.RegisterSingleEvent
 import sp.bvantur.tasky.register.presentation.RegisterUserAction
@@ -79,7 +78,7 @@ private fun RegisterScreen(viewState: RegisterViewState, onUserAction: (Register
                 .padding(horizontal = 16.dp)
         )
 
-        TaskyUserOnboardingSurface(
+        TaskyContentSurface(
             modifier = Modifier.fillMaxSize()
                 .padding(top = 42.dp)
         ) {
@@ -158,7 +157,7 @@ private fun RegisterScreen(viewState: RegisterViewState, onUserAction: (Register
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                TaskyBackButton(
+                TaskyIconButton(
                     modifier = Modifier.padding(bottom = 40.dp).align(Alignment.Start),
                     onClick = {
                         keyboardController?.hide()

@@ -1,6 +1,5 @@
 package sp.bvantur.tasky.register.presentation
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import sp.bvantur.tasky.core.domain.DispatcherProvider
@@ -9,8 +8,7 @@ import sp.bvantur.tasky.core.domain.ValidatePasswordUseCase
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
 import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
-import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandler
-import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandlerImpl
+import sp.bvantur.tasky.core.presentation.ViewStateViewModel
 import sp.bvantur.tasky.register.domain.RegisterRepository
 import sp.bvantur.tasky.register.domain.ValidateNameUseCase
 
@@ -20,12 +18,11 @@ class RegisterViewModel(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val registerRepository: RegisterRepository
-) : ViewModel(),
+) : ViewStateViewModel<RegisterViewState>(
+    RegisterViewState(),
+    dispatcherProvider
+),
     ViewModelUserActionHandler<RegisterUserAction>,
-    ViewModelViewStateHandler<RegisterViewState> by ViewModelViewStateHandlerImpl(
-        RegisterViewState(),
-        dispatcherProvider
-    ),
     SingleEventHandler<RegisterSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
     override fun onUserAction(userAction: RegisterUserAction) {
         when (userAction) {

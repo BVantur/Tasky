@@ -13,4 +13,9 @@
     <string name="error_with_login">Error with login</string>
     <string name="error_general_message">Something went wrong. Please, try again</string>
     <string name="close">Close</string>
+    <string name="event">Event</string>
+    <string name="event_title">Event title</string>
+    <string name="event_description">Event description</string>
+    <string name="add_photos">Add photos</string>
+    <string name="visitors">Visitors</string>
 </resources>

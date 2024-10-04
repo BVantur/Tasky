@@ -17,11 +17,11 @@ import tasky.composeapp.generated.resources.inter_thin
 
 @Composable
 private fun interFamily() = FontFamily(
-    Font(Res.font.inter_light, FontWeight.Light, FontStyle.Normal),
-    Font(Res.font.inter_regular, FontWeight.Normal, FontStyle.Normal),
-    Font(Res.font.inter_thin, FontWeight.Normal, FontStyle.Italic),
-    Font(Res.font.inter_extralight, FontWeight.Medium, FontStyle.Normal),
-    Font(Res.font.inter_bold, FontWeight.Bold, FontStyle.Normal)
+    Font(Res.font.inter_light, FontWeight.Light),
+    Font(Res.font.inter_regular, FontWeight.Normal),
+    Font(Res.font.inter_thin, FontWeight.Normal),
+    Font(Res.font.inter_extralight, FontWeight.Medium),
+    Font(Res.font.inter_bold, FontWeight.Bold)
 )
 
 @Composable
@@ -31,6 +31,18 @@ fun TaskyTypography() = Typography(
         fontWeight = FontWeight.Bold,
         fontStyle = FontStyle.Normal,
         fontSize = 28.sp
+    ),
+    displayMedium = TextStyle(
+        fontFamily = interFamily(),
+        fontWeight = FontWeight.Bold,
+        fontStyle = FontStyle.Normal,
+        fontSize = 26.sp
+    ),
+    displaySmall = TextStyle(
+        fontFamily = interFamily(),
+        fontWeight = FontWeight.Bold,
+        fontStyle = FontStyle.Normal,
+        fontSize = 20.sp
     ),
     titleMedium = TextStyle(
         fontFamily = interFamily(),
