@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun TaskyUserOnboardingSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun TaskyContentSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Surface(
         modifier = modifier,
         shape = MaterialTheme.shapes.extraLarge,

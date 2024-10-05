@@ -1,6 +1,5 @@
 package sp.bvantur.tasky.login.presentation
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import sp.bvantur.tasky.core.domain.DispatcherProvider
@@ -9,8 +8,7 @@ import sp.bvantur.tasky.core.domain.ValidatePasswordUseCase
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
 import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
-import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandler
-import sp.bvantur.tasky.core.presentation.ViewModelViewStateHandlerImpl
+import sp.bvantur.tasky.core.presentation.ViewStateViewModel
 import sp.bvantur.tasky.login.domain.LoginRepository
 
 class LoginViewModel(
@@ -18,12 +16,11 @@ class LoginViewModel(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val loginRepository: LoginRepository
-) : ViewModel(),
+) : ViewStateViewModel<LoginViewState>(
+    LoginViewState(),
+    dispatcherProvider
+),
     ViewModelUserActionHandler<LoginUserAction>,
-    ViewModelViewStateHandler<LoginViewState> by ViewModelViewStateHandlerImpl(
-        LoginViewState(),
-        dispatcherProvider
-    ),
     SingleEventHandler<LoginSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
     override fun onUserAction(userAction: LoginUserAction) {
         when (userAction) {

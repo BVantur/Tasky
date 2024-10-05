@@ -97,7 +97,7 @@ class GeneralKonsistTest {
     }
 
     @Test
-    fun `companion object is first declaration in the class`() {
+    fun `companion object is last declaration in the class`() {
         Konsist
             .scopeFromProject()
             .classes()
@@ -107,7 +107,7 @@ class GeneralKonsistTest {
                 }
 
                 if (companionObject != null) {
-                    it.declarations(includeNested = false, includeLocal = false).first() == companionObject
+                    it.declarations(includeNested = false, includeLocal = false).last() == companionObject
                 } else {
                     true
                 }
