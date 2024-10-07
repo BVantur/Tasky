@@ -14,13 +14,24 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import sp.bvantur.tasky.core.ui.components.TaskyContentSurface
 import sp.bvantur.tasky.core.ui.theme.eventChoreType
+import sp.bvantur.tasky.core.ui.utils.CollectSingleEventsWithLifecycle
+import sp.bvantur.tasky.event.presentation.CreateEventSingleEvent
+import sp.bvantur.tasky.event.presentation.CreateEventUserAction
+import sp.bvantur.tasky.event.presentation.CreateEventViewModel
+import sp.bvantur.tasky.event.presentation.CreateEventViewState
+import sp.bvantur.tasky.event.presentation.SingleInputSingleEvent
 import sp.bvantur.tasky.event.ui.components.TaskyAddImagesSection
 import sp.bvantur.tasky.event.ui.components.TaskyEventDescription
 import sp.bvantur.tasky.event.ui.components.TaskyEventDivider
@@ -29,19 +40,50 @@ import sp.bvantur.tasky.event.ui.components.TaskyEventType
 import sp.bvantur.tasky.event.ui.components.TaskyReminderPicker
 import sp.bvantur.tasky.event.ui.components.TaskyTimeDatePicker
 import sp.bvantur.tasky.event.ui.components.TaskyVisitorsSection
+import sp.bvantur.tasky.event.ui.model.CreateEventModel
+import sp.bvantur.tasky.event.ui.model.SingleInputModel
+import sp.bvantur.tasky.login.presentation.LoginUserAction
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.event
-import tasky.composeapp.generated.resources.event_description
-import tasky.composeapp.generated.resources.event_title
 import tasky.composeapp.generated.resources.password_visibility_icon
 
 @Composable
-fun CreateEventRoute(onNavigateBack: () -> Unit) {
-    CreateEventScreen(onNavigateBack = onNavigateBack)
+fun CreateEventRoute(
+    eventModel: CreateEventModel,
+    onNavigateBack: () -> Unit,
+    onOpenSingleInputScreen: (SingleInputModel) -> Unit
+) {
+    val viewModel = koinViewModel<CreateEventViewModel>(
+        parameters = {
+            parametersOf(eventModel)
+        }
+    )
+
+    LaunchedEffect(Unit) {
+        viewModel.onLoadInitialData(eventModel)
+    }
+
+    CollectSingleEventsWithLifecycle(singleEventFlow = viewModel.singleEventFlow) { singleEvent ->
+        when (singleEvent) {
+            is CreateEventSingleEvent.OnOpenSingleInput -> onOpenSingleInputScreen(singleEvent.data)
+        }
+    }
+
+    val viewState: CreateEventViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
+
+    CreateEventScreen(
+        viewState = viewState,
+        onNavigateBack = onNavigateBack,
+        onUserAction = viewModel::onUserAction
+    )
 }
 
 @Composable
-fun CreateEventScreen(onNavigateBack: () -> Unit) {
+fun CreateEventScreen(
+    viewState: CreateEventViewState,
+    onNavigateBack: () -> Unit,
+    onUserAction: (CreateEventUserAction) -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize()
             .background(MaterialTheme.colorScheme.primary),
@@ -89,9 +131,9 @@ fun CreateEventScreen(onNavigateBack: () -> Unit) {
 
                 TaskyEventTitle(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = stringResource(Res.string.event_title),
+                    text = viewState.title.asString(),
                     onClick = {
-                        // TODO
+                        onUserAction(CreateEventUserAction.TitleChange)
                     }
                 )
 
@@ -99,9 +141,9 @@ fun CreateEventScreen(onNavigateBack: () -> Unit) {
 
                 TaskyEventDescription(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = stringResource(Res.string.event_description),
+                    text = viewState.description.asString(),
                     onClick = {
-                        // TODO
+                        onUserAction(CreateEventUserAction.DescriptionChange)
                     }
                 )
 
