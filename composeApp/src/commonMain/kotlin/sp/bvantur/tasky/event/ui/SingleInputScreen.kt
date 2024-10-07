@@ -31,7 +31,6 @@ import sp.bvantur.tasky.event.presentation.SingleInputViewModel
 import sp.bvantur.tasky.event.presentation.SingleInputViewState
 import sp.bvantur.tasky.event.ui.model.SingleInputModel
 
-
 @Composable
 fun SingleInputRoute(
     singleInputModel: SingleInputModel?,

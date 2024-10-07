@@ -11,12 +11,12 @@ import sp.bvantur.tasky.core.presentation.ViewStateViewModel
 import sp.bvantur.tasky.event.ui.model.CreateEventModel
 import sp.bvantur.tasky.event.ui.model.SingleInputModel
 
-class CreateEventViewModel(
-    dispatcherProvider: DispatcherProvider
-) : ViewStateViewModel<CreateEventViewState>(
-    initialViewState = CreateEventViewState(),
-    dispatcherProvider = dispatcherProvider
-), ViewModelUserActionHandler<CreateEventUserAction>,
+class CreateEventViewModel(dispatcherProvider: DispatcherProvider) :
+    ViewStateViewModel<CreateEventViewState>(
+        initialViewState = CreateEventViewState(),
+        dispatcherProvider = dispatcherProvider
+    ),
+    ViewModelUserActionHandler<CreateEventUserAction>,
     SingleEventHandler<CreateEventSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
 
     fun onLoadInitialData(eventData: CreateEventModel) {

@@ -31,7 +31,6 @@ import sp.bvantur.tasky.event.presentation.CreateEventSingleEvent
 import sp.bvantur.tasky.event.presentation.CreateEventUserAction
 import sp.bvantur.tasky.event.presentation.CreateEventViewModel
 import sp.bvantur.tasky.event.presentation.CreateEventViewState
-import sp.bvantur.tasky.event.presentation.SingleInputSingleEvent
 import sp.bvantur.tasky.event.ui.components.TaskyAddImagesSection
 import sp.bvantur.tasky.event.ui.components.TaskyEventDescription
 import sp.bvantur.tasky.event.ui.components.TaskyEventDivider
@@ -42,7 +41,6 @@ import sp.bvantur.tasky.event.ui.components.TaskyTimeDatePicker
 import sp.bvantur.tasky.event.ui.components.TaskyVisitorsSection
 import sp.bvantur.tasky.event.ui.model.CreateEventModel
 import sp.bvantur.tasky.event.ui.model.SingleInputModel
-import sp.bvantur.tasky.login.presentation.LoginUserAction
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.event
 import tasky.composeapp.generated.resources.password_visibility_icon

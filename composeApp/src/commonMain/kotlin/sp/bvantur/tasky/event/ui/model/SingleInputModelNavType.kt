@@ -12,9 +12,7 @@ class SingleInputModelNavType : NavType<SingleInputModel>(isNullableAllowed = fa
         return Json.decodeFromString(inputModel)
     }
 
-    override fun parseValue(value: String): SingleInputModel {
-        return Json.decodeFromString(value)
-    }
+    override fun parseValue(value: String): SingleInputModel = Json.decodeFromString(value)
 
     override fun put(bundle: Bundle, key: String, value: SingleInputModel) {
         bundle.putString(key, Json.encodeToString(value))

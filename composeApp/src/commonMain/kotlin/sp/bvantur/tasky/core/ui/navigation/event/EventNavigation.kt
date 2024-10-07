@@ -48,24 +48,23 @@ internal fun NavGraphBuilder.createEventScreen(
     }
 }
 
-internal fun NavGraphBuilder.singleInputScreen(
-    onNavigateBack: () -> Unit,
-    onSaveAction: (String, Boolean) -> Unit
-) {
+internal fun NavGraphBuilder.singleInputScreen(onNavigateBack: () -> Unit, onSaveAction: (String, Boolean) -> Unit) {
     composable(
         route = "$SINGLE_INPUT_NAVIGATION_ROUTE/{$SINGLE_INPUT_NAVIGATION_EXTRA}",
-        arguments = listOf(navArgument(SINGLE_INPUT_NAVIGATION_EXTRA) {
-            type = SingleInputModelNavType()
-        })
+        arguments = listOf(
+            navArgument(SINGLE_INPUT_NAVIGATION_EXTRA) {
+                type = SingleInputModelNavType()
+            }
+        )
     ) { backStackEntry ->
         val singleInputModel: SingleInputModel? =
             backStackEntry.arguments?.getString(SINGLE_INPUT_NAVIGATION_EXTRA)?.let {
                 Json.decodeFromString<SingleInputModel>(it)
             }
         SingleInputRoute(
-            singleInputModel = singleInputModel, onNavigateBack = onNavigateBack,
+            singleInputModel = singleInputModel,
+            onNavigateBack = onNavigateBack,
             onSaveAction = onSaveAction
         )
     }
 }
-

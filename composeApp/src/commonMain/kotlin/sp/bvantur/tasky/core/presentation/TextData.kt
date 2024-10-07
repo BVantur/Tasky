@@ -6,10 +6,7 @@ import org.jetbrains.compose.resources.stringResource
 
 sealed interface TextData {
     data class DynamicString(val value: String) : TextData
-    class ResourceString(
-        val resId: StringResource,
-        vararg val args: Any
-    ) : TextData
+    class ResourceString(val resId: StringResource, vararg val args: Any) : TextData
 
     @Suppress("SpreadOperator")
     @Composable
@@ -18,7 +15,5 @@ sealed interface TextData {
         is ResourceString -> stringResource(resId, *args)
     }
 
-    fun getFromDynamicStringOrNull(): String? {
-        return (this as? DynamicString)?.value
-    }
+    fun getFromDynamicStringOrNull(): String? = (this as? DynamicString)?.value
 }
