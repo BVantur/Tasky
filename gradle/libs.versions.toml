@@ -23,6 +23,7 @@ androidx-test-junit = "1.2.1"
 jetbrains-lifecycle = "2.8.2"
 jetbrains-navigation-compose = "2.8.0-alpha10"
 jetbrains-coroutine-test = "1.9.0"
+jetbrains-datetime = "0.6.1"
 
 # KTOR dependencies
 ktor = "3.0.0-rc-1"
@@ -63,6 +64,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 jetbrains-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "jetbrains-lifecycle" }
 jetbrains-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "jetbrains-lifecycle" }
 jetbrains-navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "jetbrains-navigation-compose" }
+jetbrains-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "jetbrains-datetime" }
 
 # KTOR dependencies
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }

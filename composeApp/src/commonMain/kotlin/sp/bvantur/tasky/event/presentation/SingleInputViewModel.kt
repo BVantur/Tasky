@@ -7,7 +7,7 @@ import sp.bvantur.tasky.core.presentation.SingleEventHandler
 import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.TextData
 import sp.bvantur.tasky.core.presentation.ViewStateViewModel
-import sp.bvantur.tasky.event.ui.model.SingleInputModel
+import sp.bvantur.tasky.event.presentation.models.SingleInputModel
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.enter_description
 import tasky.composeapp.generated.resources.enter_title

@@ -21,24 +21,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.PopupProperties
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import org.jetbrains.compose.resources.stringResource
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.event
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
-fun HomeRoute(onCreateEventAction: () -> Unit) {
+fun HomeRoute(onCreateEventAction: (Long, Long) -> Unit) {
     HomeScreen(
         onCreateEventAction = onCreateEventAction
     )
 }
 
 @Composable
-private fun HomeScreen(onCreateEventAction: () -> Unit) {
+private fun HomeScreen(onCreateEventAction: (Long, Long) -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface),
         floatingActionButton = {
             FloatingActionButtonWithDropdown(
-                onCreateEventAction = onCreateEventAction
+                onCreateEventAction = {
+                    // TODO fix this whole section to ViewModel
+                    val fromTime: Instant = Clock.System.now()
+                    val toTime: Instant = fromTime.plus(30.minutes)
+                    onCreateEventAction(fromTime.toEpochMilliseconds(), toTime.toEpochMilliseconds())
+                }
             )
         }
     ) {

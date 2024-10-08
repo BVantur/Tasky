@@ -9,10 +9,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,23 +37,30 @@ import sp.bvantur.tasky.event.presentation.CreateEventSingleEvent
 import sp.bvantur.tasky.event.presentation.CreateEventUserAction
 import sp.bvantur.tasky.event.presentation.CreateEventViewModel
 import sp.bvantur.tasky.event.presentation.CreateEventViewState
+import sp.bvantur.tasky.event.presentation.models.CreateEventUpdatesModel
+import sp.bvantur.tasky.event.presentation.models.SingleInputModel
+import sp.bvantur.tasky.event.presentation.utils.DateTimeUtils
+import sp.bvantur.tasky.event.presentation.utils.extensions.getMillis
 import sp.bvantur.tasky.event.ui.components.TaskyAddImagesSection
+import sp.bvantur.tasky.event.ui.components.TaskyConfirmTextButton
 import sp.bvantur.tasky.event.ui.components.TaskyEventDescription
 import sp.bvantur.tasky.event.ui.components.TaskyEventDivider
 import sp.bvantur.tasky.event.ui.components.TaskyEventTitle
 import sp.bvantur.tasky.event.ui.components.TaskyEventType
 import sp.bvantur.tasky.event.ui.components.TaskyReminderPicker
 import sp.bvantur.tasky.event.ui.components.TaskyTimeDatePicker
+import sp.bvantur.tasky.event.ui.components.TaskyTimePickerDialog
 import sp.bvantur.tasky.event.ui.components.TaskyVisitorsSection
-import sp.bvantur.tasky.event.ui.model.CreateEventModel
-import sp.bvantur.tasky.event.ui.model.SingleInputModel
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.event
+import tasky.composeapp.generated.resources.from_word
 import tasky.composeapp.generated.resources.password_visibility_icon
+import tasky.composeapp.generated.resources.select
+import tasky.composeapp.generated.resources.to_word
 
 @Composable
 fun CreateEventRoute(
-    eventModel: CreateEventModel,
+    eventModel: CreateEventUpdatesModel,
     onNavigateBack: () -> Unit,
     onOpenSingleInputScreen: (SingleInputModel) -> Unit
 ) {
@@ -57,8 +70,10 @@ fun CreateEventRoute(
         }
     )
 
+    val viewState: CreateEventViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
-        viewModel.onLoadInitialData(eventModel)
+        viewModel.onUpdateTextFields(eventModel)
     }
 
     CollectSingleEventsWithLifecycle(singleEventFlow = viewModel.singleEventFlow) { singleEvent ->
@@ -67,8 +82,6 @@ fun CreateEventRoute(
         }
     }
 
-    val viewState: CreateEventViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
-
     CreateEventScreen(
         viewState = viewState,
         onNavigateBack = onNavigateBack,
@@ -76,6 +89,7 @@ fun CreateEventRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateEventScreen(
     viewState: CreateEventViewState,
@@ -149,9 +163,29 @@ fun CreateEventScreen(
 
                 TaskyEventDivider(modifier = Modifier.padding(top = 30.dp))
 
-                TaskyTimeDatePicker(text = "From") // TODO fix text
+                TaskyTimeDatePicker(
+                    propertyName = stringResource(Res.string.from_word),
+                    formattedDate = viewState.formattedFromDate,
+                    formattedTime = viewState.formattedFromTime,
+                    onTimeChangeAction = {
+                        onUserAction(CreateEventUserAction.TimeFromChange)
+                    },
+                    onDateChangeAction = {
+                        onUserAction(CreateEventUserAction.DateFromChange)
+                    }
+                )
                 TaskyEventDivider()
-                TaskyTimeDatePicker(text = "To") // TODO fix text
+                TaskyTimeDatePicker(
+                    propertyName = stringResource(Res.string.to_word),
+                    formattedDate = viewState.formattedToDate,
+                    formattedTime = viewState.formattedToTime,
+                    onTimeChangeAction = {
+                        onUserAction(CreateEventUserAction.TimeToChange)
+                    },
+                    onDateChangeAction = {
+                        onUserAction(CreateEventUserAction.DateToChange)
+                    }
+                )
                 TaskyEventDivider()
                 TaskyReminderPicker(
                     modifier = Modifier.padding(start = 16.dp),
@@ -165,6 +199,65 @@ fun CreateEventScreen(
                     // TODO
                 })
             }
+        }
+    }
+
+    if (viewState.showDatePickerDialog) {
+        val datePickerState =
+            rememberDatePickerState(
+                initialSelectedDateMillis = viewState.dialogDateTimeData?.localDateTime?.getMillis()
+            )
+
+        DatePickerDialog(
+            onDismissRequest = {
+                onUserAction(CreateEventUserAction.DismissDateDialog)
+            },
+            confirmButton = {
+                TaskyConfirmTextButton(
+                    onClick = {
+                        onUserAction(
+                            CreateEventUserAction.SelectNewDate(
+                                viewState.dialogDateTimeData?.copy(
+                                    localDateTime = DateTimeUtils.toLocalDateTime(datePickerState.selectedDateMillis)
+                                )
+                            )
+                        )
+                    },
+                    text = stringResource(Res.string.select)
+                )
+            }
+        ) {
+            DatePicker(datePickerState)
+        }
+    }
+
+    if (viewState.showTimePickerDialog) {
+        val timePickerState =
+            rememberTimePickerState(
+                initialHour = viewState.dialogDateTimeData?.localDateTime?.hour ?: 0,
+                initialMinute = viewState.dialogDateTimeData?.localDateTime?.minute ?: 0,
+                is24Hour = true
+            )
+        TaskyTimePickerDialog(
+            onDismissRequest = {
+                onUserAction(CreateEventUserAction.DismissTimeDialog)
+            },
+            confirmButton = {
+                TaskyConfirmTextButton(
+                    onClick = {
+                        onUserAction(
+                            CreateEventUserAction.SelectNewTime(
+                                timePickerState.hour,
+                                timePickerState.minute,
+                                viewState.dialogDateTimeData?.isFrom
+                            )
+                        )
+                    },
+                    text = stringResource(Res.string.select)
+                )
+            }
+        ) {
+            TimePicker(state = timePickerState)
         }
     }
 }

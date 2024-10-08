@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import sp.bvantur.tasky.core.ui.theme.appBarAction
@@ -29,7 +30,9 @@ import sp.bvantur.tasky.core.ui.utils.CollectSingleEventsWithLifecycle
 import sp.bvantur.tasky.event.presentation.SingleInputSingleEvent
 import sp.bvantur.tasky.event.presentation.SingleInputViewModel
 import sp.bvantur.tasky.event.presentation.SingleInputViewState
-import sp.bvantur.tasky.event.ui.model.SingleInputModel
+import sp.bvantur.tasky.event.presentation.models.SingleInputModel
+import tasky.composeapp.generated.resources.Res
+import tasky.composeapp.generated.resources.save
 
 @Composable
 fun SingleInputRoute(
@@ -98,7 +101,7 @@ fun SingleInputScreen(
                             disabledContentColor = MaterialTheme.colorScheme.onTertiary
                         )
                     ) {
-                        Text("Save", style = MaterialTheme.typography.labelMedium)
+                        Text(stringResource(Res.string.save), style = MaterialTheme.typography.labelMedium)
                     }
                 }
             )

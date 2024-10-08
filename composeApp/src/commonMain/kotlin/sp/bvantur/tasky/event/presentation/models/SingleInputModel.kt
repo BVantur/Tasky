@@ -1,4 +1,4 @@
-package sp.bvantur.tasky.event.ui.model
+package sp.bvantur.tasky.event.presentation.models
 
 import kotlinx.serialization.Serializable
 
