@@ -38,8 +38,8 @@ internal val ColorScheme.eventChoreType: Color
 internal val ColorScheme.eventChoreTitleType: Color
     get() = DarkGray
 
-internal val ColorScheme.onBackground2: Color
-    get() = Gray
+internal val ColorScheme.appBarAction: Color
+    get() = Green
 
 val TaskyColorPalette = lightColorScheme(
     primary = Black,
