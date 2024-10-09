@@ -4,6 +4,7 @@ import androidx.core.bundle.Bundle
 import androidx.navigation.NavType
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import sp.bvantur.tasky.event.presentation.models.SingleInputModel
 
 class SingleInputModelNavType : NavType<SingleInputModel>(isNullableAllowed = false) {
     override fun get(bundle: Bundle, key: String): SingleInputModel? {

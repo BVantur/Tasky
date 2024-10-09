@@ -20,4 +20,9 @@
     <string name="event_description">Event description</string>
     <string name="add_photos">Add photos</string>
     <string name="visitors">Visitors</string>
+    <string name="save">Save</string>
+    <string name="select">Select</string>
+    <string name="from_word">From</string>
+    <string name="to_word">To</string>
+    <string name="select_time">Select time</string>
 </resources>
