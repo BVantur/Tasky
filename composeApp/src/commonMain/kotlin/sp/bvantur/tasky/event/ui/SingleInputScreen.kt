@@ -36,13 +36,10 @@ import tasky.composeapp.generated.resources.save
 
 @Composable
 fun SingleInputRoute(
-    singleInputModel: SingleInputModel?,
     onNavigateBack: () -> Unit,
     onSaveAction: (String, Boolean) -> Unit
 ) {
-    val viewModel = koinViewModel<SingleInputViewModel>(
-        parameters = { parametersOf(singleInputModel) }
-    )
+    val viewModel = koinViewModel<SingleInputViewModel>()
 
     val viewState: SingleInputViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
 

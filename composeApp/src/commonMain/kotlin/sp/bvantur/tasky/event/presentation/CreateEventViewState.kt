@@ -16,8 +16,6 @@ data class CreateEventViewState(
     val dialogSelectedTimeInMillis: Long = 0L,
     val currentFromDateTime: LocalDateTime? = null,
     val currentToDateTime: LocalDateTime? = null,
-    val currentFromInMillis: Long = 0L,
-    val currentToInMillis: Long = 0L,
     val formattedFromDate: String = "",
     val formattedFromTime: String = "",
     val formattedToDate: String = "",

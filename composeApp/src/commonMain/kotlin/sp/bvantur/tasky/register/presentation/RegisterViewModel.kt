@@ -18,10 +18,7 @@ class RegisterViewModel(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val registerRepository: RegisterRepository
-) : ViewStateViewModel<RegisterViewState>(
-    RegisterViewState(),
-    dispatcherProvider
-),
+) : ViewStateViewModel<RegisterViewState>(RegisterViewState()),
     ViewModelUserActionHandler<RegisterUserAction>,
     SingleEventHandler<RegisterSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
     override fun onUserAction(userAction: RegisterUserAction) {
@@ -36,65 +33,58 @@ class RegisterViewModel(
     }
 
     private fun onDismissErrorDialog() {
-        viewModelScope.launch {
-            emitViewState { viewState ->
-                viewState.copy(showErrorDialog = false)
-            }
+        emitViewState { viewState ->
+            viewState.copy(showErrorDialog = false)
         }
     }
 
     private fun onNameChanged(value: String) {
-        viewModelScope.launch {
-            val isValid = validateNameUseCase.invoke(value)
-            emitViewState { viewState ->
-                viewState.copy(
-                    isNameError = !isValid,
-                    name = value
-                )
-            }
+        val isValid = validateNameUseCase.invoke(value)
+        emitViewState { viewState ->
+            viewState.copy(
+                isNameError = !isValid,
+                name = value
+            )
         }
     }
 
     private fun onEmailChanged(value: String) {
-        viewModelScope.launch {
-            val isValid = validateEmailUseCase.invoke(value)
-            emitViewState { viewState ->
-                viewState.copy(
-                    isEmailError = !isValid,
-                    email = value
-                )
-            }
+        val isValid = validateEmailUseCase.invoke(value)
+        emitViewState { viewState ->
+            viewState.copy(
+                isEmailError = !isValid,
+                email = value
+            )
         }
     }
 
     private fun onPasswordChanged(value: String) {
-        viewModelScope.launch {
-            val isValid = validatePasswordUseCase.invoke(value)
-            emitViewState { viewState ->
-                viewState.copy(
-                    isPasswordError = !isValid,
-                    password = value
-                )
-            }
+        val isValid = validatePasswordUseCase.invoke(value)
+        emitViewState { viewState ->
+            viewState.copy(
+                isPasswordError = !isValid,
+                password = value
+            )
         }
     }
 
     private fun onRegisterUser() {
-        viewModelScope.launch {
-            val isNameValid = validateNameUseCase.invoke(viewStateFlow.value.name)
-            val isEmailValid = validateEmailUseCase.invoke(viewStateFlow.value.email)
-            val isPasswordValid = validatePasswordUseCase.invoke(viewStateFlow.value.password)
+        val isNameValid = validateNameUseCase.invoke(viewStateFlow.value.name)
+        val isEmailValid = validateEmailUseCase.invoke(viewStateFlow.value.email)
+        val isPasswordValid = validatePasswordUseCase.invoke(viewStateFlow.value.password)
 
-            if (!isNameValid || !isEmailValid || !isPasswordValid) {
-                emitViewState { viewState ->
-                    viewState.copy(
-                        isNameError = !isNameValid,
-                        isEmailError = !isEmailValid,
-                        isPasswordError = !isPasswordValid
-                    )
-                }
-                return@launch
+        if (!isNameValid || !isEmailValid || !isPasswordValid) {
+            emitViewState { viewState ->
+                viewState.copy(
+                    isNameError = !isNameValid,
+                    isEmailError = !isEmailValid,
+                    isPasswordError = !isPasswordValid
+                )
             }
+            return
+        }
+
+        viewModelScope.launch {
 
             val response = registerRepository.register(
                 name = viewStateFlow.value.name,

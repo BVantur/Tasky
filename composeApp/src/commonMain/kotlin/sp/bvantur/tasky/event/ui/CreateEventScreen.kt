@@ -64,11 +64,7 @@ fun CreateEventRoute(
     onNavigateBack: () -> Unit,
     onOpenSingleInputScreen: (SingleInputModel) -> Unit
 ) {
-    val viewModel = koinViewModel<CreateEventViewModel>(
-        parameters = {
-            parametersOf(eventModel)
-        }
-    )
+    val viewModel = koinViewModel<CreateEventViewModel>()
 
     val viewState: CreateEventViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
 

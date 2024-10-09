@@ -16,10 +16,7 @@ class LoginViewModel(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val loginRepository: LoginRepository
-) : ViewStateViewModel<LoginViewState>(
-    LoginViewState(),
-    dispatcherProvider
-),
+) : ViewStateViewModel<LoginViewState>(LoginViewState()),
     ViewModelUserActionHandler<LoginUserAction>,
     SingleEventHandler<LoginSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
     override fun onUserAction(userAction: LoginUserAction) {
@@ -32,19 +29,20 @@ class LoginViewModel(
     }
 
     private fun onLogin() {
-        viewModelScope.launch {
-            val isEmailValid = validateEmailUseCase.invoke(viewStateFlow.value.email)
-            val isPasswordValid = validateEmailUseCase.invoke(viewStateFlow.value.email)
+        val isEmailValid = validateEmailUseCase.invoke(viewStateFlow.value.email)
+        val isPasswordValid = validateEmailUseCase.invoke(viewStateFlow.value.email)
 
-            if (!isEmailValid || !isPasswordValid) {
-                emitViewState { viewState ->
-                    viewState.copy(
-                        isEmailError = !isEmailValid,
-                        isPasswordError = !isPasswordValid
-                    )
-                }
-                return@launch
+        if (!isEmailValid || !isPasswordValid) {
+            emitViewState { viewState ->
+                viewState.copy(
+                    isEmailError = !isEmailValid,
+                    isPasswordError = !isPasswordValid
+                )
             }
+            return
+        }
+
+        viewModelScope.launch {
 
             val result = loginRepository.login(
                 viewStateFlow.value.email,
@@ -64,34 +62,28 @@ class LoginViewModel(
     }
 
     private fun onEmailChanged(value: String) {
-        viewModelScope.launch {
-            val isValid = validateEmailUseCase.invoke(value)
-            emitViewState { viewState ->
-                viewState.copy(
-                    isEmailError = !isValid,
-                    email = value
-                )
-            }
+        val isValid = validateEmailUseCase.invoke(value)
+        emitViewState { viewState ->
+            viewState.copy(
+                isEmailError = !isValid,
+                email = value
+            )
         }
     }
 
     private fun onPasswordChanged(value: String) {
-        viewModelScope.launch {
-            val isValid = validatePasswordUseCase.invoke(value)
-            emitViewState { viewState ->
-                viewState.copy(
-                    isPasswordError = !isValid,
-                    password = value
-                )
-            }
+        val isValid = validatePasswordUseCase.invoke(value)
+        emitViewState { viewState ->
+            viewState.copy(
+                isPasswordError = !isValid,
+                password = value
+            )
         }
     }
 
     private fun onDismissErrorDialog() {
-        viewModelScope.launch {
-            emitViewState { viewState ->
-                viewState.copy(showErrorDialog = false)
-            }
+        emitViewState { viewState ->
+            viewState.copy(showErrorDialog = false)
         }
     }
 }

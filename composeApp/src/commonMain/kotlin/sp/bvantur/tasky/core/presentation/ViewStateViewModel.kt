@@ -8,12 +8,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.withContext
 import sp.bvantur.tasky.core.domain.DispatcherProvider
 
 abstract class ViewStateViewModel<State : ViewState>(
-    initialViewState: State,
-    private val dispatcherProvider: DispatcherProvider
+    initialViewState: State
 ) : ViewModel() {
 
     private val mutableViewStateFlow = MutableStateFlow(initialViewState)
@@ -24,11 +22,9 @@ abstract class ViewStateViewModel<State : ViewState>(
             initialViewState
         )
 
-    suspend fun emitViewState(onUpdateViewState: (State) -> State) {
-        withContext(dispatcherProvider.main.immediate) {
-            mutableViewStateFlow.update {
-                onUpdateViewState(viewStateFlow.value)
-            }
+    fun emitViewState(onUpdateViewState: (State) -> State) {
+        mutableViewStateFlow.update {
+            onUpdateViewState(viewStateFlow.value)
         }
     }
 

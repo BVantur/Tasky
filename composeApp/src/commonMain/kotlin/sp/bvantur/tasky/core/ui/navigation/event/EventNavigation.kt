@@ -9,6 +9,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import sp.bvantur.tasky.event.presentation.CreateEventViewModel.Companion.CREATE_EVENT_FROM_TIMESTAMP_EXTRA
 import sp.bvantur.tasky.event.presentation.CreateEventViewModel.Companion.CREATE_EVENT_TO_TIMESTAMP_EXTRA
+import sp.bvantur.tasky.event.presentation.SingleInputViewModel.Companion.SINGLE_INPUT_NAVIGATION_EXTRA
 import sp.bvantur.tasky.event.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.event.presentation.models.SingleInputModel
 import sp.bvantur.tasky.event.ui.CreateEventRoute
@@ -17,8 +18,6 @@ import sp.bvantur.tasky.event.ui.model.SingleInputModelNavType
 
 internal const val CREATE_EVENT_NAVIGATION_ROUTE = "create_event_navigation_route"
 internal const val SINGLE_INPUT_NAVIGATION_ROUTE = "single_input_navigation_route"
-
-internal const val SINGLE_INPUT_NAVIGATION_EXTRA = "single_input_navigation_extra"
 
 internal const val SINGLE_INPUT_TITLE_RESULT_EXTRA = "single_input_title_result_extra"
 internal const val SINGLE_INPUT_DESCRIPTION_RESULT_EXTRA = "single_input_description_result_extra"
@@ -50,8 +49,8 @@ internal fun NavGraphBuilder.createEventScreen(
     ) { backStackEntry ->
         val title = backStackEntry.savedStateHandle.get<String>(SINGLE_INPUT_TITLE_RESULT_EXTRA)
         val description = backStackEntry.savedStateHandle.get<String>(SINGLE_INPUT_DESCRIPTION_RESULT_EXTRA)
-        backStackEntry.savedStateHandle.remove<Boolean>(SINGLE_INPUT_TITLE_RESULT_EXTRA)
-        backStackEntry.savedStateHandle.remove<Boolean>(SINGLE_INPUT_DESCRIPTION_RESULT_EXTRA)
+        backStackEntry.savedStateHandle.remove<String>(SINGLE_INPUT_TITLE_RESULT_EXTRA)
+        backStackEntry.savedStateHandle.remove<String>(SINGLE_INPUT_DESCRIPTION_RESULT_EXTRA)
 
         CreateEventRoute(
             CreateEventUpdatesModel(
@@ -72,13 +71,8 @@ internal fun NavGraphBuilder.singleInputScreen(onNavigateBack: () -> Unit, onSav
                 type = SingleInputModelNavType()
             }
         )
-    ) { backStackEntry ->
-        val singleInputModel: SingleInputModel? =
-            backStackEntry.arguments?.getString(SINGLE_INPUT_NAVIGATION_EXTRA)?.let {
-                Json.decodeFromString<SingleInputModel>(it)
-            }
+    ) { _ ->
         SingleInputRoute(
-            singleInputModel = singleInputModel,
             onNavigateBack = onNavigateBack,
             onSaveAction = onSaveAction
         )
