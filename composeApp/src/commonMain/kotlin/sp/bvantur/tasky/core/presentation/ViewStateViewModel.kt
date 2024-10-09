@@ -8,11 +8,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import sp.bvantur.tasky.core.domain.DispatcherProvider
 
-abstract class ViewStateViewModel<State : ViewState>(
-    initialViewState: State
-) : ViewModel() {
+abstract class ViewStateViewModel<State : ViewState>(initialViewState: State) : ViewModel() {
 
     private val mutableViewStateFlow = MutableStateFlow(initialViewState)
     val viewStateFlow: StateFlow<State> = mutableViewStateFlow.onStart { initialLoadData() }

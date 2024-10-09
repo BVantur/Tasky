@@ -43,7 +43,6 @@ class LoginViewModel(
         }
 
         viewModelScope.launch {
-
             val result = loginRepository.login(
                 viewStateFlow.value.email,
                 viewStateFlow.value.password

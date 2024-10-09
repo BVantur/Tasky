@@ -85,7 +85,6 @@ class RegisterViewModel(
         }
 
         viewModelScope.launch {
-
             val response = registerRepository.register(
                 name = viewStateFlow.value.name,
                 email = viewStateFlow.value.email,

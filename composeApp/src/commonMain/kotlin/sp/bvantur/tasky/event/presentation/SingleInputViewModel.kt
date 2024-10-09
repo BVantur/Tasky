@@ -16,10 +16,7 @@ import tasky.composeapp.generated.resources.enter_title
 import tasky.composeapp.generated.resources.event_description
 import tasky.composeapp.generated.resources.event_title
 
-class SingleInputViewModel(
-    dispatcherProvider: DispatcherProvider,
-    savedStateHandle: SavedStateHandle
-) :
+class SingleInputViewModel(dispatcherProvider: DispatcherProvider, savedStateHandle: SavedStateHandle) :
     ViewStateViewModel<SingleInputViewState>(SingleInputViewState()),
     SingleEventHandler<SingleInputSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
     init {
