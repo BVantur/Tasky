@@ -1,6 +1,7 @@
 package sp.bvantur.tasky.event.presentation
 
 import sp.bvantur.tasky.core.presentation.UserAction
+import sp.bvantur.tasky.event.presentation.models.ReminderValue
 
 sealed interface CreateEventUserAction : UserAction {
     data object TitleChange : CreateEventUserAction
@@ -14,4 +15,5 @@ sealed interface CreateEventUserAction : UserAction {
     data class SelectNewTime(val selectedHour: Int, val selectedMinutes: Int, val isFrom: Boolean?) :
         CreateEventUserAction
     data object DismissTimeDialog : CreateEventUserAction
+    data class SelectNewReminder(val reminderValue: ReminderValue) : CreateEventUserAction
 }
