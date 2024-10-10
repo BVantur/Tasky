@@ -25,4 +25,9 @@
     <string name="from_word">From</string>
     <string name="to_word">To</string>
     <string name="select_time">Select time</string>
+    <string name="ten_minutes_before">10 minutes before</string>
+    <string name="thirty_minutes_before">30 minutes before</string>
+    <string name="one_hour_before">1 hour before</string>
+    <string name="six_hour_before">6 hour before</string>
+    <string name="one_day_before">1 day before</string>
 </resources>
