@@ -9,7 +9,6 @@ data class AttendeeResponse(
     val userExists: Boolean,
     @SerialName("attendee")
     val attendee: AttendeeUserResponse
-
 )
 
 @Serializable

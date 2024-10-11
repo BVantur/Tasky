@@ -25,7 +25,7 @@ data class CreateEventViewState(
     val reminderValue: ReminderValue = ReminderValue.ONE_DAY,
     val showAttendeeDialog: Boolean = false,
     val isAttendeeEmailError: Boolean = false,
-    val attendees: MutableList<Attendee> = mutableListOf()
+    val attendees: List<Attendee> = listOf()
 ) : ViewState
 
 data class DialogDateTimeData(val localDateTime: LocalDateTime? = null, val isFrom: Boolean = false)
