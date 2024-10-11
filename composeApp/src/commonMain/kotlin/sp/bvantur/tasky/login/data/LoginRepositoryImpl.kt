@@ -12,8 +12,9 @@ open class LoginRepositoryImpl(
                 val userInformation = response.getOrNull() ?: return@also
 
                 localDataSource.saveLoginData(
-                    userInformation.accessToken,
-                    userInformation.accessTokenExpirationTimestamp
+                    accessToken = userInformation.accessToken,
+                    refreshToken = userInformation.refreshToken,
+                    expirationTimestamp = userInformation.accessTokenExpirationTimestamp
                 )
             }
         }

@@ -4,11 +4,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import sp.bvantur.tasky.core.domain.DispatcherProvider
+import sp.bvantur.tasky.core.domain.ValidateEmailUseCase
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
 import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.TextData
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewStateViewModel
+import sp.bvantur.tasky.event.domain.CreateEventRepository
+import sp.bvantur.tasky.event.domain.model.Attendee
 import sp.bvantur.tasky.event.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.event.presentation.models.InputType
 import sp.bvantur.tasky.event.presentation.models.SingleInputModel
@@ -21,8 +24,12 @@ import sp.bvantur.tasky.event.presentation.utils.extensions.formatDate
 import sp.bvantur.tasky.event.presentation.utils.extensions.formatTime
 import sp.bvantur.tasky.event.presentation.utils.extensions.getMillis
 
-class CreateEventViewModel(dispatcherProvider: DispatcherProvider, savedStateHandle: SavedStateHandle) :
-    ViewStateViewModel<CreateEventViewState>(CreateEventViewState()),
+class CreateEventViewModel(
+    private val validateEmailUseCase: ValidateEmailUseCase,
+    private val createEventRepository: CreateEventRepository,
+    dispatcherProvider: DispatcherProvider,
+    savedStateHandle: SavedStateHandle
+) : ViewStateViewModel<CreateEventViewState>(CreateEventViewState()),
     ViewModelUserActionHandler<CreateEventUserAction>,
     SingleEventHandler<CreateEventSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
 
@@ -91,6 +98,25 @@ class CreateEventViewModel(dispatcherProvider: DispatcherProvider, savedStateHan
                     viewState.copy(reminderValue = userAction.reminderValue)
                 }
             }
+
+            CreateEventUserAction.InviteNewAttendee -> {
+                emitViewState { viewState ->
+                    viewState.copy(showAttendeeDialog = true)
+                }
+            }
+
+            is CreateEventUserAction.ConfirmAttendeeEmail -> {
+                onInviteAttendee(userAction.email)
+            }
+
+            CreateEventUserAction.DismissAttendeeDialog -> {
+                emitViewState { viewState ->
+                    viewState.copy(showAttendeeDialog = false)
+                }
+            }
+
+            is CreateEventUserAction.AttendeeEmailChange -> onAttendeeEmailChange(userAction.email)
+            is CreateEventUserAction.OnRemoveAttendee -> onRemoveAttendee(userAction.attendee)
         }
     }
 
@@ -222,6 +248,63 @@ class CreateEventViewModel(dispatcherProvider: DispatcherProvider, savedStateHan
                 formattedFromTime = fromDateTime?.formatTime() ?: "",
                 formattedToDate = toDateTime?.formatDate() ?: "",
                 formattedToTime = toDateTime?.formatTime() ?: ""
+            )
+        }
+    }
+
+    private fun onAttendeeEmailChange(text: String) {
+        if (viewStateFlow.value.isAttendeeEmailError) {
+            emitViewState { viewState ->
+                viewState.copy(
+                    isAttendeeEmailError = validateEmailUseCase(text)
+                )
+            }
+        }
+    }
+
+    private fun onInviteAttendee(email: String) {
+        val isEmailValid = validateEmailUseCase(email)
+        if (!isEmailValid) {
+            emitViewState { viewState ->
+                viewState.copy(isAttendeeEmailError = true)
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            val attendeeResult = createEventRepository.getAttendee(email)
+
+            val attendee = attendeeResult.getOrNull()
+
+            if (attendeeResult.isFailure || attendee == null) {
+                emitViewState { viewState ->
+                    viewState.copy(
+                        isAttendeeEmailError = true
+                    )
+                }
+                return@launch
+            }
+
+            emitViewState { viewState ->
+                viewState.copy(
+                    attendees = mutableListOf<Attendee>().also {
+                        it.add(attendee)
+                        it.addAll(viewState.attendees)
+                    },
+                    showAttendeeDialog = false,
+                    isAttendeeEmailError = false
+                )
+            }
+        }
+    }
+
+    private fun onRemoveAttendee(attendee: Attendee) {
+        emitViewState { viewState ->
+            viewState.copy(
+                attendees = mutableListOf<Attendee>().also {
+                    viewState.attendees.filter { attendee.userId != it.userId }
+                }
+
             )
         }
     }

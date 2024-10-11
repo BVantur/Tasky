@@ -38,7 +38,7 @@ koin = "4.0.0"
 kvault = "1.12.0"
 
 # BVANTUR dependencies
-inspektify = "1.0.0-beta02"
+inspektify = "1.0.0-beta03"
 
 # TEST dependencies
 junit = "4.13.2"
@@ -72,6 +72,7 @@ ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlin
 ktor-client-contentNegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-okHttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-ios = { group = "io.ktor", name = "ktor-client-ios", version.ref = "ktor" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 
 # KOIN dependencies
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
