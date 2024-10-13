@@ -184,8 +184,9 @@ fun CreateEventScreen(
                 TaskyEventDivider()
                 TaskyReminderPicker(
                     modifier = Modifier.padding(start = 16.dp),
-                    onClick = {
-                        // TODO
+                    selectedReminderValue = viewState.reminderValue,
+                    onReminderValueSelected = {
+                        onUserAction(CreateEventUserAction.SelectNewReminder(it))
                     }
                 )
                 TaskyEventDivider()

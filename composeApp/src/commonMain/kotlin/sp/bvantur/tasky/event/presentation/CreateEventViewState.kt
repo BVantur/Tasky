@@ -3,6 +3,7 @@ package sp.bvantur.tasky.event.presentation
 import kotlinx.datetime.LocalDateTime
 import sp.bvantur.tasky.core.presentation.TextData
 import sp.bvantur.tasky.core.presentation.ViewState
+import sp.bvantur.tasky.event.presentation.models.ReminderValue
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.event_description
 import tasky.composeapp.generated.resources.event_title
@@ -20,6 +21,7 @@ data class CreateEventViewState(
     val formattedFromTime: String = "",
     val formattedToDate: String = "",
     val formattedToTime: String = "",
+    val reminderValue: ReminderValue = ReminderValue.ONE_DAY
 ) : ViewState
 
 data class DialogDateTimeData(val localDateTime: LocalDateTime? = null, val isFrom: Boolean = false)

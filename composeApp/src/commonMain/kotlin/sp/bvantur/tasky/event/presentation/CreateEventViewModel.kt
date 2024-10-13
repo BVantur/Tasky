@@ -85,6 +85,12 @@ class CreateEventViewModel(dispatcherProvider: DispatcherProvider, savedStateHan
                 userAction.selectedMinutes,
                 userAction.isFrom
             )
+
+            is CreateEventUserAction.SelectNewReminder -> {
+                emitViewState { viewState ->
+                    viewState.copy(reminderValue = userAction.reminderValue)
+                }
+            }
         }
     }
 
