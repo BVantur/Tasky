@@ -7,27 +7,31 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.io.IOException
+import sp.bvantur.tasky.core.domain.CommunicationError
+import sp.bvantur.tasky.core.domain.TaskyResult
 import kotlin.coroutines.cancellation.CancellationException
 
-@Suppress("TooGenericExceptionCaught")
-suspend inline fun <reified T> safeApiCall(apiCall: () -> HttpResponse): Result<T> = try {
-    val response = apiCall()
-    if (response.status.isSuccess()) {
-        val responseBody = response.body<T>()
-        Result.success(responseBody)
-    } else {
-        Result.failure(Exception("Error: ${response.status}"))
+suspend inline fun <reified T> safeApiCall(execute: () -> HttpResponse): TaskyResult<T, CommunicationError> {
+    // TODO revisit and handle more cases here
+    return try {
+        val response = execute()
+        if (response.status.isSuccess()) {
+            val responseBody = response.body<T>()
+            TaskyResult.Success(responseBody)
+        } else {
+            TaskyResult.Error(CommunicationError.UnknownError())
+        }
+    } catch (e: ClientRequestException) {
+        return TaskyResult.Error(CommunicationError.UnknownError(e.message))
+    } catch (e: ServerResponseException) {
+        return TaskyResult.Error(CommunicationError.UnknownError(e.message))
+    } catch (e: IOException) {
+        return TaskyResult.Error(CommunicationError.UnknownError(e.message))
+    } catch (e: TimeoutCancellationException) {
+        return TaskyResult.Error(CommunicationError.UnknownError(e.message))
+    } catch (ignore: Exception) {
+        if (ignore is CancellationException) throw ignore
+
+        return TaskyResult.Error(CommunicationError.UnknownError(ignore.message))
     }
-} catch (e: ClientRequestException) {
-    Result.failure(Exception("Client request error: ${e.response.status}", e))
-} catch (e: ServerResponseException) {
-    Result.failure(Exception("Server error: ${e.response.status}", e))
-} catch (e: IOException) {
-    Result.failure(Exception("Network error", e))
-} catch (e: TimeoutCancellationException) {
-    Result.failure(Exception("Request timeout", e))
-} catch (e: CancellationException) {
-    throw e
-} catch (e: Exception) {
-    Result.failure(e)
 }

@@ -112,6 +112,7 @@ private fun AttendeeItem(modifier: Modifier = Modifier, attendee: Attendee, onDe
 
 @Composable
 private fun InitialsCircle(value: String, modifier: Modifier = Modifier) {
+    // TODO handle multiple names, emojis and wierd characters
     val initials = value.split(" ")
         .filter { it.isNotBlank() }
         .take(2)

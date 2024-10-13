@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import sp.bvantur.tasky.core.domain.DispatcherProvider
 import sp.bvantur.tasky.core.domain.ValidateEmailUseCase
+import sp.bvantur.tasky.core.domain.onError
+import sp.bvantur.tasky.core.domain.onSuccess
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
 import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.TextData
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewStateViewModel
-import sp.bvantur.tasky.event.domain.CreateEventRepository
+import sp.bvantur.tasky.event.domain.EventRepository
 import sp.bvantur.tasky.event.domain.model.Attendee
 import sp.bvantur.tasky.event.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.event.presentation.models.InputType
@@ -26,7 +28,7 @@ import sp.bvantur.tasky.event.presentation.utils.extensions.getMillis
 
 class CreateEventViewModel(
     private val validateEmailUseCase: ValidateEmailUseCase,
-    private val createEventRepository: CreateEventRepository,
+    private val eventRepository: EventRepository,
     dispatcherProvider: DispatcherProvider,
     savedStateHandle: SavedStateHandle
 ) : ViewStateViewModel<CreateEventViewState>(CreateEventViewState()),
@@ -106,7 +108,7 @@ class CreateEventViewModel(
             }
 
             is CreateEventUserAction.ConfirmAttendeeEmail -> {
-                onInviteAttendee(userAction.email)
+                onInviteAttendee()
             }
 
             CreateEventUserAction.DismissAttendeeDialog -> {
@@ -253,16 +255,22 @@ class CreateEventViewModel(
     }
 
     private fun onAttendeeEmailChange(text: String) {
-        if (viewStateFlow.value.isAttendeeEmailError) {
-            emitViewState { viewState ->
-                viewState.copy(
-                    isAttendeeEmailError = validateEmailUseCase(text)
-                )
-            }
+        emitViewState { viewState ->
+            viewState.copy(
+                isAttendeeEmailError = if (viewStateFlow.value.isAttendeeEmailError) {
+                    !validateEmailUseCase(
+                        text
+                    )
+                } else {
+                    false
+                },
+                attendeeInputValue = text
+            )
         }
     }
 
-    private fun onInviteAttendee(email: String) {
+    private fun onInviteAttendee() {
+        val email = viewStateFlow.value.attendeeInputValue
         val isEmailValid = validateEmailUseCase(email)
         if (!isEmailValid) {
             emitViewState { viewState ->
@@ -272,28 +280,20 @@ class CreateEventViewModel(
         }
 
         viewModelScope.launch {
-            val attendeeResult = createEventRepository.getAttendee(email)
-
-            val attendee = attendeeResult.getOrNull()
-
-            if (attendeeResult.isFailure || attendee == null) {
+            eventRepository.getAttendee(email).onError {
                 emitViewState { viewState ->
                     viewState.copy(
                         isAttendeeEmailError = true
                     )
                 }
-                return@launch
-            }
-
-            emitViewState { viewState ->
-                viewState.copy(
-                    attendees = mutableListOf<Attendee>().also {
-                        it.add(attendee)
-                        it.addAll(viewState.attendees)
-                    },
-                    showAttendeeDialog = false,
-                    isAttendeeEmailError = false
-                )
+            }.onSuccess { data ->
+                emitViewState { viewState ->
+                    viewState.copy(
+                        attendees = listOf(data) + viewState.attendees,
+                        showAttendeeDialog = false,
+                        attendeeInputValue = ""
+                    )
+                }
             }
         }
     }
@@ -301,10 +301,7 @@ class CreateEventViewModel(
     private fun onRemoveAttendee(attendee: Attendee) {
         emitViewState { viewState ->
             viewState.copy(
-                attendees = mutableListOf<Attendee>().also {
-                    viewState.attendees.filter { attendee.userId != it.userId }
-                }
-
+                attendees = viewState.attendees.filter { attendee.userId != it.userId }
             )
         }
     }

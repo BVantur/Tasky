@@ -5,6 +5,8 @@ import kotlinx.coroutines.launch
 import sp.bvantur.tasky.core.domain.DispatcherProvider
 import sp.bvantur.tasky.core.domain.ValidateEmailUseCase
 import sp.bvantur.tasky.core.domain.ValidatePasswordUseCase
+import sp.bvantur.tasky.core.domain.onError
+import sp.bvantur.tasky.core.domain.onSuccess
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
 import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
@@ -85,19 +87,17 @@ class RegisterViewModel(
         }
 
         viewModelScope.launch {
-            val response = registerRepository.register(
+            registerRepository.register(
                 name = viewStateFlow.value.name,
                 email = viewStateFlow.value.email,
                 password = viewStateFlow.value.password
-            )
-            if (response.isFailure) {
+            ).onError {
                 emitViewState { viewState ->
                     viewState.copy(showErrorDialog = true)
                 }
-                return@launch
+            }.onSuccess {
+                onNavigateBack()
             }
-
-            onNavigateBack()
         }
     }
 

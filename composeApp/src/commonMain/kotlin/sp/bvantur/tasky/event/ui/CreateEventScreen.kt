@@ -25,8 +25,6 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -295,12 +293,13 @@ fun CreateEventScreen(
                 onUserAction(CreateEventUserAction.DismissAttendeeDialog)
             },
             onConfirm = {
-                onUserAction(CreateEventUserAction.ConfirmAttendeeEmail(it))
+                onUserAction(CreateEventUserAction.ConfirmAttendeeEmail)
             },
             onTextChanged = {
                 onUserAction(CreateEventUserAction.AttendeeEmailChange(it))
             },
-            isError = viewState.isAttendeeEmailError
+            isError = viewState.isAttendeeEmailError,
+            inputValue = viewState.attendeeInputValue
         )
     }
 }
@@ -308,12 +307,11 @@ fun CreateEventScreen(
 @Composable
 private fun TaskyAttendeeDialog(
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit,
     onTextChanged: (String) -> Unit,
-    isError: Boolean
+    onConfirm: () -> Unit,
+    isError: Boolean,
+    inputValue: String
 ) {
-    var text by rememberSaveable { mutableStateOf("") }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(dismissOnClickOutside = true)
@@ -345,9 +343,8 @@ private fun TaskyAttendeeDialog(
                 )
 
                 TaskyUserDataTextField(
-                    value = text,
+                    value = inputValue,
                     onValueChange = { value ->
-                        text = value
                         onTextChanged(value)
                     },
                     modifier = Modifier
@@ -367,7 +364,7 @@ private fun TaskyAttendeeDialog(
                 TaskyConfirmationButton(
                     text = stringResource(Res.string.add),
                     onClick = {
-                        onConfirm(text)
+                        onConfirm()
                     },
                     modifier = Modifier.fillMaxWidth()
                         .padding(bottom = 20.dp, top = 30.dp)

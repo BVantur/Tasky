@@ -19,7 +19,7 @@ sealed interface CreateEventUserAction : UserAction {
     data class SelectNewReminder(val reminderValue: ReminderValue) : CreateEventUserAction
     data object InviteNewAttendee : CreateEventUserAction
     data object DismissAttendeeDialog : CreateEventUserAction
-    data class ConfirmAttendeeEmail(val email: String) : CreateEventUserAction
+    data object ConfirmAttendeeEmail : CreateEventUserAction
     data class AttendeeEmailChange(val email: String) : CreateEventUserAction
     data class OnRemoveAttendee(val attendee: Attendee) : CreateEventUserAction
 }
