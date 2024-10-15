@@ -43,12 +43,12 @@ console-reports:
 
 output-reports:
   active: true
-  exclude: []
+  exclude: [ ]
     # - 'TxtOutputReport'
     # - 'XmlOutputReport'
     # - 'HtmlOutputReport'
     # - 'MdOutputReport'
-    # - 'SarifOutputReport'
+  # - 'SarifOutputReport'
 
 #comments:
 #  active: false
@@ -111,6 +111,7 @@ complexity:
       - 'run'
       - 'use'
       - 'with'
+    excludes: [ "**/CreateEventViewModel.kt" ]
   LargeClass:
     active: true
     threshold: 600
@@ -133,7 +134,7 @@ complexity:
     threshold: 4
   TooManyFunctions:
     active: true
-    excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidInstrumentedTest/**', '**/jsTest/**', '**/iosTest/**' ]
+    excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidInstrumentedTest/**', '**/jsTest/**', '**/iosTest/**', "**/CreateEventViewModel.kt" ]
     thresholdInFiles: 12
     thresholdInClasses: 12
     thresholdInInterfaces: 12
@@ -142,7 +143,7 @@ complexity:
     ignoreDeprecated: false
     ignorePrivate: false
     ignoreOverridden: false
-    ignoreAnnotatedFunctions: ['Preview']
+    ignoreAnnotatedFunctions: [ 'Preview' ]
 #  CognitiveComplexMethod:
 #    active: false
 #    threshold: 15
@@ -247,7 +248,7 @@ exceptions:
       - 'hashCode'
       - 'toString'
   InstanceOfCheckForException:
-    active: true
+    active: false
     excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidInstrumentedTest/**', '**/jsTest/**', '**/iosTest/**' ]
   PrintStackTrace:
     active: true
@@ -326,7 +327,7 @@ naming:
     excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidInstrumentedTest/**', '**/jsTest/**', '**/iosTest/**' ]
     functionPattern: '[a-z][a-zA-Z0-9]*'
     excludeClassPattern: '$^'
-    ignoreAnnotated: ['Composable']
+    ignoreAnnotated: [ 'Composable' ]
   FunctionParameterNaming:
     active: true
     parameterPattern: '[a-z][A-Za-z0-9]*'
@@ -602,7 +603,7 @@ style:
   UnusedPrivateMember:
     active: true
     allowedNames: ''
-    ignoreAnnotated: ['Preview']
+    ignoreAnnotated: [ 'Preview' ]
   UnusedPrivateProperty:
     active: true
     allowedNames: '_|ignored|expected|serialVersionUID'

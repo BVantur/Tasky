@@ -12,6 +12,7 @@ import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.inter_bold
 import tasky.composeapp.generated.resources.inter_extralight
 import tasky.composeapp.generated.resources.inter_light
+import tasky.composeapp.generated.resources.inter_medium
 import tasky.composeapp.generated.resources.inter_regular
 import tasky.composeapp.generated.resources.inter_thin
 
@@ -19,8 +20,9 @@ import tasky.composeapp.generated.resources.inter_thin
 private fun interFamily() = FontFamily(
     Font(Res.font.inter_light, FontWeight.Light),
     Font(Res.font.inter_regular, FontWeight.Normal),
-    Font(Res.font.inter_thin, FontWeight.Normal),
-    Font(Res.font.inter_extralight, FontWeight.Medium),
+    Font(Res.font.inter_thin, FontWeight.Thin),
+    Font(Res.font.inter_extralight, FontWeight.ExtraLight),
+    Font(Res.font.inter_medium, FontWeight.Medium),
     Font(Res.font.inter_bold, FontWeight.Bold)
 )
 
@@ -62,6 +64,12 @@ fun TaskyTypography() = Typography(
         fontStyle = FontStyle.Normal,
         fontSize = 16.sp
     ),
+    bodySmall = TextStyle(
+        fontFamily = interFamily(),
+        fontWeight = FontWeight.Normal,
+        fontStyle = FontStyle.Normal,
+        fontSize = 12.sp
+    ),
     labelLarge = TextStyle(
         fontFamily = interFamily(),
         fontWeight = FontWeight.Light,
@@ -76,7 +84,7 @@ fun TaskyTypography() = Typography(
     ),
     labelSmall = TextStyle(
         fontFamily = interFamily(),
-        fontWeight = FontWeight.Light,
+        fontWeight = FontWeight.Medium,
         fontStyle = FontStyle.Normal,
         fontSize = 14.sp
     )

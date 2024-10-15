@@ -1,11 +1,14 @@
 package sp.bvantur.tasky.event.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
@@ -22,14 +25,22 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
 import sp.bvantur.tasky.core.ui.components.TaskyContentSurface
+import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
 import sp.bvantur.tasky.core.ui.theme.eventChoreType
 import sp.bvantur.tasky.core.ui.utils.CollectSingleEventsWithLifecycle
 import sp.bvantur.tasky.event.presentation.CreateEventSingleEvent
@@ -51,6 +62,10 @@ import sp.bvantur.tasky.event.ui.components.TaskyTimeDatePicker
 import sp.bvantur.tasky.event.ui.components.TaskyTimePickerDialog
 import sp.bvantur.tasky.event.ui.components.TaskyVisitorsSection
 import tasky.composeapp.generated.resources.Res
+import tasky.composeapp.generated.resources.add
+import tasky.composeapp.generated.resources.add_visitor
+import tasky.composeapp.generated.resources.close
+import tasky.composeapp.generated.resources.email_address
 import tasky.composeapp.generated.resources.event
 import tasky.composeapp.generated.resources.from_word
 import tasky.composeapp.generated.resources.password_visibility_icon
@@ -191,11 +206,26 @@ fun CreateEventScreen(
                 )
                 TaskyEventDivider()
 
-                TaskyVisitorsSection(modifier = Modifier.padding(start = 16.dp), onClick = {
-                    // TODO
-                })
+                TaskyVisitorsSection(
+                    attendees = viewState.attendees,
+                    onClick = {
+                        onUserAction(CreateEventUserAction.InviteNewAttendee)
+                    },
+                    onDeleteAttendee = {
+                        onUserAction(CreateEventUserAction.OnRemoveAttendee(it))
+                    }
+                )
             }
         }
+    }
+
+    if (viewState.showDatePickerDialog || viewState.showTimePickerDialog || viewState.showAttendeeDialog) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+                .padding(horizontal = 0.dp)
+        )
     }
 
     if (viewState.showDatePickerDialog) {
@@ -254,6 +284,93 @@ fun CreateEventScreen(
             }
         ) {
             TimePicker(state = timePickerState)
+        }
+    }
+
+    if (viewState.showAttendeeDialog) {
+        TaskyAttendeeDialog(
+            onDismiss = {
+                onUserAction(CreateEventUserAction.DismissAttendeeDialog)
+            },
+            onConfirm = {
+                onUserAction(CreateEventUserAction.ConfirmAttendeeEmail)
+            },
+            onTextChanged = {
+                onUserAction(CreateEventUserAction.AttendeeEmailChange(it))
+            },
+            isError = viewState.isAttendeeEmailError,
+            inputValue = viewState.attendeeInputValue
+        )
+    }
+}
+
+@Composable
+private fun TaskyAttendeeDialog(
+    onDismiss: () -> Unit,
+    onTextChanged: (String) -> Unit,
+    onConfirm: () -> Unit,
+    isError: Boolean,
+    inputValue: String
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(dismissOnClickOutside = true)
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(16.dp)
+                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                IconButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(Res.string.close)
+                    )
+                }
+
+                Text(
+                    text = stringResource(Res.string.add_visitor),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+
+                TaskyUserDataTextField(
+                    value = inputValue,
+                    onValueChange = { value ->
+                        onTextChanged(value)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 30.dp)
+                        .defaultMinSize(minWidth = 300.dp, minHeight = 60.dp),
+                    placeholder = stringResource(Res.string.email_address),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    ),
+                    onKeyboardImeAction = {
+                    },
+                    isError = isError
+                )
+
+                TaskyConfirmationButton(
+                    text = stringResource(Res.string.add),
+                    onClick = {
+                        onConfirm()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(bottom = 20.dp, top = 30.dp)
+                        .defaultMinSize(minHeight = 56.dp)
+                )
+            }
         }
     }
 }
