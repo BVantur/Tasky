@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import org.jetbrains.compose.resources.stringResource
-import sp.bvantur.tasky.event.presentation.models.ReminderValue
+import sp.bvantur.tasky.event.domain.model.ReminderValue
 
 @Composable
 fun TaskyReminderPicker(
