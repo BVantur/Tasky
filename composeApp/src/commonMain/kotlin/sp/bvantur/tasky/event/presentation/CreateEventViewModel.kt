@@ -294,11 +294,21 @@ class CreateEventViewModel(
                 }
             }.onSuccess { data ->
                 emitViewState { viewState ->
-                    viewState.copy(
-                        attendees = listOf(data) + viewState.attendees,
-                        showAttendeeDialog = false,
-                        attendeeInputValue = ""
-                    )
+                    if (viewStateFlow.value.attendees.any {
+                            data.userId == it.userId
+                        }
+                    ) {
+                        // TODO handle with a better UI
+                        viewState.copy(
+                            isAttendeeEmailError = true
+                        )
+                    } else {
+                        viewState.copy(
+                            attendees = listOf(data) + viewState.attendees,
+                            showAttendeeDialog = false,
+                            attendeeInputValue = ""
+                        )
+                    }
                 }
             }
         }
