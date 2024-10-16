@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -69,6 +68,7 @@ import tasky.composeapp.generated.resources.email_address
 import tasky.composeapp.generated.resources.event
 import tasky.composeapp.generated.resources.from_word
 import tasky.composeapp.generated.resources.password_visibility_icon
+import tasky.composeapp.generated.resources.save
 import tasky.composeapp.generated.resources.select
 import tasky.composeapp.generated.resources.to_word
 
@@ -89,6 +89,7 @@ fun CreateEventRoute(
     CollectSingleEventsWithLifecycle(singleEventFlow = viewModel.singleEventFlow) { singleEvent ->
         when (singleEvent) {
             is CreateEventSingleEvent.OnOpenSingleInput -> onOpenSingleInputScreen(singleEvent.data)
+            CreateEventSingleEvent.CloseScreen -> onNavigateBack()
         }
     }
 
@@ -130,15 +131,15 @@ fun CreateEventScreen(
                 textAlign = TextAlign.Center
             )
 
-            IconButton(onClick = {
-                // TODO
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(Res.string.password_visibility_icon),
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
+            TaskyConfirmTextButton(
+                onClick = {
+                    onUserAction(CreateEventUserAction.SaveEvent)
+                },
+                enabled = viewState.isSaveEnabled,
+                text = stringResource(Res.string.save),
+                contentColor = MaterialTheme.colorScheme.surface,
+                disabledContentColor = MaterialTheme.colorScheme.onPrimary
+            )
         }
 
         TaskyContentSurface(
@@ -244,7 +245,10 @@ fun CreateEventScreen(
                         onUserAction(
                             CreateEventUserAction.SelectNewDate(
                                 viewState.dialogDateTimeData?.copy(
-                                    localDateTime = DateTimeUtils.toLocalDateTime(datePickerState.selectedDateMillis)
+                                    localDateTime = DateTimeUtils.toLocalDateTime(
+                                        datePickerState.selectedDateMillis
+                                            ?: DateTimeUtils.getCurrentLocalDateTimeInMillis()
+                                    )
                                 )
                             )
                         )

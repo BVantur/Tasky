@@ -9,14 +9,21 @@ import androidx.compose.ui.graphics.Color
 import sp.bvantur.tasky.core.ui.theme.appBarAction
 
 @Composable
-fun TaskyConfirmTextButton(onClick: () -> Unit, text: String) {
+fun TaskyConfirmTextButton(
+    onClick: () -> Unit,
+    text: String,
+    enabled: Boolean = true,
+    contentColor: Color = MaterialTheme.colorScheme.appBarAction,
+    disabledContentColor: Color = MaterialTheme.colorScheme.onTertiary,
+) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.appBarAction,
+            contentColor = contentColor,
             disabledContainerColor = Color.Transparent,
-            disabledContentColor = MaterialTheme.colorScheme.onTertiary
+            disabledContentColor = disabledContentColor
         )
     ) {
         Text(text, style = MaterialTheme.typography.labelMedium)

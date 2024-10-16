@@ -14,6 +14,7 @@ import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewStateViewModel
 import sp.bvantur.tasky.event.domain.EventRepository
 import sp.bvantur.tasky.event.domain.model.Attendee
+import sp.bvantur.tasky.event.domain.model.Event
 import sp.bvantur.tasky.event.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.event.presentation.models.InputType
 import sp.bvantur.tasky.event.presentation.models.SingleInputModel
@@ -40,10 +41,10 @@ class CreateEventViewModel(
         val fromTimestamp = savedStateHandle.get<Long?>(CREATE_EVENT_FROM_TIMESTAMP_EXTRA)
 
         val fromDateTime = DateTimeUtils.toLocalDateTime(
-            fromTimestamp ?: viewStateFlow.value.currentFromDateTime?.getMillis()
+            fromTimestamp ?: viewStateFlow.value.currentFromDateTime.getMillis()
         )
         val toDateTime =
-            DateTimeUtils.toLocalDateTime(toTimestamp ?: viewStateFlow.value.currentToDateTime?.getMillis())
+            DateTimeUtils.toLocalDateTime(toTimestamp ?: viewStateFlow.value.currentToDateTime.getMillis())
 
         emitViewState { viewState ->
             viewState.copy(
@@ -58,23 +59,27 @@ class CreateEventViewModel(
     }
 
     fun onUpdateTextFields(eventData: CreateEventUpdatesModel) {
-        val title = eventData.title?.let {
-            TextData.DynamicString(it)
-        }
-
-        val description = eventData.description?.let {
-            TextData.DynamicString(it)
-        }
+        val (title, description) = eventData
 
         if (title == null && description == null) return
 
-        viewModelScope.launch {
-            emitViewState { viewState ->
-                viewState.copy(
-                    title = title ?: viewStateFlow.value.title,
-                    description = description ?: viewStateFlow.value.description,
+        val newTitle = title?.let {
+            TextData.DynamicString(it)
+        } ?: viewStateFlow.value.title
+
+        val newDescription = description?.let {
+            TextData.DynamicString(it)
+        } ?: viewStateFlow.value.description
+
+        emitViewState { viewState ->
+            viewState.copy(
+                title = newTitle,
+                description = newDescription,
+                isSaveEnabled = canEventBeSaved(
+                    title = newTitle,
+                    description = newDescription
                 )
-            }
+            )
         }
     }
 
@@ -119,6 +124,7 @@ class CreateEventViewModel(
 
             is CreateEventUserAction.AttendeeEmailChange -> onAttendeeEmailChange(userAction.email)
             is CreateEventUserAction.OnRemoveAttendee -> onRemoveAttendee(userAction.attendee)
+            CreateEventUserAction.SaveEvent -> onSaveEvent()
         }
     }
 
@@ -224,10 +230,10 @@ class CreateEventViewModel(
                 showDatePickerDialog = false,
                 currentFromDateTime = fromDateTime,
                 currentToDateTime = toDateTime,
-                formattedFromDate = fromDateTime?.formatDate() ?: "",
-                formattedFromTime = fromDateTime?.formatTime() ?: "",
-                formattedToDate = toDateTime?.formatDate() ?: "",
-                formattedToTime = toDateTime?.formatTime() ?: ""
+                formattedFromDate = fromDateTime.formatDate(),
+                formattedFromTime = fromDateTime.formatTime(),
+                formattedToDate = toDateTime.formatDate(),
+                formattedToTime = toDateTime.formatTime()
             )
         }
     }
@@ -246,10 +252,10 @@ class CreateEventViewModel(
                 showTimePickerDialog = false,
                 currentFromDateTime = fromDateTime,
                 currentToDateTime = toDateTime,
-                formattedFromDate = fromDateTime?.formatDate() ?: "",
-                formattedFromTime = fromDateTime?.formatTime() ?: "",
-                formattedToDate = toDateTime?.formatDate() ?: "",
-                formattedToTime = toDateTime?.formatTime() ?: ""
+                formattedFromDate = fromDateTime.formatDate(),
+                formattedFromTime = fromDateTime.formatTime(),
+                formattedToDate = toDateTime.formatDate(),
+                formattedToTime = toDateTime.formatTime()
             )
         }
     }
@@ -305,6 +311,32 @@ class CreateEventViewModel(
             )
         }
     }
+
+    private fun onSaveEvent() {
+        viewModelScope.launch {
+            val currentViewState = viewStateFlow.value
+            eventRepository.createEvent(
+                Event(
+                    title = currentViewState.title.getFromDynamicStringOrNull() ?: "",
+                    description = currentViewState.description.getFromDynamicStringOrNull() ?: "",
+                    fromTime = currentViewState.currentFromDateTime,
+                    toTime = currentViewState.currentToDateTime,
+                    reminder = currentViewState.reminderValue,
+                    attendees = currentViewState.attendees,
+                )
+            ).onError {
+                println("ERROR: $it")
+                // TODO handle error
+            }.onSuccess {
+                emitSingleEvent(CreateEventSingleEvent.CloseScreen)
+            }
+        }
+    }
+
+    private fun canEventBeSaved(
+        title: TextData = viewStateFlow.value.title,
+        description: TextData = viewStateFlow.value.description
+    ): Boolean = title.getFromDynamicStringOrNull() != null && description.getFromDynamicStringOrNull() != null
 
     companion object {
         const val CREATE_EVENT_FROM_TIMESTAMP_EXTRA = "create_event_from_timestamp_extra"

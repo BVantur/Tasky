@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,6 +27,7 @@ import sp.bvantur.tasky.core.ui.utils.CollectSingleEventsWithLifecycle
 import sp.bvantur.tasky.event.presentation.SingleInputSingleEvent
 import sp.bvantur.tasky.event.presentation.SingleInputViewModel
 import sp.bvantur.tasky.event.presentation.SingleInputViewState
+import sp.bvantur.tasky.event.ui.components.TaskyConfirmTextButton
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.save
 
@@ -83,18 +82,12 @@ fun SingleInputScreen(
                     )
                 },
                 actions = {
-                    Button(
+                    TaskyConfirmTextButton(
                         enabled = viewState.isSaveButtonEnabled,
                         onClick = onSaveAction,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = MaterialTheme.colorScheme.appBarAction,
-                            disabledContainerColor = Color.Transparent,
-                            disabledContentColor = MaterialTheme.colorScheme.onTertiary
-                        )
-                    ) {
-                        Text(stringResource(Res.string.save), style = MaterialTheme.typography.labelMedium)
-                    }
+                        text = stringResource(Res.string.save),
+                        contentColor = MaterialTheme.colorScheme.appBarAction
+                    )
                 }
             )
         }

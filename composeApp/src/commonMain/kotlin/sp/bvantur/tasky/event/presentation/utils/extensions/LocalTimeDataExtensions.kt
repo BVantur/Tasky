@@ -9,9 +9,8 @@ import kotlin.time.Duration.Companion.minutes
 
 fun LocalDateTime.getMillis(): Long = toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
 
-fun LocalDateTime?.changeOnlyDate(dateTime: LocalDateTime?): LocalDateTime? {
+fun LocalDateTime.changeOnlyDate(dateTime: LocalDateTime?): LocalDateTime {
     dateTime ?: return this
-    this ?: return this
 
     return LocalDateTime(
         year = dateTime.year,
@@ -24,19 +23,15 @@ fun LocalDateTime?.changeOnlyDate(dateTime: LocalDateTime?): LocalDateTime? {
     )
 }
 
-fun LocalDateTime?.changeOnlyTime(hour: Int, minutes: Int): LocalDateTime? {
-    this ?: return this
-
-    return LocalDateTime(
-        year = year,
-        month = month,
-        dayOfMonth = dayOfMonth,
-        hour = hour,
-        minute = minutes,
-        second = second,
-        nanosecond = nanosecond
-    )
-}
+fun LocalDateTime.changeOnlyTime(hour: Int, minutes: Int): LocalDateTime = LocalDateTime(
+    year = year,
+    month = month,
+    dayOfMonth = dayOfMonth,
+    hour = hour,
+    minute = minutes,
+    second = second,
+    nanosecond = nanosecond
+)
 
 fun LocalDateTime.plus(minutes: Duration): LocalDateTime {
     val currentTimeZone = TimeZone.currentSystemDefault()
@@ -62,28 +57,18 @@ fun LocalDateTime.formatTime(): String {
     return "$hour:$minute"
 }
 
-fun LocalDateTime?.adoptToDate(currentToDate: LocalDateTime?): LocalDateTime? {
-    this ?: return currentToDate
-    currentToDate ?: return currentToDate
-
-    return if (this == currentToDate) {
-        currentToDate.plus(30.minutes)
-    } else if (this > currentToDate) {
-        this.plus(30.minutes)
-    } else {
-        currentToDate
-    }
+fun LocalDateTime.adoptToDate(currentToDate: LocalDateTime): LocalDateTime = if (this == currentToDate) {
+    currentToDate.plus(30.minutes)
+} else if (this > currentToDate) {
+    this.plus(30.minutes)
+} else {
+    currentToDate
 }
 
-fun LocalDateTime?.adoptFromDate(currentFromDate: LocalDateTime?): LocalDateTime? {
-    this ?: return currentFromDate
-    currentFromDate ?: return currentFromDate
-
-    return if (this == currentFromDate) {
-        currentFromDate.minus(30.minutes)
-    } else if (this < currentFromDate) {
-        this.minus(30.minutes)
-    } else {
-        currentFromDate
-    }
+fun LocalDateTime.adoptFromDate(currentFromDate: LocalDateTime): LocalDateTime = if (this == currentFromDate) {
+    currentFromDate.minus(30.minutes)
+} else if (this < currentFromDate) {
+    this.minus(30.minutes)
+} else {
+    currentFromDate
 }

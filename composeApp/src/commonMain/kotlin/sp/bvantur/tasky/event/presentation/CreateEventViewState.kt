@@ -4,10 +4,12 @@ import kotlinx.datetime.LocalDateTime
 import sp.bvantur.tasky.core.presentation.TextData
 import sp.bvantur.tasky.core.presentation.ViewState
 import sp.bvantur.tasky.event.domain.model.Attendee
-import sp.bvantur.tasky.event.presentation.models.ReminderValue
+import sp.bvantur.tasky.event.domain.model.ReminderValue
+import sp.bvantur.tasky.event.presentation.utils.DateTimeUtils
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.event_description
 import tasky.composeapp.generated.resources.event_title
+import kotlin.time.Duration.Companion.minutes
 
 data class CreateEventViewState(
     val title: TextData = TextData.ResourceString(Res.string.event_title),
@@ -16,8 +18,8 @@ data class CreateEventViewState(
     val showTimePickerDialog: Boolean = false,
     val dialogDateTimeData: DialogDateTimeData? = null,
     val dialogSelectedTimeInMillis: Long = 0L,
-    val currentFromDateTime: LocalDateTime? = null,
-    val currentToDateTime: LocalDateTime? = null,
+    val currentFromDateTime: LocalDateTime = DateTimeUtils.getCurrentLocalDateTime(),
+    val currentToDateTime: LocalDateTime = DateTimeUtils.getCurrentLocalDateTime(30.minutes),
     val formattedFromDate: String = "",
     val formattedFromTime: String = "",
     val formattedToDate: String = "",
@@ -26,7 +28,8 @@ data class CreateEventViewState(
     val showAttendeeDialog: Boolean = false,
     val isAttendeeEmailError: Boolean = false,
     val attendeeInputValue: String = "",
-    val attendees: List<Attendee> = listOf()
+    val attendees: List<Attendee> = listOf(),
+    val isSaveEnabled: Boolean = false
 ) : ViewState
 
-data class DialogDateTimeData(val localDateTime: LocalDateTime? = null, val isFrom: Boolean = false)
+data class DialogDateTimeData(val localDateTime: LocalDateTime, val isFrom: Boolean)
