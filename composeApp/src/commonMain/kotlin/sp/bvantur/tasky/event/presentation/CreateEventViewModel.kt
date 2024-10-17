@@ -343,10 +343,8 @@ class CreateEventViewModel(
         }
     }
 
-    private fun canEventBeSaved(
-        title: TextData = viewStateFlow.value.title,
-        description: TextData = viewStateFlow.value.description
-    ): Boolean = title.getFromDynamicStringOrNull() != null && description.getFromDynamicStringOrNull() != null
+    private fun canEventBeSaved(title: TextData, description: TextData): Boolean =
+        title.getFromDynamicStringOrNull() != null && description.getFromDynamicStringOrNull() != null
 
     companion object {
         const val CREATE_EVENT_FROM_TIMESTAMP_EXTRA = "create_event_from_timestamp_extra"
