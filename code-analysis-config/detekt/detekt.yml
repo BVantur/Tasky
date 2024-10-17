@@ -564,6 +564,8 @@ style:
     excludeImportStatements: true
     excludeCommentStatements: false
     excludeRawStrings: true
+    ignoreAnnotated:
+      - androidx.room.Dao
   MayBeConst:
     active: true
   ModifierOrder:

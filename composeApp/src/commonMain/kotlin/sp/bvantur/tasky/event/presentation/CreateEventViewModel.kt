@@ -294,11 +294,21 @@ class CreateEventViewModel(
                 }
             }.onSuccess { data ->
                 emitViewState { viewState ->
-                    viewState.copy(
-                        attendees = listOf(data) + viewState.attendees,
-                        showAttendeeDialog = false,
-                        attendeeInputValue = ""
-                    )
+                    if (viewStateFlow.value.attendees.any {
+                            data.userId == it.userId
+                        }
+                    ) {
+                        // TODO handle with a better UI
+                        viewState.copy(
+                            isAttendeeEmailError = true
+                        )
+                    } else {
+                        viewState.copy(
+                            attendees = listOf(data) + viewState.attendees,
+                            showAttendeeDialog = false,
+                            attendeeInputValue = ""
+                        )
+                    }
                 }
             }
         }
@@ -333,10 +343,8 @@ class CreateEventViewModel(
         }
     }
 
-    private fun canEventBeSaved(
-        title: TextData = viewStateFlow.value.title,
-        description: TextData = viewStateFlow.value.description
-    ): Boolean = title.getFromDynamicStringOrNull() != null && description.getFromDynamicStringOrNull() != null
+    private fun canEventBeSaved(title: TextData, description: TextData): Boolean =
+        title.getFromDynamicStringOrNull() != null && description.getFromDynamicStringOrNull() != null
 
     companion object {
         const val CREATE_EVENT_FROM_TIMESTAMP_EXTRA = "create_event_from_timestamp_extra"

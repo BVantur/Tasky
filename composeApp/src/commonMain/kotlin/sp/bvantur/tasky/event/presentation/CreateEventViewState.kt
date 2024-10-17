@@ -19,7 +19,7 @@ data class CreateEventViewState(
     val dialogDateTimeData: DialogDateTimeData? = null,
     val dialogSelectedTimeInMillis: Long = 0L,
     val currentFromDateTime: LocalDateTime = DateTimeUtils.getCurrentLocalDateTime(),
-    val currentToDateTime: LocalDateTime = DateTimeUtils.getCurrentLocalDateTime(30.minutes),
+    val currentToDateTime: LocalDateTime = DateTimeUtils.getCurrentLocalDateTime(addDuration = 30.minutes),
     val formattedFromDate: String = "",
     val formattedFromTime: String = "",
     val formattedToDate: String = "",

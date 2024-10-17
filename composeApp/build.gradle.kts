@@ -12,6 +12,8 @@ plugins {
     alias(libs.plugins.buildKonfig)
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.mokkery)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room)
 }
 
 kotlin {
@@ -31,6 +33,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            linkerOpts.add("-lsqlite3")
         }
     }
 
@@ -40,6 +43,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.ktor.client.okHttp)
+            implementation(libs.androidx.room.runtime.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -61,6 +65,8 @@ kotlin {
             implementation(libs.ktor.serialization.json)
             implementation(libs.bvantur.inspektify)
             implementation(libs.liftric.kvault)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
         }
 
         iosMain.dependencies {
@@ -140,4 +146,12 @@ buildkonfig {
             const = true
         )
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
+dependencies {
+    ksp(libs.androidx.room.compiler)
 }
