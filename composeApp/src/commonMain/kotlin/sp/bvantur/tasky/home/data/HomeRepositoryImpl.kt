@@ -20,8 +20,8 @@ class HomeRepositoryImpl(
 ) : HomeRepository {
     override suspend fun getTodayAgenda(time: Long): TaskyEmptyResult<CommunicationError> =
         remoteDataSource.getTodayAgenda(time).onSuccess { response ->
-            val eventsAttendeesPair = response.events.asSequence().map { event ->
-                event.asEventEntity() to event.attendees.asSequence().map { it.asAttendeeEntity() }
+            val eventsAttendeesPair = response.events.map { event ->
+                event.asEventEntity() to event.attendees.map { it.asAttendeeEntity() }
             }
 
             val events = eventsAttendeesPair.map { it.first }.toList()
