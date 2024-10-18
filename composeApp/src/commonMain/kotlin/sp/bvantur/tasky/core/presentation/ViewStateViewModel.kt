@@ -25,7 +25,7 @@ abstract class ViewStateViewModel<State : ViewState>(initialViewState: State) : 
         }
     }
 
-    protected open fun initialLoadData() {}
+    protected open suspend fun initialLoadData() {}
 
     private companion object {
         const val SUBSCRIPTION_TIMEOUT = 5000L

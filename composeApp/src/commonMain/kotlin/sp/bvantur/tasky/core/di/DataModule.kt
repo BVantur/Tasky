@@ -16,7 +16,7 @@ import org.koin.dsl.module
 import sp.bvantur.inspektify.ktor.InspektifyKtor
 import sp.bvantur.inspektify.ktor.LogLevel
 import sp.bvantur.tasky.TaskyBuildKonfig
-import sp.bvantur.tasky.core.data.UserAuthDataProvider
+import sp.bvantur.tasky.core.data.local.UserAuthDataProvider
 
 private const val BASE_URL = "https://tasky.pl-coding.com/"
 

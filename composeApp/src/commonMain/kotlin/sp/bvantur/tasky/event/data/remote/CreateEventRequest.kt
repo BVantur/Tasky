@@ -1,4 +1,4 @@
-package sp.bvantur.tasky.event.data.model
+package sp.bvantur.tasky.event.data.remote
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

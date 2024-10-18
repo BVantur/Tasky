@@ -2,8 +2,8 @@
 # GENERAL dependencies
 agp = "8.2.2"
 compose-plugin = "1.7.0-beta02"
-kotlin = "2.0.20"
-ksp = "2.0.20-1.0.25"
+kotlin = "2.0.10"
+ksp = "2.0.10-1.0.24"
 
 # ANDROID PORJECT dependencies
 android-compileSdk = "34"

@@ -1,16 +1,14 @@
 package sp.bvantur.tasky.event.data.mappers
 
-import sp.bvantur.tasky.event.data.model.CreateEventRequest
+import io.ktor.util.date.getTimeMillis
+import sp.bvantur.tasky.event.data.remote.CreateEventRequest
 import sp.bvantur.tasky.event.domain.model.Event
 import sp.bvantur.tasky.event.presentation.utils.extensions.getMillis
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
 fun Event.asCreateEventRequest(): CreateEventRequest {
-    val fromInMillis = fromTime.getMillis()
+    val fromInMillis = fromTime.getMillis() // TODO use UUID when update to Kotlin 2.0.20
     return CreateEventRequest(
-        id = Uuid.random().toString(),
+        id = getTimeMillis().toString(),
         title = title,
         description = description,
         from = fromTime.getMillis(),

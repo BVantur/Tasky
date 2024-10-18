@@ -1,18 +1,18 @@
-package sp.bvantur.tasky.event.data.model
+package sp.bvantur.tasky.event.data.remote
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AttendeeResponse(
+data class CheckAttendeeResponse(
     @SerialName("doesUserExist")
     val userExists: Boolean,
     @SerialName("attendee")
-    val attendee: AttendeeUserResponse
+    val attendee: CheckAttendeeUserResponse
 )
 
 @Serializable
-data class AttendeeUserResponse(
+data class CheckAttendeeUserResponse(
     @SerialName("email")
     val email: String,
     @SerialName("fullName")

@@ -2,10 +2,10 @@ package sp.bvantur.tasky.splash.data
 
 import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.withContext
-import sp.bvantur.tasky.core.data.SecurePersistentStorageProvider
-import sp.bvantur.tasky.core.data.SecurePersistentStorageProvider.Companion.ACCESS_TOKEN_KEY
-import sp.bvantur.tasky.core.data.SecurePersistentStorageProvider.Companion.EXPIRATION_TIMESTAMP_TOKEN_KEY
 import sp.bvantur.tasky.core.data.TaskyDatabase
+import sp.bvantur.tasky.core.data.local.SecurePersistentStorageProvider
+import sp.bvantur.tasky.core.data.local.SecurePersistentStorageProvider.Companion.ACCESS_TOKEN_KEY
+import sp.bvantur.tasky.core.data.local.SecurePersistentStorageProvider.Companion.EXPIRATION_TIMESTAMP_TOKEN_KEY
 import sp.bvantur.tasky.core.domain.DispatcherProvider
 
 class SplashLocalDataSource(

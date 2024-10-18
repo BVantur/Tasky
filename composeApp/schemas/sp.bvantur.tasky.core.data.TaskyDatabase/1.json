@@ -2,42 +2,117 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e6e0215121b795830a07a7755d5c6bb8",
+    "identityHash": "3e1e2c8b2115d9dd4793c475db743d33",
     "entities": [
       {
         "tableName": "AttendeeEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `email` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`attendeeId` TEXT NOT NULL, `attendeeName` TEXT NOT NULL, `attendeeEmail` TEXT NOT NULL, `attendeeEventId` TEXT, `attendeeIsGoing` INTEGER, `attendeeRemindAt` INTEGER, PRIMARY KEY(`attendeeId`))",
         "fields": [
           {
             "fieldPath": "userId",
-            "columnName": "id",
+            "columnName": "attendeeId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "name",
-            "columnName": "name",
+            "columnName": "attendeeName",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "email",
-            "columnName": "email",
+            "columnName": "attendeeEmail",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eventId",
+            "columnName": "attendeeEventId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isGoing",
+            "columnName": "attendeeIsGoing",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "remindAt",
+            "columnName": "attendeeRemindAt",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "attendeeId"
+          ]
+        }
+      },
+      {
+        "tableName": "EventEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventId` TEXT NOT NULL, `eventTitle` TEXT NOT NULL, `eventDescription` TEXT NOT NULL, `eventFrom` INTEGER NOT NULL, `eventTo` INTEGER NOT NULL, `eventRemindAt` INTEGER NOT NULL, `eventHost` TEXT NOT NULL, `eventIsUserEventCreator` INTEGER NOT NULL, PRIMARY KEY(`eventId`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "eventId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "eventTitle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "eventDescription",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "from",
+            "columnName": "eventFrom",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "to",
+            "columnName": "eventTo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remindAt",
+            "columnName": "eventRemindAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "host",
+            "columnName": "eventHost",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isUserEventCreator",
+            "columnName": "eventIsUserEventCreator",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "eventId"
           ]
         }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e6e0215121b795830a07a7755d5c6bb8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3e1e2c8b2115d9dd4793c475db743d33')"
     ]
   }
 }
