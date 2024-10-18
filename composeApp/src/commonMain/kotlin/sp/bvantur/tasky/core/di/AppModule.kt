@@ -7,6 +7,7 @@ import org.koin.dsl.module
 import sp.bvantur.tasky.core.domain.DispatcherProvider
 import sp.bvantur.tasky.core.domain.TaskyDispatcherProvider
 import sp.bvantur.tasky.event.di.eventModule
+import sp.bvantur.tasky.home.di.homeModule
 import sp.bvantur.tasky.login.di.loginModule
 import sp.bvantur.tasky.register.di.registerModule
 import sp.bvantur.tasky.splash.di.splashModule
@@ -21,6 +22,7 @@ fun initKoin(targetModule: Module = module { }): KoinApplication = startKoin {
         splashModule,
         registerModule,
         loginModule,
+        homeModule,
         eventModule
     )
 }
