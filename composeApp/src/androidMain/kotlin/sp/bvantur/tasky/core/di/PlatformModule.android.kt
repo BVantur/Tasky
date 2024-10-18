@@ -6,6 +6,8 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import sp.bvantur.tasky.core.data.SecurePersistentStorageProvider
 import sp.bvantur.tasky.core.data.SecurePersistentStorageProviderImpl
+import sp.bvantur.tasky.core.data.TaskyDatabase
+import sp.bvantur.tasky.core.data.createRoomDatabase
 
 actual val platformModule = module {
     single {
@@ -13,4 +15,6 @@ actual val platformModule = module {
     }
 
     singleOf(::SecurePersistentStorageProviderImpl).bind<SecurePersistentStorageProvider>()
+
+    single<TaskyDatabase> { createRoomDatabase(get(), get()) }
 }
