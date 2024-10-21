@@ -15,5 +15,5 @@ class HomeLocalDataSource(private val database: TaskyDatabase) {
         database.getAttendeeDao().insertItems(attendees)
     }
 
-    suspend fun getEvents(): Flow<List<EventEntity>> = database.getEventDao().getAllEvents()
+    fun getEvents(): Flow<List<EventEntity>> = database.getEventDao().getAllEvents()
 }

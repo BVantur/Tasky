@@ -6,6 +6,7 @@ import sp.bvantur.tasky.core.data.mappers.asAttendeeEntity
 import sp.bvantur.tasky.core.domain.CommunicationError
 import sp.bvantur.tasky.core.domain.TaskyEmptyResult
 import sp.bvantur.tasky.core.domain.asEmptyDataResult
+import sp.bvantur.tasky.core.domain.onError
 import sp.bvantur.tasky.core.domain.onSuccess
 import sp.bvantur.tasky.home.data.local.HomeLocalDataSource
 import sp.bvantur.tasky.home.data.mappers.asAgendaItem
@@ -29,6 +30,9 @@ class HomeRepositoryImpl(
 
             localDataSource.storeEvents(events)
             localDataSource.storeAttendees(attendees)
+        }.onError {
+            // TODO handle error
+            println(it.toString())
         }.asEmptyDataResult()
 
     override suspend fun observeAgendaItems(): Flow<List<AgendaItem>> = localDataSource.getEvents().map { items ->

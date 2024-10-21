@@ -6,14 +6,13 @@ import sp.bvantur.tasky.event.domain.model.Event
 import sp.bvantur.tasky.event.presentation.utils.extensions.getMillis
 
 fun Event.asCreateEventRequest(): CreateEventRequest {
-    val fromInMillis = fromTime.getMillis() // TODO use UUID when update to Kotlin 2.0.20
     return CreateEventRequest(
-        id = getTimeMillis().toString(),
+        id = getTimeMillis().toString(), // TODO use UUID when update to Kotlin 2.0.20
         title = title,
         description = description,
         from = fromTime.getMillis(),
         to = toTime.getMillis(),
-        remindAt = reminder.toMillis(fromInMillis),
+        remindAt = reminder.inMillis,
         attendeeIds = attendees.map { it.userId }
     )
 }
