@@ -1,9 +1,9 @@
 package sp.bvantur.tasky.login.data
 
-import sp.bvantur.tasky.core.data.SecurePersistentStorageProvider
-import sp.bvantur.tasky.core.data.SecurePersistentStorageProvider.Companion.ACCESS_TOKEN_KEY
-import sp.bvantur.tasky.core.data.SecurePersistentStorageProvider.Companion.EXPIRATION_TIMESTAMP_TOKEN_KEY
-import sp.bvantur.tasky.core.data.SecurePersistentStorageProvider.Companion.REFRESH_TOKEN_KEY
+import sp.bvantur.tasky.core.data.local.SecurePersistentStorageProvider
+import sp.bvantur.tasky.core.data.local.SecurePersistentStorageProvider.Companion.ACCESS_TOKEN_KEY
+import sp.bvantur.tasky.core.data.local.SecurePersistentStorageProvider.Companion.EXPIRATION_TIMESTAMP_TOKEN_KEY
+import sp.bvantur.tasky.core.data.local.SecurePersistentStorageProvider.Companion.REFRESH_TOKEN_KEY
 
 class LoginLocalDataSource(private val secureStorageProvider: SecurePersistentStorageProvider) {
 

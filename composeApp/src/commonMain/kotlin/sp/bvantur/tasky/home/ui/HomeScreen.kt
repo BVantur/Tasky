@@ -2,8 +2,11 @@ package sp.bvantur.tasky.home.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.DropdownMenu
@@ -21,22 +24,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.PopupProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import sp.bvantur.tasky.home.presentation.HomeViewModel
+import sp.bvantur.tasky.home.presentation.HomeViewState
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.event
 import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun HomeRoute(onCreateEventAction: (Long, Long) -> Unit) {
+    val viewModel = koinViewModel<HomeViewModel>()
+
+    val viewState: HomeViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
+
     HomeScreen(
+        viewState = viewState,
         onCreateEventAction = onCreateEventAction
     )
 }
 
 @Composable
-private fun HomeScreen(onCreateEventAction: (Long, Long) -> Unit) {
+private fun HomeScreen(viewState: HomeViewState, onCreateEventAction: (Long, Long) -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface),
         floatingActionButton = {
@@ -50,12 +62,19 @@ private fun HomeScreen(onCreateEventAction: (Long, Long) -> Unit) {
             )
         }
     ) {
-        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
+        Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
             Text(
                 "Home screen",
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.align(Alignment.CenterHorizontally),
                 color = MaterialTheme.colorScheme.onSurface
             )
+
+            // TODO add UI
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                items(viewState.items.size) { index ->
+                    Text(viewState.items[index].title)
+                }
+            }
         }
     }
 }

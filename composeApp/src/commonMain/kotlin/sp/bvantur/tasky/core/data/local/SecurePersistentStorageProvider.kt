@@ -1,4 +1,4 @@
-package sp.bvantur.tasky.core.data
+package sp.bvantur.tasky.core.data.local
 
 import com.liftric.kvault.KVault
 

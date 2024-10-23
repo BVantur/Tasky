@@ -9,7 +9,7 @@ import tasky.composeapp.generated.resources.ten_minutes_before
 import tasky.composeapp.generated.resources.thirty_minutes_before
 
 @Suppress("MagicNumber")
-enum class ReminderValue(val stringRes: StringResource, private val inMillis: Long) {
+enum class ReminderValue(val stringRes: StringResource, val inMillis: Long) {
     TEN_MINUTES(Res.string.ten_minutes_before, 600000L),
     THIRTY_MINUTES(Res.string.thirty_minutes_before, 1800000L),
     ONE_HOUR(Res.string.one_hour_before, 3600000L),
