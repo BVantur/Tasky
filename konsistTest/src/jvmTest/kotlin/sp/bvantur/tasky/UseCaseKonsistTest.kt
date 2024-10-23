@@ -34,7 +34,7 @@ class UseCaseKonsistTest {
     @Test
     fun `every UseCase class has test`() {
         val allowedUseCasesWithoutTests = listOf(
-            "RegisterUserUseCase" // TODO handle this after the mentorship
+            "RegisterUserUseCase"
         )
         Konsist
             .scopeFromProduction()
@@ -43,8 +43,6 @@ class UseCaseKonsistTest {
             .filter {
                 !allowedUseCasesWithoutTests.contains(it.name)
             }
-            .assertTrue {
-                it.hasTest()
-            }
+            .assertTrue { it.hasTestClasses(testPropertyName = "useCase") }
     }
 }

@@ -26,7 +26,7 @@ inline fun <T, E : TaskyError> TaskyResult<T, E>.onError(action: (E) -> Unit): T
     }
     is TaskyResult.Success -> this
 }
+inline fun <T, E : TaskyError> TaskyResult<T, E>.isSuccess() = this is TaskyResult.Success<T>
+inline fun <T, E : TaskyError> TaskyResult<T, E>.isError() = this is TaskyResult.Error<E>
 
 typealias TaskyEmptyResult<E> = TaskyResult<Unit, E>
-
-interface TaskyError

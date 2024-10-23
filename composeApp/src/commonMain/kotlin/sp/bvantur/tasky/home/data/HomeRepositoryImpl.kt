@@ -2,9 +2,10 @@ package sp.bvantur.tasky.home.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import sp.bvantur.tasky.core.data.TaskySyncScheduler
 import sp.bvantur.tasky.core.data.mappers.asAttendeeEntity
-import sp.bvantur.tasky.core.domain.CommunicationError
 import sp.bvantur.tasky.core.domain.TaskyEmptyResult
+import sp.bvantur.tasky.core.domain.TaskyError
 import sp.bvantur.tasky.core.domain.asEmptyDataResult
 import sp.bvantur.tasky.core.domain.onError
 import sp.bvantur.tasky.core.domain.onSuccess
@@ -17,9 +18,10 @@ import sp.bvantur.tasky.home.domain.model.AgendaItem
 
 class HomeRepositoryImpl(
     private val localDataSource: HomeLocalDataSource,
-    private val remoteDataSource: HomeRemoteDataSource
+    private val remoteDataSource: HomeRemoteDataSource,
+    private val syncScheduler: TaskySyncScheduler
 ) : HomeRepository {
-    override suspend fun getTodayAgenda(time: Long): TaskyEmptyResult<CommunicationError> =
+    override suspend fun getAgendaForTheDay(time: Long): TaskyEmptyResult<TaskyError> =
         remoteDataSource.getTodayAgenda(time).onSuccess { response ->
             val eventsAttendeesPair = response.events.map { event ->
                 event.asEventEntity() to event.attendees.map { it.asAttendeeEntity() }
@@ -38,6 +40,17 @@ class HomeRepositoryImpl(
     override suspend fun observeAgendaItems(): Flow<List<AgendaItem>> = localDataSource.getEvents().map { items ->
         items.map { event ->
             event.asAgendaItem()
+        }
+    }
+
+    override suspend fun syncPendingAgendaItems() {
+        localDataSource.getPendingAgendaItems().collect { items ->
+            println("collect")
+            val eventsToSync = items.map { event ->
+                println("collect event = $$event")
+                event.id
+            }
+            syncScheduler.scheduleAgendaSync(eventsToSync)
         }
     }
 }

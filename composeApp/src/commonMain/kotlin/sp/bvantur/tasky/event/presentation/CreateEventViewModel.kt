@@ -5,6 +5,13 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import sp.bvantur.tasky.core.domain.DispatcherProvider
 import sp.bvantur.tasky.core.domain.ValidateEmailUseCase
+import sp.bvantur.tasky.core.domain.extensions.adoptFromDate
+import sp.bvantur.tasky.core.domain.extensions.adoptToDate
+import sp.bvantur.tasky.core.domain.extensions.changeOnlyDate
+import sp.bvantur.tasky.core.domain.extensions.changeOnlyTime
+import sp.bvantur.tasky.core.domain.extensions.formatDate
+import sp.bvantur.tasky.core.domain.extensions.formatTime
+import sp.bvantur.tasky.core.domain.extensions.getMillis
 import sp.bvantur.tasky.core.domain.onError
 import sp.bvantur.tasky.core.domain.onSuccess
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
@@ -19,13 +26,6 @@ import sp.bvantur.tasky.event.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.event.presentation.models.InputType
 import sp.bvantur.tasky.event.presentation.models.SingleInputModel
 import sp.bvantur.tasky.event.presentation.utils.DateTimeUtils
-import sp.bvantur.tasky.event.presentation.utils.extensions.adoptFromDate
-import sp.bvantur.tasky.event.presentation.utils.extensions.adoptToDate
-import sp.bvantur.tasky.event.presentation.utils.extensions.changeOnlyDate
-import sp.bvantur.tasky.event.presentation.utils.extensions.changeOnlyTime
-import sp.bvantur.tasky.event.presentation.utils.extensions.formatDate
-import sp.bvantur.tasky.event.presentation.utils.extensions.formatTime
-import sp.bvantur.tasky.event.presentation.utils.extensions.getMillis
 
 class CreateEventViewModel(
     private val validateEmailUseCase: ValidateEmailUseCase,
@@ -335,6 +335,11 @@ class CreateEventViewModel(
                     attendees = currentViewState.attendees,
                 )
             ).onError {
+                if (it.isSyncError()) {
+                    // TODO send a message that event will be saved after phone gets back internet connection
+                    emitSingleEvent(CreateEventSingleEvent.CloseScreen)
+                    return@onError
+                }
                 println("ERROR: $it")
                 // TODO handle error
             }.onSuccess {

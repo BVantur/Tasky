@@ -23,6 +23,12 @@ interface EventDao {
     @Query("DELETE FROM ${Event.TABLE_NAME}")
     suspend fun removeEventData()
 
+    @Query("DELETE FROM ${Event.TABLE_NAME} WHERE ${Event.COLUMN_ID} == :id")
+    suspend fun removeById(id: String)
+
     @Query("SELECT * FROM ${Event.TABLE_NAME}")
     fun getAllEvents(): Flow<List<EventEntity>>
+
+    @Query("SELECT * FROM ${Event.TABLE_NAME} WHERE ${Event.COLUMN_IS_SYNCED} == false")
+    fun getPendingEvents(): Flow<List<EventEntity>>
 }
