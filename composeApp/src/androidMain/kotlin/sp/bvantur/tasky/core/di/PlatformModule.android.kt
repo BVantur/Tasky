@@ -1,13 +1,13 @@
 package sp.bvantur.tasky.core.di
 
+import android.content.Context
 import androidx.work.WorkManager
 import io.ktor.client.engine.okhttp.OkHttp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import sp.bvantur.tasky.TaskyApplication
 import sp.bvantur.tasky.core.data.SecurePersistentStorageProviderImpl
 import sp.bvantur.tasky.core.data.SyncEventsWorker
 import sp.bvantur.tasky.core.data.TaskyDatabase
@@ -25,7 +25,7 @@ actual val platformModule = module {
     single<TaskyDatabase> { createRoomDatabase(get(), get()) }
 
     single {
-        CoroutineScope(SupervisorJob())
+        (get<Context>() as TaskyApplication).applicationScope
     }
 
     singleOf(::TaskySyncScheduler)
