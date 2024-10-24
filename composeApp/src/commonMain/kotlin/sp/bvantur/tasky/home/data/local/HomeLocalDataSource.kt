@@ -16,4 +16,6 @@ class HomeLocalDataSource(private val database: TaskyDatabase) {
     }
 
     fun getEvents(): Flow<List<EventEntity>> = database.getEventDao().getAllEvents()
+
+    fun getPendingAgendaItems(): Flow<List<EventEntity>> = database.getEventDao().getPendingEvents()
 }

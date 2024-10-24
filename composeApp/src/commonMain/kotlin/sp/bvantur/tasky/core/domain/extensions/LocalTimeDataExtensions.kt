@@ -1,4 +1,4 @@
-package sp.bvantur.tasky.event.presentation.utils.extensions
+package sp.bvantur.tasky.core.domain.extensions
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone

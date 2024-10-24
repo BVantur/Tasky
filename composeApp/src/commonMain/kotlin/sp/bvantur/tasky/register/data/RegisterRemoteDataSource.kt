@@ -8,19 +8,18 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.http.path
 import sp.bvantur.tasky.core.data.safeApiCall
-import sp.bvantur.tasky.core.domain.CommunicationError
+import sp.bvantur.tasky.core.domain.TaskyError
 import sp.bvantur.tasky.core.domain.TaskyResult
 
 class RegisterRemoteDataSource(private val httpClient: HttpClient) {
-    suspend fun register(registerUserData: RegisterUserDataRequest): TaskyResult<Unit, CommunicationError> =
-        safeApiCall {
-            httpClient.request {
-                url {
-                    method = HttpMethod.Post
-                    path("register")
-                    contentType(ContentType.Application.Json)
-                    setBody(registerUserData)
-                }
+    suspend fun register(registerUserData: RegisterUserDataRequest): TaskyResult<Unit, TaskyError> = safeApiCall {
+        httpClient.request {
+            url {
+                method = HttpMethod.Post
+                path("register")
+                contentType(ContentType.Application.Json)
+                setBody(registerUserData)
             }
         }
+    }
 }

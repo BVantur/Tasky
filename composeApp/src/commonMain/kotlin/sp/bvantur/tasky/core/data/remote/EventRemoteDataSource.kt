@@ -1,4 +1,4 @@
-package sp.bvantur.tasky.event.data.remote
+package sp.bvantur.tasky.core.data.remote
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.FormPart
@@ -12,14 +12,15 @@ import io.ktor.http.contentType
 import io.ktor.http.path
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import sp.bvantur.tasky.core.data.remote.EventResponse
 import sp.bvantur.tasky.core.data.safeApiCall
-import sp.bvantur.tasky.core.domain.CommunicationError
+import sp.bvantur.tasky.core.domain.TaskyError
 import sp.bvantur.tasky.core.domain.TaskyResult
+import sp.bvantur.tasky.event.data.remote.CheckAttendeeResponse
+import sp.bvantur.tasky.event.data.remote.CreateEventRequest
 
 class EventRemoteDataSource(private val httpClient: HttpClient, private val json: Json) {
 
-    suspend fun getAttendee(email: String): TaskyResult<CheckAttendeeResponse, CommunicationError> = safeApiCall {
+    suspend fun getAttendee(email: String): TaskyResult<CheckAttendeeResponse, TaskyError> = safeApiCall {
         httpClient.request {
             url {
                 method = HttpMethod.Get
@@ -30,21 +31,20 @@ class EventRemoteDataSource(private val httpClient: HttpClient, private val json
         }
     }
 
-    suspend fun createEvent(createEvent: CreateEventRequest): TaskyResult<EventResponse, CommunicationError> =
-        safeApiCall {
-            httpClient.request {
-                url {
-                    method = HttpMethod.Post
-                    path("event")
-                    contentType(ContentType.Application.Json)
-                    setBody(
-                        MultiPartFormDataContent(
-                            formData(
-                                FormPart(key = "create_event_request", value = json.encodeToString(createEvent))
-                            )
+    suspend fun createEvent(createEvent: CreateEventRequest): TaskyResult<EventResponse, TaskyError> = safeApiCall {
+        httpClient.request {
+            url {
+                method = HttpMethod.Post
+                path("event")
+                contentType(ContentType.Application.Json)
+                setBody(
+                    MultiPartFormDataContent(
+                        formData(
+                            FormPart(key = "create_event_request", value = json.encodeToString(createEvent))
                         )
                     )
-                }
+                )
             }
         }
+    }
 }

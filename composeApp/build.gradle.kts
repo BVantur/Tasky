@@ -42,6 +42,8 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
+            implementation(libs.androidx.work.runtime.ktx)
+            implementation(libs.koin.android.workmanager)
             implementation(libs.ktor.client.okHttp)
             implementation(libs.androidx.room.runtime.android)
         }
@@ -62,6 +64,7 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.auth)
             implementation(libs.ktor.client.contentNegotiation)
+            implementation(libs.ktor.client.logging)
             implementation(libs.ktor.serialization.json)
             implementation(libs.bvantur.inspektify)
             implementation(libs.liftric.kvault)

@@ -21,4 +21,10 @@ interface AttendeeDao {
 
     @Query("DELETE FROM ${Attendee.TABLE_NAME}")
     suspend fun removeAttendeeData()
+
+    @Query("SELECT * FROM ${Attendee.TABLE_NAME} WHERE ${Attendee.COLUMN_EVENT_ID} == :eventId")
+    suspend fun getAttendeesByEventId(eventId: String): List<AttendeeEntity>
+
+    @Query("DELETE FROM ${Attendee.TABLE_NAME} WHERE ${Attendee.COLUMN_EVENT_ID} == :id")
+    suspend fun deleteByEventId(id: String)
 }

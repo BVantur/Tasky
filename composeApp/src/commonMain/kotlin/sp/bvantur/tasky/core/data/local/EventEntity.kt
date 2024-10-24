@@ -23,5 +23,7 @@ data class EventEntity(
     @ColumnInfo(name = TaskyDatabaseConstants.Event.COLUMN_HOST)
     val host: String,
     @ColumnInfo(name = TaskyDatabaseConstants.Event.COLUMN_IS_USER_EVENT_CREATOR)
-    val isUserEventCreator: Boolean
+    val isUserEventCreator: Boolean,
+    @ColumnInfo(name = TaskyDatabaseConstants.Event.COLUMN_IS_SYNCED)
+    val isSynced: Boolean? = null
 )

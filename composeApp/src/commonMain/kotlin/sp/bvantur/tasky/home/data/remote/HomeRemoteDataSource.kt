@@ -7,11 +7,11 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.http.path
 import sp.bvantur.tasky.core.data.safeApiCall
-import sp.bvantur.tasky.core.domain.CommunicationError
+import sp.bvantur.tasky.core.domain.TaskyError
 import sp.bvantur.tasky.core.domain.TaskyResult
 
 class HomeRemoteDataSource(private val httpClient: HttpClient) {
-    suspend fun getTodayAgenda(time: Long): TaskyResult<AgendaResponse, CommunicationError> = safeApiCall {
+    suspend fun getTodayAgenda(time: Long): TaskyResult<AgendaResponse, TaskyError> = safeApiCall {
         httpClient.request {
             url {
                 method = HttpMethod.Get

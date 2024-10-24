@@ -50,9 +50,6 @@ object TaskyDatabaseConstants {
         const val COLUMN_REMIND_AT = "eventRemindAt"
         const val COLUMN_HOST = "eventHost"
         const val COLUMN_IS_USER_EVENT_CREATOR = "eventIsUserEventCreator"
-    }
-
-    object EventAttendeeCrossRef {
-        const val TABLE_NAME = "EventAttendeeCrossRefEntity"
+        const val COLUMN_IS_SYNCED = "isSynced"
     }
 }

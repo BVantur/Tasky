@@ -5,7 +5,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import sp.bvantur.tasky.event.presentation.utils.extensions.getMillis
+import sp.bvantur.tasky.core.domain.extensions.getMillis
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
