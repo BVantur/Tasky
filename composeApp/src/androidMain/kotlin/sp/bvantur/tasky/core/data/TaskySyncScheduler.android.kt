@@ -15,7 +15,7 @@ actual class TaskySyncScheduler(
     private val applicationCoroutineScope: CoroutineScope
 ) {
     actual suspend fun scheduleAgendaSync(eventIds: List<String>) {
-        repeat(eventIds.size) { index ->
+        eventIds.forEach { eventId ->
             val agendaWorker = OneTimeWorkRequestBuilder<SyncEventsWorker>()
                 .setConstraints(
                     Constraints.Builder()
@@ -30,7 +30,7 @@ actual class TaskySyncScheduler(
                 .addTag("add_event")
                 .setInputData(
                     Data.Builder()
-                        .putString(SyncEventsWorker.SYNC_EVENT_ID, eventIds[index])
+                        .putString(SyncEventsWorker.SYNC_EVENT_ID, eventId)
                         .build()
                 )
                 .build()

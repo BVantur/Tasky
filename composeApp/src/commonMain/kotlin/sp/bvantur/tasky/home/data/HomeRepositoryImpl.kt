@@ -45,9 +45,7 @@ class HomeRepositoryImpl(
 
     override suspend fun syncPendingAgendaItems() {
         localDataSource.getPendingAgendaItems().collect { items ->
-            println("collect")
             val eventsToSync = items.map { event ->
-                println("collect event = $$event")
                 event.id
             }
             syncScheduler.scheduleAgendaSync(eventsToSync)

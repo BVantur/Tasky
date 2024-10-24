@@ -63,12 +63,9 @@ class EventRepositoryImpl(
                 remindAt = eventEntity.remindAt
             )
         }
-        val saveEventResponse = localDataSource.saveEvent(eventEntity)
-        val saveAttendeesResponse = localDataSource.saveAttendees(attendeeEntities)
+        val saveEventResponse = localDataSource.saveEventWithAttendees(eventEntity, attendeeEntities)
 
-        if (saveEventResponse.isError() || saveAttendeesResponse.isError()) {
-            localDataSource.removeEvent(eventEntity)
-            localDataSource.removeAttendeesByEventId(eventEntity.id)
+        if (saveEventResponse.isError()) {
             return saveEventResponse.asEmptyDataResult()
         }
 

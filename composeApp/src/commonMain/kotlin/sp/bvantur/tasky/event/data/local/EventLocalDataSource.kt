@@ -1,5 +1,7 @@
 package sp.bvantur.tasky.event.data.local
 
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
 import androidx.sqlite.SQLiteException
 import sp.bvantur.tasky.core.data.TaskyDatabase
 import sp.bvantur.tasky.core.data.local.AttendeeEntity
@@ -27,14 +29,6 @@ class EventLocalDataSource(
         TaskyResult.Error(TaskyError.SqlError)
     }
 
-    suspend fun removeEvent(event: EventEntity) {
-        database.getEventDao().removeById(event.id)
-    }
-
-    suspend fun removeAttendeesByEventId(eventId: String) {
-        database.getAttendeeDao().deleteByEventId(eventId)
-    }
-
     suspend fun saveAttendees(attendees: List<AttendeeEntity>): TaskyEmptyResult<TaskyError> = try {
         database.getAttendeeDao().insertItems(attendees)
         TaskyResult.Success(Unit).asEmptyDataResult()
@@ -43,4 +37,19 @@ class EventLocalDataSource(
     }
 
     fun getHostId(): String? = secureStorageProvider.kVault.string(SecurePersistentStorageProvider.USER_ID)
+
+    suspend fun saveEventWithAttendees(
+        event: EventEntity,
+        attendees: List<AttendeeEntity>
+    ): TaskyEmptyResult<TaskyError> = try {
+        database.useWriterConnection {
+            it.immediateTransaction {
+                database.getEventDao().insert(event)
+                database.getAttendeeDao().insertItems(attendees)
+            }
+        }
+        TaskyResult.Success(Unit).asEmptyDataResult()
+    } catch (ignore: SQLiteException) {
+        TaskyResult.Error(TaskyError.SqlError)
+    }
 }
