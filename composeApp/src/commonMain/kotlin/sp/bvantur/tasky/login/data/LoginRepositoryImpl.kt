@@ -13,7 +13,8 @@ open class LoginRepositoryImpl(
             localDataSource.saveLoginData(
                 accessToken = data.accessToken,
                 refreshToken = data.refreshToken,
-                expirationTimestamp = data.accessTokenExpirationTimestamp
+                expirationTimestamp = data.accessTokenExpirationTimestamp,
+                userId = data.userId
             )
         } is TaskyResult.Success // TODO better error handling
 }

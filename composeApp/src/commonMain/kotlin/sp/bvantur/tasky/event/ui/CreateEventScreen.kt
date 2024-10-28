@@ -24,7 +24,6 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +36,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import sp.bvantur.tasky.core.domain.extensions.getMillis
 import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
 import sp.bvantur.tasky.core.ui.components.TaskyContentSurface
 import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
@@ -49,7 +49,6 @@ import sp.bvantur.tasky.event.presentation.CreateEventViewState
 import sp.bvantur.tasky.event.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.event.presentation.models.SingleInputModel
 import sp.bvantur.tasky.event.presentation.utils.DateTimeUtils
-import sp.bvantur.tasky.event.presentation.utils.extensions.getMillis
 import sp.bvantur.tasky.event.ui.components.TaskyAddImagesSection
 import sp.bvantur.tasky.event.ui.components.TaskyConfirmTextButton
 import sp.bvantur.tasky.event.ui.components.TaskyEventDescription

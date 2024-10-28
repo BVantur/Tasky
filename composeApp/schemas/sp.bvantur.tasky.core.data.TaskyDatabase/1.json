@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b03923f38665060fedbebd7e4be00a96",
+    "identityHash": "e13bb8788f6c1f93dfbb34a0aa6bba96",
     "entities": [
       {
         "tableName": "AttendeeEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`attendeeId` TEXT NOT NULL, `attendeeName` TEXT NOT NULL, `attendeeEmail` TEXT NOT NULL, `attendeeEventId` TEXT, `attendeeIsGoing` INTEGER NOT NULL, `attendeeRemindAt` INTEGER NOT NULL, PRIMARY KEY(`attendeeId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`attendeeId` TEXT NOT NULL, `attendeeName` TEXT NOT NULL, `attendeeEmail` TEXT NOT NULL, `attendeeEventId` TEXT, `attendeeIsGoing` INTEGER NOT NULL, `attendeeRemindAt` INTEGER NOT NULL, `isSynced` INTEGER, PRIMARY KEY(`attendeeId`))",
         "fields": [
           {
             "fieldPath": "userId",
@@ -42,6 +42,11 @@
             "columnName": "attendeeRemindAt",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "isSynced",
+            "columnName": "isSynced",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -53,7 +58,7 @@
       },
       {
         "tableName": "EventEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventId` TEXT NOT NULL, `eventTitle` TEXT NOT NULL, `eventDescription` TEXT NOT NULL, `eventFrom` INTEGER NOT NULL, `eventTo` INTEGER NOT NULL, `eventRemindAt` INTEGER NOT NULL, `eventHost` TEXT NOT NULL, `eventIsUserEventCreator` INTEGER NOT NULL, PRIMARY KEY(`eventId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventId` TEXT NOT NULL, `eventTitle` TEXT NOT NULL, `eventDescription` TEXT NOT NULL, `eventFrom` INTEGER NOT NULL, `eventTo` INTEGER NOT NULL, `eventRemindAt` INTEGER NOT NULL, `eventHost` TEXT NOT NULL, `eventIsUserEventCreator` INTEGER NOT NULL, `isSynced` INTEGER, PRIMARY KEY(`eventId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -102,6 +107,11 @@
             "columnName": "eventIsUserEventCreator",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "isSynced",
+            "columnName": "isSynced",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -114,7 +124,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b03923f38665060fedbebd7e4be00a96')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e13bb8788f6c1f93dfbb34a0aa6bba96')"
     ]
   }
 }
