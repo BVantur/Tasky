@@ -12,7 +12,7 @@ interface HomeRepository {
 
     suspend fun syncPendingAgendaItems()
 
-    fun getProfileName(): String?
+    suspend fun getProfileName(): String?
 
     suspend fun logoutUser(): TaskyEmptyResult<TaskyError>
 }

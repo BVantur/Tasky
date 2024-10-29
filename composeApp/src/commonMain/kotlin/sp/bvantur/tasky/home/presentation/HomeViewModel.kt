@@ -6,7 +6,6 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import sp.bvantur.tasky.core.domain.DispatcherProvider
-import sp.bvantur.tasky.core.domain.onError
 import sp.bvantur.tasky.core.domain.onSuccess
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
 import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
@@ -22,13 +21,15 @@ class HomeViewModel(private val repository: HomeRepository, private val dispatch
 
     override suspend fun initialLoadData() {
         repository.getAgendaForTheDay(Clock.System.now().toEpochMilliseconds())
-        emitViewState { viewState ->
-            viewState.copy(
-                userName = repository.getProfileName() ?: ""
-            )
-        }
 
         viewModelScope.launch {
+            val userName = repository.getProfileName() ?: ""
+            emitViewState { viewState ->
+                viewState.copy(
+                    userName = userName
+                )
+            }
+
             async { repository.syncPendingAgendaItems() }
             repository.observeAgendaItems().collect { agendaItems ->
                 emitViewState { viewState ->
@@ -56,9 +57,7 @@ class HomeViewModel(private val repository: HomeRepository, private val dispatch
 
             HomeUserAction.LogoutUser -> {
                 viewModelScope.launch {
-                    repository.logoutUser().onError {
-                        // TODO handle error
-                    }.onSuccess {
+                    repository.logoutUser().onSuccess {
                         emitSingleEvent(HomeSingleEvent.NavigateToLogin)
                     }
                 }

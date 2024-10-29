@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TaskyInitialsCircle(value: String, modifier: Modifier = Modifier) {
-    // TODO handle multiple names, emojis and wierd characters
+    // TODO handle multiple names, emojis and wierd characters and consider moving this to domain layer
     val initials = value.split(" ")
         .filter { it.isNotBlank() }
         .take(2)

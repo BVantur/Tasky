@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -147,7 +148,7 @@ fun FloatingActionButtonWithDropdown(onCreateEventAction: () -> Unit) {
 
 @Composable
 private fun ProfileInitials(modifier: Modifier = Modifier, name: String, onLogoutAction: () -> Unit) {
-    var showMenu by remember { mutableStateOf(false) }
+    var showMenu by rememberSaveable { mutableStateOf(false) }
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.End
