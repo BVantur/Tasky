@@ -1,14 +1,12 @@
 package sp.bvantur.tasky.event.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -25,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
+import sp.bvantur.tasky.core.ui.components.TaskyInitialsCircle
 import sp.bvantur.tasky.core.ui.theme.eventChoreTitleType
 import sp.bvantur.tasky.event.domain.model.Attendee
 import tasky.composeapp.generated.resources.Res
@@ -87,7 +86,7 @@ private fun AttendeeItem(modifier: Modifier = Modifier, attendee: Attendee, onDe
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(start = 16.dp)
         ) {
-            InitialsCircle(
+            TaskyInitialsCircle(
                 attendee.name,
                 modifier = Modifier.padding(vertical = 6.dp)
             )
@@ -107,29 +106,5 @@ private fun AttendeeItem(modifier: Modifier = Modifier, attendee: Attendee, onDe
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun InitialsCircle(value: String, modifier: Modifier = Modifier) {
-    // TODO handle multiple names, emojis and wierd characters
-    val initials = value.split(" ")
-        .filter { it.isNotBlank() }
-        .take(2)
-        .joinToString("") { it.first().uppercase() }
-
-    Box(
-        modifier = modifier
-            .size(34.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.onTertiary),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = initials,
-            color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.bodySmall,
-            maxLines = 1
-        )
     }
 }

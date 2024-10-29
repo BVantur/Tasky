@@ -21,7 +21,7 @@ interface EventDao {
     suspend fun getEventById(id: String): EventEntity?
 
     @Query("DELETE FROM ${Event.TABLE_NAME}")
-    suspend fun removeEventData()
+    suspend fun removeAllEventData()
 
     @Query("DELETE FROM ${Event.TABLE_NAME} WHERE ${Event.COLUMN_ID} == :id")
     suspend fun removeById(id: String)

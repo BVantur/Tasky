@@ -10,5 +10,6 @@ abstract class SecurePersistentStorageProvider {
         const val REFRESH_TOKEN_KEY = "refresh_token"
         const val EXPIRATION_TIMESTAMP_TOKEN_KEY = "expiration_timestamp_token_key"
         const val USER_ID = "user_id"
+        const val NAME = "name"
     }
 }

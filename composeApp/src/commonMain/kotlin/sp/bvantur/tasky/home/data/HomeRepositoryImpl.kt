@@ -51,4 +51,10 @@ class HomeRepositoryImpl(
             syncScheduler.scheduleAgendaSync(eventsToSync)
         }
     }
+
+    override fun getProfileName(): String? = localDataSource.getProfileName()
+
+    override suspend fun logoutUser(): TaskyEmptyResult<TaskyError> = localDataSource.clearLocalData().onSuccess {
+        remoteDataSource.logoutUser()
+    }
 }

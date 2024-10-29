@@ -15,6 +15,7 @@ import sp.bvantur.tasky.core.ui.navigation.home.homeScreen
 import sp.bvantur.tasky.core.ui.navigation.home.navigateToHome
 import sp.bvantur.tasky.core.ui.navigation.login.LOGIN_NAVIGATION_ROUTE
 import sp.bvantur.tasky.core.ui.navigation.login.loginScreen
+import sp.bvantur.tasky.core.ui.navigation.login.navigateToLogin
 import sp.bvantur.tasky.core.ui.navigation.register.navigateToRegister
 import sp.bvantur.tasky.core.ui.navigation.register.registerScreen
 import sp.bvantur.tasky.splash.presentation.SplashViewModel
@@ -38,7 +39,10 @@ internal fun TaskyNavHost() {
             navigateToHome = navController::navigateToHome
         )
         registerScreen(onNavigateBack = navController::navigateUp)
-        homeScreen(onCreateEventAction = navController::navigateToCreateEventScreen)
+        homeScreen(
+            onCreateEventAction = navController::navigateToCreateEventScreen,
+            onLoginAction = navController::navigateToLogin
+        )
         createEventScreen(
             onNavigateBack = navController::navigateUp,
             onOpenSingleInputScreen = navController::navigateToSingleInputScreen

@@ -25,7 +25,7 @@ class SplashLocalDataSource(
 
     suspend fun clearDatabaseContent() {
         withContext(dispatcherProvider.io) {
-            database.getAttendeeDao().removeAttendeeData()
+            database.getAttendeeDao().removeAllAttendeeData()
         }
     }
 }

@@ -14,7 +14,8 @@ open class LoginRepositoryImpl(
                 accessToken = data.accessToken,
                 refreshToken = data.refreshToken,
                 expirationTimestamp = data.accessTokenExpirationTimestamp,
-                userId = data.userId
+                userId = data.userId,
+                name = data.name
             )
         } is TaskyResult.Success // TODO better error handling
 }
