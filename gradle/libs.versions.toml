@@ -19,8 +19,8 @@ androidx-core-splashscreen = "1.0.1"
 androidx-espresso-core = "3.6.1"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
-androidx-room = "2.7.0-alpha09"
-androidx-sqlite = "2.5.0-alpha09"
+androidx-room = "2.7.0-alpha11"
+androidx-sqlite = "2.5.0-alpha11"
 androidx-work = "2.9.1"
 
 # JETBRAINS dependencies

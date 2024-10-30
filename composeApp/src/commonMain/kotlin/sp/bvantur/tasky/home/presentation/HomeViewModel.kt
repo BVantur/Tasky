@@ -62,6 +62,18 @@ class HomeViewModel(private val repository: HomeRepository, private val dispatch
                     }
                 }
             }
+
+            is HomeUserAction.DeleteAgendaItem -> {
+                viewModelScope.launch {
+                    repository.deleteEventById(id = userAction.agendaItem.id)
+                }
+            }
+            is HomeUserAction.EditAgendaItem -> {
+                // TODO
+            }
+            is HomeUserAction.OpenAgendaItem -> {
+                // TODO
+            }
         }
     }
 }

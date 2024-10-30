@@ -35,6 +35,9 @@ internal val ColorScheme.textFieldPlaceholder: Color
 internal val ColorScheme.eventChoreType: Color
     get() = LightGreen
 
+internal val ColorScheme.onEventType: Color
+    get() = Black
+
 internal val ColorScheme.eventChoreTitleType: Color
     get() = DarkGray
 

@@ -1,6 +1,7 @@
 package sp.bvantur.tasky.event.data.mappers
 
 import sp.bvantur.tasky.core.data.local.EventEntity
+import sp.bvantur.tasky.core.data.local.SyncStep
 import sp.bvantur.tasky.core.domain.extensions.getMillis
 import sp.bvantur.tasky.event.data.remote.CreateEventRequest
 import sp.bvantur.tasky.event.data.utils.EventUtils
@@ -16,15 +17,18 @@ fun Event.asCreateEventRequest(eventId: String): CreateEventRequest = CreateEven
     attendeeIds = attendees.map { it.userId }
 )
 
-fun Event.asEventEntity(hostId: String, isUserEventCreator: Boolean = true, isSynced: Boolean? = null): EventEntity =
-    EventEntity(
-        id = EventUtils.generateEventId(),
-        title = title,
-        description = description,
-        from = fromTime.getMillis(),
-        to = toTime.getMillis(),
-        remindAt = reminder.inMillis,
-        host = hostId,
-        isUserEventCreator = isUserEventCreator,
-        isSynced = isSynced
-    )
+fun Event.asEventEntity(
+    hostId: String,
+    isUserEventCreator: Boolean = true,
+    syncStep: SyncStep = SyncStep.NONE
+): EventEntity = EventEntity(
+    id = EventUtils.generateEventId(),
+    title = title,
+    description = description,
+    from = fromTime.getMillis(),
+    to = toTime.getMillis(),
+    remindAt = reminder.inMillis,
+    host = hostId,
+    isUserEventCreator = isUserEventCreator,
+    syncStep = syncStep
+)

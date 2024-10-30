@@ -47,4 +47,14 @@ class EventRemoteDataSource(private val httpClient: HttpClient, private val json
             }
         }
     }
+
+    suspend fun deleteEventById(id: String): TaskyResult<Unit, TaskyError> = safeApiCall {
+        httpClient.request {
+            url {
+                method = HttpMethod.Delete
+                path("event")
+                parameters.append("eventId", id)
+            }
+        }
+    }
 }

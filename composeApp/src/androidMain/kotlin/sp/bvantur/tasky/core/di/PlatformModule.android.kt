@@ -9,7 +9,8 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import sp.bvantur.tasky.TaskyApplication
 import sp.bvantur.tasky.core.data.SecurePersistentStorageProviderImpl
-import sp.bvantur.tasky.core.data.SyncEventsWorker
+import sp.bvantur.tasky.core.data.SyncCreateEventWorker
+import sp.bvantur.tasky.core.data.SyncDeleteEventWorker
 import sp.bvantur.tasky.core.data.TaskyDatabase
 import sp.bvantur.tasky.core.data.TaskySyncScheduler
 import sp.bvantur.tasky.core.data.createRoomDatabase
@@ -29,7 +30,8 @@ actual val platformModule = module {
     }
 
     singleOf(::TaskySyncScheduler)
-    workerOf(::SyncEventsWorker)
+    workerOf(::SyncCreateEventWorker)
+    workerOf(::SyncDeleteEventWorker)
 
     single {
         WorkManager.getInstance(get())

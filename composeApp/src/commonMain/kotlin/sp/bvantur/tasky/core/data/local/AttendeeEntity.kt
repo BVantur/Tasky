@@ -20,7 +20,5 @@ data class AttendeeEntity(
     @ColumnInfo(name = TaskyDatabaseConstants.Attendee.COLUMN_IS_GOING)
     val isGoing: Boolean = false,
     @ColumnInfo(name = TaskyDatabaseConstants.Attendee.COLUMN_REMIND_AT)
-    val remindAt: Long = ReminderValue.THIRTY_MINUTES.inMillis,
-    @ColumnInfo(name = TaskyDatabaseConstants.Event.COLUMN_IS_SYNCED)
-    val isSynced: Boolean? = null
+    val remindAt: Long = ReminderValue.THIRTY_MINUTES.inMillis
 )

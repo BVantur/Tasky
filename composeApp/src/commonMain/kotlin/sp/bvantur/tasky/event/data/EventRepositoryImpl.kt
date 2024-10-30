@@ -1,5 +1,6 @@
 package sp.bvantur.tasky.event.data
 
+import sp.bvantur.tasky.core.data.local.SyncStep
 import sp.bvantur.tasky.core.data.mappers.asAttendeeEntity
 import sp.bvantur.tasky.core.data.remote.EventRemoteDataSource
 import sp.bvantur.tasky.core.domain.TaskyEmptyResult
@@ -74,11 +75,9 @@ class EventRepositoryImpl(
                 eventId = eventEntity.id
             )
         ).onError {
-            localDataSource.saveEvent(eventEntity.copy(isSynced = false))
-            localDataSource.saveAttendees(attendeeEntities.map { it.copy(isSynced = false) })
+            localDataSource.saveEvent(eventEntity.copy(syncStep = SyncStep.CREATE))
         }.onSuccess {
-            localDataSource.saveEvent(eventEntity.copy(isSynced = true))
-            localDataSource.saveAttendees(attendeeEntities.map { it.copy(isSynced = false) })
+            localDataSource.saveEvent(eventEntity.copy(syncStep = SyncStep.NONE))
         }.asEmptyDataResult()
     }
 }

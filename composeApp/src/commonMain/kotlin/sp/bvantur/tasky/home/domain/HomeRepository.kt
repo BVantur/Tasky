@@ -15,4 +15,6 @@ interface HomeRepository {
     suspend fun getProfileName(): String?
 
     suspend fun logoutUser(): TaskyEmptyResult<TaskyError>
+
+    suspend fun deleteEventById(id: String): TaskyEmptyResult<TaskyError>
 }

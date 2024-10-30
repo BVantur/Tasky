@@ -3,10 +3,14 @@ package sp.bvantur.tasky.home.data
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import sp.bvantur.tasky.core.data.TaskySyncScheduler
+import sp.bvantur.tasky.core.data.local.SyncStep
 import sp.bvantur.tasky.core.data.mappers.asAttendeeEntity
+import sp.bvantur.tasky.core.data.remote.EventRemoteDataSource
 import sp.bvantur.tasky.core.domain.TaskyEmptyResult
 import sp.bvantur.tasky.core.domain.TaskyError
 import sp.bvantur.tasky.core.domain.asEmptyDataResult
+import sp.bvantur.tasky.core.domain.getSuccessResultOrNull
+import sp.bvantur.tasky.core.domain.isError
 import sp.bvantur.tasky.core.domain.onError
 import sp.bvantur.tasky.core.domain.onSuccess
 import sp.bvantur.tasky.home.data.local.HomeLocalDataSource
@@ -19,6 +23,7 @@ import sp.bvantur.tasky.home.domain.model.AgendaItem
 class HomeRepositoryImpl(
     private val localDataSource: HomeLocalDataSource,
     private val remoteDataSource: HomeRemoteDataSource,
+    private val eventRemoteDataSource: EventRemoteDataSource,
     private val syncScheduler: TaskySyncScheduler
 ) : HomeRepository {
     override suspend fun getAgendaForTheDay(time: Long): TaskyEmptyResult<TaskyError> =
@@ -45,10 +50,7 @@ class HomeRepositoryImpl(
 
     override suspend fun syncPendingAgendaItems() {
         localDataSource.getPendingAgendaItems().collect { items ->
-            val eventsToSync = items.map { event ->
-                event.id
-            }
-            syncScheduler.scheduleAgendaSync(eventsToSync)
+            syncScheduler.scheduleAgendaSync(items)
         }
     }
 
@@ -56,5 +58,20 @@ class HomeRepositoryImpl(
 
     override suspend fun logoutUser(): TaskyEmptyResult<TaskyError> = localDataSource.clearLocalData().onSuccess {
         remoteDataSource.logoutUser()
+    }
+
+    override suspend fun deleteEventById(id: String): TaskyEmptyResult<TaskyError> {
+        val localResult = localDataSource.deleteEventById(id)
+
+        if (localResult.isError()) {
+            // TODO handle database error
+            return localResult.asEmptyDataResult()
+        }
+        return eventRemoteDataSource.deleteEventById(id).onError {
+            localDataSource.changeSyncStepForEvent(
+                localResult.getSuccessResultOrNull() ?: return@onError,
+                SyncStep.DELETE
+            )
+        }.asEmptyDataResult()
     }
 }
