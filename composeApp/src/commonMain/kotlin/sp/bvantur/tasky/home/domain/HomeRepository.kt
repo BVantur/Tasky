@@ -11,4 +11,8 @@ interface HomeRepository {
     suspend fun observeAgendaItems(): Flow<List<AgendaItem>>
 
     suspend fun syncPendingAgendaItems()
+
+    suspend fun getProfileName(): String?
+
+    suspend fun logoutUser(): TaskyEmptyResult<TaskyError>
 }

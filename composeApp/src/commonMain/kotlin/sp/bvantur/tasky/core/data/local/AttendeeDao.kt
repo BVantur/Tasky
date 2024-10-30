@@ -20,7 +20,7 @@ interface AttendeeDao {
     suspend fun getAttendeeByEmail(email: String): AttendeeEntity?
 
     @Query("DELETE FROM ${Attendee.TABLE_NAME}")
-    suspend fun removeAttendeeData()
+    suspend fun removeAllAttendeeData()
 
     @Query("SELECT * FROM ${Attendee.TABLE_NAME} WHERE ${Attendee.COLUMN_EVENT_ID} == :eventId")
     suspend fun getAttendeesByEventId(eventId: String): List<AttendeeEntity>

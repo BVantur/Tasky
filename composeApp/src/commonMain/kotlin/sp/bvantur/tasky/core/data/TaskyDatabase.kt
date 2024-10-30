@@ -4,10 +4,16 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
+import androidx.sqlite.SQLiteException
 import sp.bvantur.tasky.core.data.local.AttendeeDao
 import sp.bvantur.tasky.core.data.local.AttendeeEntity
 import sp.bvantur.tasky.core.data.local.EventDao
 import sp.bvantur.tasky.core.data.local.EventEntity
+import sp.bvantur.tasky.core.domain.TaskyError
+import sp.bvantur.tasky.core.domain.TaskyResult
+import sp.bvantur.tasky.core.domain.asEmptyDataResult
 
 @Database(
     entities = [AttendeeEntity::class, EventEntity::class],
@@ -17,6 +23,18 @@ import sp.bvantur.tasky.core.data.local.EventEntity
 abstract class TaskyDatabase : RoomDatabase() {
     abstract fun getAttendeeDao(): AttendeeDao
     abstract fun getEventDao(): EventDao
+
+    suspend fun clearDatabase(): TaskyResult<Unit, TaskyError> = try {
+        useWriterConnection {
+            it.immediateTransaction {
+                getAttendeeDao().removeAllAttendeeData()
+                getEventDao().removeAllEventData()
+            }
+        }
+        TaskyResult.Success(Unit).asEmptyDataResult()
+    } catch (ignore: SQLiteException) {
+        TaskyResult.Error(TaskyError.SqlError)
+    }
 }
 
 @Suppress("NO_ACTUAL_FOR_EXPECT")

@@ -21,4 +21,13 @@ class HomeRemoteDataSource(private val httpClient: HttpClient) {
             }
         }
     }
+
+    suspend fun logoutUser(): TaskyResult<Unit, TaskyError> = safeApiCall {
+        httpClient.request {
+            url {
+                method = HttpMethod.Get
+                path("logout")
+            }
+        }
+    }
 }
