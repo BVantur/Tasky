@@ -1,4 +1,4 @@
-package sp.bvantur.tasky.event.ui.components
+package sp.bvantur.tasky.core.ui.components
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

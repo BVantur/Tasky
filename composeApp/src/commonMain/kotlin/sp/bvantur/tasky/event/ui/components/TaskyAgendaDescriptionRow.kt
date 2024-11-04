@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import sp.bvantur.tasky.core.ui.components.TaskyAgendaText
 
 @Composable
 fun TaskyAgendaDescriptionRow(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {

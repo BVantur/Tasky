@@ -1,4 +1,4 @@
-package sp.bvantur.tasky.event.ui.components
+package sp.bvantur.tasky.core.ui.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding

@@ -1,10 +1,6 @@
 package sp.bvantur.tasky.core.data
 
-import androidx.work.BackoffPolicy
-import androidx.work.Constraints
-import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -12,8 +8,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sp.bvantur.tasky.core.data.local.EventEntity
 import sp.bvantur.tasky.core.data.local.SyncStep
-import java.util.concurrent.TimeUnit
+import sp.bvantur.tasky.core.data.utils.setExponentialBackOff
+import sp.bvantur.tasky.core.data.utils.setInputParameters
+import sp.bvantur.tasky.core.data.utils.setRequireNetworkConnectivity
 
+@Suppress("MagicNumber")
 actual class TaskySyncScheduler(
     private val workManager: WorkManager,
     private val applicationCoroutineScope: CoroutineScope
@@ -24,9 +23,13 @@ actual class TaskySyncScheduler(
                 SyncStep.CREATE -> {
                     onCreateEventWorker(event)
                 }
+
+                // TODO handle also create and then automatic edit when device is in
+                // offline state for both of those actions
                 SyncStep.EDIT -> {
                     return@forEach // TODO
                 }
+
                 SyncStep.DELETE -> {
                     onDeleteEventWorker(event)
                 }
@@ -46,41 +49,21 @@ actual class TaskySyncScheduler(
 
     private fun onCreateEventWorker(event: EventEntity): OneTimeWorkRequest =
         OneTimeWorkRequestBuilder<SyncCreateEventWorker>()
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
-            )
-            .setBackoffCriteria(
-                backoffPolicy = BackoffPolicy.EXPONENTIAL,
-                backoffDelay = 5000,
-                timeUnit = TimeUnit.MILLISECONDS
-            )
+            .setRequireNetworkConnectivity()
+            .setExponentialBackOff(5000)
+            .setInputParameters {
+                putString(SyncCreateEventWorker.SYNC_EVENT_ID, event.id)
+            }
             .addTag("add_event")
-            .setInputData(
-                Data.Builder()
-                    .putString(SyncCreateEventWorker.SYNC_EVENT_ID, event.id)
-                    .build()
-            )
             .build()
 
     private fun onDeleteEventWorker(event: EventEntity): OneTimeWorkRequest =
         OneTimeWorkRequestBuilder<SyncDeleteEventWorker>()
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
-            )
-            .setBackoffCriteria(
-                backoffPolicy = BackoffPolicy.EXPONENTIAL,
-                backoffDelay = 5000,
-                timeUnit = TimeUnit.MILLISECONDS
-            )
+            .setRequireNetworkConnectivity()
+            .setExponentialBackOff(5000)
+            .setInputParameters {
+                putString(SyncDeleteEventWorker.SYNC_EVENT_ID, event.id)
+            }
             .addTag("delete_event")
-            .setInputData(
-                Data.Builder()
-                    .putString(SyncCreateEventWorker.SYNC_EVENT_ID, event.id)
-                    .build()
-            )
             .build()
 }

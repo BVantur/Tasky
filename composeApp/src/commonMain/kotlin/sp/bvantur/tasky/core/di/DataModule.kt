@@ -8,6 +8,7 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -60,6 +61,8 @@ val dataModule = module {
             install(DefaultRequest) {
                 header("x-api-key", TaskyBuildKonfig.API_KEY)
             }
+
+            install(Logging)
 
             install(HttpTimeout) {
                 requestTimeoutMillis = 15_000

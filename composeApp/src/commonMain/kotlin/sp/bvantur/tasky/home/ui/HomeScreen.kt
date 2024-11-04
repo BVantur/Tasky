@@ -41,14 +41,14 @@ import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import sp.bvantur.tasky.core.ui.components.TaskyAgendaText
 import sp.bvantur.tasky.core.ui.components.TaskyContentSurface
+import sp.bvantur.tasky.core.ui.components.TaskyEventTitle
 import sp.bvantur.tasky.core.ui.components.TaskyInitialsCircle
 import sp.bvantur.tasky.core.ui.theme.eventChoreTitleType
 import sp.bvantur.tasky.core.ui.theme.eventChoreType
 import sp.bvantur.tasky.core.ui.theme.onEventType
 import sp.bvantur.tasky.core.ui.utils.CollectSingleEventsWithLifecycle
-import sp.bvantur.tasky.event.ui.components.TaskyAgendaText
-import sp.bvantur.tasky.event.ui.components.TaskyEventTitle
 import sp.bvantur.tasky.home.domain.model.AgendaItem
 import sp.bvantur.tasky.home.presentation.HomeSingleEvent
 import sp.bvantur.tasky.home.presentation.HomeUserAction
