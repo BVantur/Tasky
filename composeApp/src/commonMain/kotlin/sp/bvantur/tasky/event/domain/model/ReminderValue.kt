@@ -17,4 +17,10 @@ enum class ReminderValue(val stringRes: StringResource, val inMillis: Long) {
     ONE_DAY(Res.string.one_day_before, 86400000L);
 
     fun toMillis(fromTimestamp: Long): Long = fromTimestamp - inMillis
+
+    companion object {
+        fun fromMillisToReminderValue(fromTimestamp: Long): ReminderValue = entries.firstOrNull {
+            it.inMillis == fromTimestamp
+        } ?: THIRTY_MINUTES
+    }
 }

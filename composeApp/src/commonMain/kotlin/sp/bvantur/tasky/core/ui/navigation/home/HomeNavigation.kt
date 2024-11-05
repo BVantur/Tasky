@@ -18,12 +18,12 @@ internal fun NavController.navigateToHome() {
     )
 }
 
-internal fun NavGraphBuilder.homeScreen(onCreateEventAction: (Long, Long) -> Unit, onLoginAction: () -> Unit) {
+internal fun NavGraphBuilder.homeScreen(onEventDetailsAction: (String?, Boolean) -> Unit, onLoginAction: () -> Unit) {
     composable(
         route = HOME_NAVIGATION_ROUTE
     ) { _ ->
         HomeRoute(
-            onCreateEventAction = onCreateEventAction,
+            onEventDetailsAction = onEventDetailsAction,
             onLoginAction = onLoginAction
         )
     }

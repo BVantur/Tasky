@@ -47,6 +47,7 @@ class HomeLocalDataSource(
                 database.getEventDao().removeById(id)
                 database.getAttendeeDao().removeByEventId(id)
             }
+            database.invalidationTracker.refreshAsync()
         }
         TaskyResult.Success(eventEntity)
     } catch (ignore: SQLiteException) {

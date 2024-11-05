@@ -29,13 +29,6 @@ class EventLocalDataSource(
         TaskyResult.Error(TaskyError.SqlError)
     }
 
-    suspend fun saveAttendees(attendees: List<AttendeeEntity>): TaskyEmptyResult<TaskyError> = try {
-        database.getAttendeeDao().insertItems(attendees)
-        TaskyResult.Success(Unit).asEmptyDataResult()
-    } catch (ignore: SQLiteException) {
-        TaskyResult.Error(TaskyError.SqlError)
-    }
-
     fun getHostId(): String? = secureStorageProvider.kVault.string(SecurePersistentStorageProvider.USER_ID)
 
     suspend fun saveEventWithAttendees(
@@ -47,9 +40,30 @@ class EventLocalDataSource(
                 database.getEventDao().insert(event)
                 database.getAttendeeDao().insertItems(attendees)
             }
+            database.invalidationTracker.refreshAsync()
         }
         TaskyResult.Success(Unit).asEmptyDataResult()
     } catch (ignore: SQLiteException) {
         TaskyResult.Error(TaskyError.SqlError)
+    }
+
+    suspend fun getEventWithAttendeesById(
+        eventId: String
+    ): TaskyResult<Pair<EventEntity?, List<AttendeeEntity>>, TaskyError> {
+        try {
+            var event: EventEntity? = null
+            var attendees: List<AttendeeEntity> = emptyList()
+            database.useWriterConnection {
+                it.immediateTransaction {
+                    event = database.getEventDao().getEventById(eventId)
+                    attendees = database.getAttendeeDao().getAttendeesByEventId(eventId)
+                }
+                database.invalidationTracker.refreshAsync()
+            }
+
+            return TaskyResult.Success(event to attendees)
+        } catch (ignore: SQLiteException) {
+            return TaskyResult.Error(TaskyError.SqlError)
+        }
     }
 }

@@ -29,7 +29,8 @@ data class CreateEventViewState(
     val isAttendeeEmailError: Boolean = false,
     val attendeeInputValue: String = "",
     val attendees: List<Attendee> = listOf(),
-    val isSaveEnabled: Boolean = false
+    val isSaveEnabled: Boolean = false,
+    val isEdit: Boolean = true
 ) : ViewState
 
 data class DialogDateTimeData(val localDateTime: LocalDateTime, val isFrom: Boolean)

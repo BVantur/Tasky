@@ -33,6 +33,7 @@ abstract class TaskyDatabase : RoomDatabase() {
                 getAttendeeDao().removeAllAttendeeData()
                 getEventDao().removeAllEventData()
             }
+            invalidationTracker.refreshAsync()
         }
         TaskyResult.Success(Unit).asEmptyDataResult()
     } catch (ignore: SQLiteException) {

@@ -1,6 +1,5 @@
 package sp.bvantur.tasky.event.presentation
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import sp.bvantur.tasky.core.domain.DispatcherProvider
@@ -27,35 +26,48 @@ import sp.bvantur.tasky.event.presentation.models.InputType
 import sp.bvantur.tasky.event.presentation.models.SingleInputModel
 import sp.bvantur.tasky.event.presentation.utils.DateTimeUtils
 
-class CreateEventViewModel(
+class EventDetailsViewModel(
+    private val eventId: String,
+    private val isEditMode: Boolean,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val eventRepository: EventRepository,
-    dispatcherProvider: DispatcherProvider,
-    savedStateHandle: SavedStateHandle
+    dispatcherProvider: DispatcherProvider
 ) : ViewStateViewModel<CreateEventViewState>(CreateEventViewState()),
-    ViewModelUserActionHandler<CreateEventUserAction>,
-    SingleEventHandler<CreateEventSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
+    ViewModelUserActionHandler<EventDetailsUserAction>,
+    SingleEventHandler<EventDetailsSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
 
-    init {
-        val toTimestamp = savedStateHandle.get<Long?>(CREATE_EVENT_TO_TIMESTAMP_EXTRA)
-        val fromTimestamp = savedStateHandle.get<Long?>(CREATE_EVENT_FROM_TIMESTAMP_EXTRA)
+    override suspend fun initialLoadData() {
+        super.initialLoadData()
 
-        val fromDateTime = DateTimeUtils.toLocalDateTime(
-            fromTimestamp ?: viewStateFlow.value.currentFromDateTime.getMillis()
-        )
-        val toDateTime =
-            DateTimeUtils.toLocalDateTime(toTimestamp ?: viewStateFlow.value.currentToDateTime.getMillis())
+        if (eventId.isNotEmpty()) {
+            viewModelScope.launch {
+                eventRepository.getEventById(eventId).onError {
+                    // TODO handle error
+                }.onSuccess { event ->
+                    event ?: return@launch
 
-        emitViewState { viewState ->
-            viewState.copy(
-                currentFromDateTime = fromDateTime,
-                formattedFromDate = fromDateTime.formatDate(),
-                formattedFromTime = fromDateTime.formatTime(),
-                currentToDateTime = toDateTime,
-                formattedToDate = toDateTime.formatDate(),
-                formattedToTime = toDateTime.formatTime(),
-            )
+                    emitViewState { viewState ->
+                        viewState.copy(
+                            title = TextData.DynamicString(event.title),
+                            description = TextData.DynamicString(event.description),
+                            currentFromDateTime = event.fromTime,
+                            formattedFromDate = event.fromTime.formatDate(),
+                            formattedFromTime = event.fromTime.formatTime(),
+                            currentToDateTime = event.toTime,
+                            formattedToDate = event.toTime.formatDate(),
+                            formattedToTime = event.toTime.formatTime(),
+                            reminderValue = event.reminder,
+                            attendees = event.attendees,
+                            isEdit = isEditMode,
+                            isSaveEnabled = isEditMode
+                        )
+                    }
+                }
+            }
+            return
         }
+
+        onDefaultEventDetailsLoad()
     }
 
     fun onUpdateTextFields(eventData: CreateEventUpdatesModel) {
@@ -83,55 +95,50 @@ class CreateEventViewModel(
         }
     }
 
-    override fun onUserAction(userAction: CreateEventUserAction) {
+    override fun onUserAction(userAction: EventDetailsUserAction) {
         when (userAction) {
-            CreateEventUserAction.TitleChange -> onTitleChange()
-            CreateEventUserAction.DescriptionChange -> onDescriptionChange()
-            CreateEventUserAction.DateFromChange -> onDateFromChange()
-            CreateEventUserAction.DateToChange -> onDateToChange()
-            CreateEventUserAction.DismissDateDialog -> onDismissDialog(showDatePickerDialog = false)
-            CreateEventUserAction.DismissTimeDialog -> onDismissDialog(showTimePickerDialog = false)
-            CreateEventUserAction.TimeFromChange -> onTimeFromChange()
-            CreateEventUserAction.TimeToChange -> onTimeToChange()
-            is CreateEventUserAction.SelectNewDate -> onNewDateSelected(userAction.dialogDateTimeData)
-            is CreateEventUserAction.SelectNewTime -> onNewTimeSelected(
+            EventDetailsUserAction.TitleChange -> onTitleChange()
+            EventDetailsUserAction.DescriptionChange -> onDescriptionChange()
+            EventDetailsUserAction.DateFromChange -> onDateFromChange()
+            EventDetailsUserAction.DateToChange -> onDateToChange()
+            EventDetailsUserAction.DismissDateDialog -> onDismissDialog(showDatePickerDialog = false)
+            EventDetailsUserAction.DismissTimeDialog -> onDismissDialog(showTimePickerDialog = false)
+            EventDetailsUserAction.TimeFromChange -> onTimeFromChange()
+            EventDetailsUserAction.TimeToChange -> onTimeToChange()
+            is EventDetailsUserAction.SelectNewDate -> onNewDateSelected(userAction.dialogDateTimeData)
+            is EventDetailsUserAction.SelectNewTime -> onNewTimeSelected(
                 userAction.selectedHour,
                 userAction.selectedMinutes,
                 userAction.isFrom
             )
 
-            is CreateEventUserAction.SelectNewReminder -> {
-                emitViewState { viewState ->
-                    viewState.copy(reminderValue = userAction.reminderValue)
-                }
+            is EventDetailsUserAction.SelectNewReminder -> emitViewState { viewState ->
+                viewState.copy(reminderValue = userAction.reminderValue)
             }
 
-            CreateEventUserAction.InviteNewAttendee -> {
-                emitViewState { viewState ->
-                    viewState.copy(showAttendeeDialog = true)
-                }
+            EventDetailsUserAction.InviteNewAttendee -> emitViewState { viewState ->
+                viewState.copy(showAttendeeDialog = true)
             }
 
-            is CreateEventUserAction.ConfirmAttendeeEmail -> {
-                onInviteAttendee()
+            is EventDetailsUserAction.ConfirmAttendeeEmail -> onInviteAttendee()
+
+            EventDetailsUserAction.DismissAttendeeDialog -> emitViewState { viewState ->
+                viewState.copy(showAttendeeDialog = false)
             }
 
-            CreateEventUserAction.DismissAttendeeDialog -> {
-                emitViewState { viewState ->
-                    viewState.copy(showAttendeeDialog = false)
-                }
+            is EventDetailsUserAction.AttendeeEmailChange -> onAttendeeEmailChange(userAction.email)
+            is EventDetailsUserAction.OnRemoveAttendee -> onRemoveAttendee(userAction.attendee)
+            EventDetailsUserAction.SaveEventDetails -> onSaveEvent()
+            EventDetailsUserAction.ToEditMode -> emitViewState { viewState ->
+                viewState.copy(isEdit = true)
             }
-
-            is CreateEventUserAction.AttendeeEmailChange -> onAttendeeEmailChange(userAction.email)
-            is CreateEventUserAction.OnRemoveAttendee -> onRemoveAttendee(userAction.attendee)
-            CreateEventUserAction.SaveEvent -> onSaveEvent()
         }
     }
 
     private fun onTitleChange() {
         viewModelScope.launch {
             emitSingleEvent(
-                CreateEventSingleEvent.OnOpenSingleInput(
+                EventDetailsSingleEvent.OnOpenDetailsSingleInput(
                     SingleInputModel(
                         value = viewStateFlow.value.title.getFromDynamicStringOrNull(),
                         inputType = InputType.TITLE
@@ -144,7 +151,7 @@ class CreateEventViewModel(
     private fun onDescriptionChange() {
         viewModelScope.launch {
             emitSingleEvent(
-                CreateEventSingleEvent.OnOpenSingleInput(
+                EventDetailsSingleEvent.OnOpenDetailsSingleInput(
                     SingleInputModel(
                         value = viewStateFlow.value.description.getFromDynamicStringOrNull(),
                         inputType = InputType.DESCRIPTION
@@ -323,10 +330,15 @@ class CreateEventViewModel(
     }
 
     private fun onSaveEvent() {
+        if (eventId.isNotEmpty()) {
+            // TODO patch
+            return
+        }
         viewModelScope.launch {
             val currentViewState = viewStateFlow.value
             eventRepository.createEvent(
                 Event(
+                    eventId = null,
                     title = currentViewState.title.getFromDynamicStringOrNull() ?: "",
                     description = currentViewState.description.getFromDynamicStringOrNull() ?: "",
                     fromTime = currentViewState.currentFromDateTime,
@@ -337,13 +349,13 @@ class CreateEventViewModel(
             ).onError {
                 if (it.isSyncError()) {
                     // TODO send a message that event will be saved after phone gets back internet connection
-                    emitSingleEvent(CreateEventSingleEvent.CloseScreen)
+                    emitSingleEvent(EventDetailsSingleEvent.CloseScreen)
                     return@onError
                 }
                 println("ERROR: $it")
                 // TODO handle error
             }.onSuccess {
-                emitSingleEvent(CreateEventSingleEvent.CloseScreen)
+                emitSingleEvent(EventDetailsSingleEvent.CloseScreen)
             }
         }
     }
@@ -351,8 +363,26 @@ class CreateEventViewModel(
     private fun canEventBeSaved(title: TextData, description: TextData): Boolean =
         title.getFromDynamicStringOrNull() != null && description.getFromDynamicStringOrNull() != null
 
+    private fun onDefaultEventDetailsLoad() {
+        val fromDateTime = DateTimeUtils.toLocalDateTime(viewStateFlow.value.currentFromDateTime.getMillis())
+        val toDateTime =
+            DateTimeUtils.toLocalDateTime(viewStateFlow.value.currentToDateTime.getMillis())
+
+        emitViewState { viewState ->
+            viewState.copy(
+                currentFromDateTime = fromDateTime,
+                formattedFromDate = fromDateTime.formatDate(),
+                formattedFromTime = fromDateTime.formatTime(),
+                currentToDateTime = toDateTime,
+                formattedToDate = toDateTime.formatDate(),
+                formattedToTime = toDateTime.formatTime(),
+                isEdit = isEditMode
+            )
+        }
+    }
+
     companion object {
-        const val CREATE_EVENT_FROM_TIMESTAMP_EXTRA = "create_event_from_timestamp_extra"
-        const val CREATE_EVENT_TO_TIMESTAMP_EXTRA = "create_event_to_timestamp_extra"
+        const val CREATE_EVENT_AGENDA_ID = "create_event_agenda_id"
+        const val CREATE_EVENT_IS_EDIT = "create_event_is_edit"
     }
 }

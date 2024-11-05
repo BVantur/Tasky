@@ -8,12 +8,12 @@ import sp.bvantur.tasky.core.data.remote.EventRemoteDataSource
 import sp.bvantur.tasky.event.data.EventRepositoryImpl
 import sp.bvantur.tasky.event.data.local.EventLocalDataSource
 import sp.bvantur.tasky.event.domain.EventRepository
-import sp.bvantur.tasky.event.presentation.CreateEventViewModel
+import sp.bvantur.tasky.event.presentation.EventDetailsViewModel
 import sp.bvantur.tasky.event.presentation.SingleInputViewModel
 
 val eventModule = module {
     viewModelOf(::SingleInputViewModel)
-    viewModelOf(::CreateEventViewModel)
+    viewModelOf(::EventDetailsViewModel)
     singleOf(::EventRepositoryImpl).bind<EventRepository>()
     singleOf(::EventRemoteDataSource)
     singleOf(::EventLocalDataSource)

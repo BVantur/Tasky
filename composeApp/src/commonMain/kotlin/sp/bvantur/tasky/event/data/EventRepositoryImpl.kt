@@ -8,10 +8,13 @@ import sp.bvantur.tasky.core.domain.TaskyError
 import sp.bvantur.tasky.core.domain.TaskyResult
 import sp.bvantur.tasky.core.domain.asEmptyDataResult
 import sp.bvantur.tasky.core.domain.isError
+import sp.bvantur.tasky.core.domain.map
 import sp.bvantur.tasky.core.domain.onError
 import sp.bvantur.tasky.core.domain.onSuccess
 import sp.bvantur.tasky.event.data.local.EventLocalDataSource
+import sp.bvantur.tasky.event.data.mappers.asAttendee
 import sp.bvantur.tasky.event.data.mappers.asCreateEventRequest
+import sp.bvantur.tasky.event.data.mappers.asEvent
 import sp.bvantur.tasky.event.data.mappers.asEventEntity
 import sp.bvantur.tasky.event.domain.EventRepository
 import sp.bvantur.tasky.event.domain.model.Attendee
@@ -80,4 +83,9 @@ class EventRepositoryImpl(
             localDataSource.saveEvent(eventEntity.copy(syncStep = SyncStep.NONE))
         }.asEmptyDataResult()
     }
+
+    override suspend fun getEventById(eventId: String): TaskyResult<Event?, TaskyError> =
+        localDataSource.getEventWithAttendeesById(eventId = eventId).map { (event, attendees) ->
+            event?.asEvent(attendees.map { it.asAttendee() })
+        }
 }

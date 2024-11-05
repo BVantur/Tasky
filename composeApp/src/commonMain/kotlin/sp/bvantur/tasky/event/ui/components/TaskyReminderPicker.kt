@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -35,6 +36,7 @@ import sp.bvantur.tasky.event.domain.model.ReminderValue
 fun TaskyReminderPicker(
     modifier: Modifier = Modifier,
     selectedReminderValue: ReminderValue,
+    isEnabled: Boolean,
     onReminderValueSelected: (ReminderValue) -> Unit
 ) {
     var showMenu by remember { mutableStateOf(false) }
@@ -59,7 +61,7 @@ fun TaskyReminderPicker(
             }
         }
         Row(
-            modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 70.dp).clickable {
+            modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 70.dp).clickable(isEnabled) {
                 showMenu = true
             },
             verticalAlignment = Alignment.CenterVertically
@@ -74,10 +76,19 @@ fun TaskyReminderPicker(
 
             Text(
                 stringResource(selectedReminderValue.stringRes),
-                modifier = Modifier.padding(start = 13.dp),
+                modifier = Modifier.padding(start = 13.dp).weight(1f),
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.labelMedium
             )
+
+            if (isEnabled) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
+                    modifier = Modifier.padding(end = 25.dp).size(12.dp),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }

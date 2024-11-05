@@ -35,6 +35,7 @@ import tasky.composeapp.generated.resources.visitors
 fun TaskyVisitorsSection(
     attendees: List<Attendee>,
     modifier: Modifier = Modifier,
+    isEnabled: Boolean,
     onClick: () -> Unit,
     onDeleteAttendee: (Attendee) -> Unit
 ) {
@@ -49,17 +50,19 @@ fun TaskyVisitorsSection(
                 color = MaterialTheme.colorScheme.primary
             )
 
-            IconButton(
-                modifier = Modifier.padding(start = 16.dp),
-                onClick = onClick
-            ) {
-                Icon(
-                    modifier = Modifier.size(35.dp).clip(RoundedCornerShape(5.dp))
-                        .background(MaterialTheme.colorScheme.tertiary).padding(5.dp),
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(Res.string.add_visitors),
-                    tint = MaterialTheme.colorScheme.onTertiary
-                )
+            if (isEnabled) {
+                IconButton(
+                    modifier = Modifier.padding(start = 16.dp),
+                    onClick = onClick
+                ) {
+                    Icon(
+                        modifier = Modifier.size(35.dp).clip(RoundedCornerShape(5.dp))
+                            .background(MaterialTheme.colorScheme.tertiary).padding(5.dp),
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(Res.string.add_visitors),
+                        tint = MaterialTheme.colorScheme.onTertiary
+                    )
+                }
             }
         }
 
@@ -67,6 +70,7 @@ fun TaskyVisitorsSection(
             items(attendees.size) { index ->
                 AttendeeItem(
                     attendee = attendees[index],
+                    isEnabled = isEnabled,
                     onDeleteAttendee = onDeleteAttendee
                 )
             }
@@ -75,7 +79,12 @@ fun TaskyVisitorsSection(
 }
 
 @Composable
-private fun AttendeeItem(modifier: Modifier = Modifier, attendee: Attendee, onDeleteAttendee: (Attendee) -> Unit) {
+private fun AttendeeItem(
+    modifier: Modifier = Modifier,
+    attendee: Attendee,
+    isEnabled: Boolean,
+    onDeleteAttendee: (Attendee) -> Unit
+) {
     Card(
         modifier = modifier.fillMaxWidth().padding(all = 16.dp),
         colors = CardDefaults.cardColors(
@@ -98,12 +107,14 @@ private fun AttendeeItem(modifier: Modifier = Modifier, attendee: Attendee, onDe
                 color = MaterialTheme.colorScheme.eventChoreTitleType
             )
 
-            IconButton(onClick = { onDeleteAttendee(attendee) }) {
-                Icon(
-                    imageVector = Icons.Sharp.Delete,
-                    contentDescription = stringResource(Res.string.password_visibility_icon),
-                    tint = MaterialTheme.colorScheme.eventChoreTitleType
-                )
+            if (isEnabled) {
+                IconButton(onClick = { onDeleteAttendee(attendee) }) {
+                    Icon(
+                        imageVector = Icons.Sharp.Delete,
+                        contentDescription = stringResource(Res.string.password_visibility_icon),
+                        tint = MaterialTheme.colorScheme.eventChoreTitleType
+                    )
+                }
             }
         }
     }
