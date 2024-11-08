@@ -3,8 +3,8 @@ package sp.bvantur.tasky.core.data.local
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import sp.bvantur.tasky.agenda.domain.model.ReminderValue
 import sp.bvantur.tasky.core.data.TaskyDatabaseConstants
-import sp.bvantur.tasky.event.domain.model.ReminderValue
 
 @Entity(tableName = TaskyDatabaseConstants.Attendee.TABLE_NAME)
 data class AttendeeEntity(

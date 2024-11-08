@@ -7,14 +7,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import sp.bvantur.tasky.event.presentation.EventDetailsViewModel.Companion.CREATE_EVENT_AGENDA_ID
-import sp.bvantur.tasky.event.presentation.EventDetailsViewModel.Companion.CREATE_EVENT_IS_EDIT
-import sp.bvantur.tasky.event.presentation.SingleInputViewModel.Companion.SINGLE_INPUT_NAVIGATION_EXTRA
-import sp.bvantur.tasky.event.presentation.models.CreateEventUpdatesModel
-import sp.bvantur.tasky.event.presentation.models.SingleInputModel
-import sp.bvantur.tasky.event.ui.EventDetailsRoute
-import sp.bvantur.tasky.event.ui.SingleInputRoute
-import sp.bvantur.tasky.event.ui.model.SingleInputModelNavType
+import sp.bvantur.tasky.agenda.presentation.AgendaDetailsViewModel.Companion.CREATE_EVENT_AGENDA_ID
+import sp.bvantur.tasky.agenda.presentation.AgendaDetailsViewModel.Companion.CREATE_EVENT_IS_EDIT
+import sp.bvantur.tasky.agenda.presentation.SingleInputViewModel.Companion.SINGLE_INPUT_NAVIGATION_EXTRA
+import sp.bvantur.tasky.agenda.presentation.models.CreateEventUpdatesModel
+import sp.bvantur.tasky.agenda.presentation.models.SingleInputModel
+import sp.bvantur.tasky.agenda.ui.EventDetailsRoute
+import sp.bvantur.tasky.agenda.ui.SingleInputRoute
+import sp.bvantur.tasky.agenda.ui.model.SingleInputModelNavType
 
 internal const val CREATE_EVENT_NAVIGATION_ROUTE = "create_event_navigation_route"
 internal const val SINGLE_INPUT_NAVIGATION_ROUTE = "single_input_navigation_route"

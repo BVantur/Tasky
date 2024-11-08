@@ -12,11 +12,11 @@ import io.ktor.http.contentType
 import io.ktor.http.path
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import sp.bvantur.tasky.agenda.data.remote.CheckAttendeeResponse
+import sp.bvantur.tasky.agenda.data.remote.CreateEventRequest
 import sp.bvantur.tasky.core.data.safeApiCall
 import sp.bvantur.tasky.core.domain.TaskyError
 import sp.bvantur.tasky.core.domain.TaskyResult
-import sp.bvantur.tasky.event.data.remote.CheckAttendeeResponse
-import sp.bvantur.tasky.event.data.remote.CreateEventRequest
 
 class EventRemoteDataSource(private val httpClient: HttpClient, private val json: Json) {
 
