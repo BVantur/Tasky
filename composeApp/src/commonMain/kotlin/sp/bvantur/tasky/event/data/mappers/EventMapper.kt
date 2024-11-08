@@ -25,7 +25,7 @@ fun Event.asEventEntity(
     isUserEventCreator: Boolean = true,
     syncStep: SyncStep = SyncStep.NONE
 ): EventEntity = EventEntity(
-    id = EventUtils.generateEventId(),
+    id = eventId,
     title = title,
     description = description,
     from = fromTime.getMillis(),

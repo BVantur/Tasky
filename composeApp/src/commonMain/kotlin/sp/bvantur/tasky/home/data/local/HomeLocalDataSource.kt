@@ -47,7 +47,8 @@ class HomeLocalDataSource(
                 database.getEventDao().removeById(id)
                 database.getAttendeeDao().removeByEventId(id)
             }
-            database.invalidationTracker.refreshAsync()
+            // TODO keep an eye on this ticket: https://issuetracker.google.com/issues/340606803#comment2
+            database.invalidationTracker.refreshAsync() // TODO remove when this is fixed for KMP
         }
         TaskyResult.Success(eventEntity)
     } catch (ignore: SQLiteException) {

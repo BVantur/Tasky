@@ -18,6 +18,7 @@ import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.TextData
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewStateViewModel
+import sp.bvantur.tasky.event.data.utils.EventUtils
 import sp.bvantur.tasky.event.domain.EventRepository
 import sp.bvantur.tasky.event.domain.model.Attendee
 import sp.bvantur.tasky.event.domain.model.Event
@@ -338,7 +339,7 @@ class EventDetailsViewModel(
             val currentViewState = viewStateFlow.value
             eventRepository.createEvent(
                 Event(
-                    eventId = null,
+                    eventId = EventUtils.generateEventId(),
                     title = currentViewState.title.getFromDynamicStringOrNull() ?: "",
                     description = currentViewState.description.getFromDynamicStringOrNull() ?: "",
                     fromTime = currentViewState.currentFromDateTime,

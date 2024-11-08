@@ -40,7 +40,8 @@ class EventLocalDataSource(
                 database.getEventDao().insert(event)
                 database.getAttendeeDao().insertItems(attendees)
             }
-            database.invalidationTracker.refreshAsync()
+            // TODO keep an eye on this ticket: https://issuetracker.google.com/issues/340606803#comment2
+            database.invalidationTracker.refreshAsync() // TODO remove when this is fixed for KMP
         }
         TaskyResult.Success(Unit).asEmptyDataResult()
     } catch (ignore: SQLiteException) {
@@ -58,7 +59,8 @@ class EventLocalDataSource(
                     event = database.getEventDao().getEventById(eventId)
                     attendees = database.getAttendeeDao().getAttendeesByEventId(eventId)
                 }
-                database.invalidationTracker.refreshAsync()
+                // TODO keep an eye on this ticket: https://issuetracker.google.com/issues/340606803#comment2
+                database.invalidationTracker.refreshAsync() // TODO remove when this is fixed for KMP
             }
 
             return TaskyResult.Success(event to attendees)
