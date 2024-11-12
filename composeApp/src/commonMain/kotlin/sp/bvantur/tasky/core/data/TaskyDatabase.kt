@@ -4,6 +4,7 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import androidx.room.TypeConverters
 import androidx.room.immediateTransaction
 import androidx.room.useWriterConnection
 import androidx.sqlite.SQLiteException
@@ -11,14 +12,16 @@ import sp.bvantur.tasky.core.data.local.AttendeeDao
 import sp.bvantur.tasky.core.data.local.AttendeeEntity
 import sp.bvantur.tasky.core.data.local.EventDao
 import sp.bvantur.tasky.core.data.local.EventEntity
+import sp.bvantur.tasky.core.data.local.converter.SyncStepConverter
 import sp.bvantur.tasky.core.domain.TaskyError
 import sp.bvantur.tasky.core.domain.TaskyResult
 import sp.bvantur.tasky.core.domain.asEmptyDataResult
 
 @Database(
     entities = [AttendeeEntity::class, EventEntity::class],
-    version = 1
+    version = 2
 )
+@TypeConverters(SyncStepConverter::class)
 @ConstructedBy(TaskyDatabaseConstructor::class)
 abstract class TaskyDatabase : RoomDatabase() {
     abstract fun getAttendeeDao(): AttendeeDao
@@ -68,6 +71,6 @@ object TaskyDatabaseConstants {
         const val COLUMN_REMIND_AT = "eventRemindAt"
         const val COLUMN_HOST = "eventHost"
         const val COLUMN_IS_USER_EVENT_CREATOR = "eventIsUserEventCreator"
-        const val COLUMN_IS_SYNCED = "isSynced"
+        const val COLUMN_SYNC_STEP = "sync_step"
     }
 }

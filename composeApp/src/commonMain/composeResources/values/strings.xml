@@ -33,4 +33,7 @@
     <string name="add_visitor">Add visitor</string>
     <string name="add">Add</string>
     <string name="logout">Logout</string>
+    <string name="open">Open</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

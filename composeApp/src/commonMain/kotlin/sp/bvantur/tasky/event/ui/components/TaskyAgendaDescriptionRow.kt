@@ -10,25 +10,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import sp.bvantur.tasky.core.ui.components.TaskyAgendaText
 
 @Composable
-fun TaskyEventDescription(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
+fun TaskyAgendaDescriptionRow(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
     Row(
         modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 80.dp).clickable {
             onClick()
         },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = text,
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(horizontal = 10.dp).weight(1f)
+        TaskyAgendaText(
+            modifier = Modifier.padding(horizontal = 10.dp).weight(1f),
+            text = text
         )
 
         Icon(

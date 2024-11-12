@@ -50,10 +50,10 @@ import sp.bvantur.tasky.event.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.event.presentation.models.SingleInputModel
 import sp.bvantur.tasky.event.presentation.utils.DateTimeUtils
 import sp.bvantur.tasky.event.ui.components.TaskyAddImagesSection
+import sp.bvantur.tasky.event.ui.components.TaskyAgendaDescriptionRow
+import sp.bvantur.tasky.event.ui.components.TaskyAgendaTitleRow
 import sp.bvantur.tasky.event.ui.components.TaskyConfirmTextButton
-import sp.bvantur.tasky.event.ui.components.TaskyEventDescription
 import sp.bvantur.tasky.event.ui.components.TaskyEventDivider
-import sp.bvantur.tasky.event.ui.components.TaskyEventTitle
 import sp.bvantur.tasky.event.ui.components.TaskyEventType
 import sp.bvantur.tasky.event.ui.components.TaskyReminderPicker
 import sp.bvantur.tasky.event.ui.components.TaskyTimeDatePicker
@@ -151,8 +151,8 @@ fun CreateEventScreen(
                     choreColor = MaterialTheme.colorScheme.eventChoreType
                 )
 
-                TaskyEventTitle(
-                    modifier = Modifier.padding(start = 16.dp),
+                TaskyAgendaTitleRow(
+                    modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
                     text = viewState.title.asString(),
                     onClick = {
                         onUserAction(CreateEventUserAction.TitleChange)
@@ -161,7 +161,7 @@ fun CreateEventScreen(
 
                 TaskyEventDivider()
 
-                TaskyEventDescription(
+                TaskyAgendaDescriptionRow(
                     modifier = Modifier.padding(start = 16.dp),
                     text = viewState.description.asString(),
                     onClick = {

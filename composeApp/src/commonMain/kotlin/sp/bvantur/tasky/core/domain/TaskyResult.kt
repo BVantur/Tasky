@@ -28,5 +28,6 @@ inline fun <T, E : TaskyError> TaskyResult<T, E>.onError(action: (E) -> Unit): T
 }
 inline fun <T, E : TaskyError> TaskyResult<T, E>.isSuccess() = this is TaskyResult.Success<T>
 inline fun <T, E : TaskyError> TaskyResult<T, E>.isError() = this is TaskyResult.Error<E>
+inline fun <T, E : TaskyError> TaskyResult<T, E>.getSuccessResultOrNull(): T? = (this as? TaskyResult.Success<T>)?.data
 
 typealias TaskyEmptyResult<E> = TaskyResult<Unit, E>

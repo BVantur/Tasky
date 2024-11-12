@@ -8,35 +8,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
-import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import sp.bvantur.tasky.core.ui.components.TaskyEventTitle
 
 @Composable
-fun TaskyEventTitle(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
+fun TaskyAgendaTitleRow(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
     Row(
         modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 80.dp).clickable {
             onClick()
         },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.Outlined.Circle,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-
-        Text(
-            text = text,
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.displayMedium,
-            modifier = Modifier.padding(horizontal = 10.dp).weight(1f)
-        )
+        TaskyEventTitle(modifier = Modifier.weight(1f), text = text)
 
         Icon(
             imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
