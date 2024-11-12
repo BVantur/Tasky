@@ -33,6 +33,8 @@ abstract class TaskyDatabase : RoomDatabase() {
                 getAttendeeDao().removeAllAttendeeData()
                 getEventDao().removeAllEventData()
             }
+            // TODO keep an eye on this ticket: https://issuetracker.google.com/issues/340606803#comment2
+            invalidationTracker.refreshAsync() // TODO remove when this is fixed for KMP
         }
         TaskyResult.Success(Unit).asEmptyDataResult()
     } catch (ignore: SQLiteException) {

@@ -17,7 +17,9 @@ fun TaskyConfirmTextButton(
     disabledContentColor: Color = MaterialTheme.colorScheme.onTertiary,
 ) {
     Button(
-        onClick = onClick,
+        onClick = {
+            onClick()
+        },
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,

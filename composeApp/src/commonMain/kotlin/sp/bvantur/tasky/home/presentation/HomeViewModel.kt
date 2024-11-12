@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import sp.bvantur.tasky.core.domain.DispatcherProvider
 import sp.bvantur.tasky.core.domain.onSuccess
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
@@ -12,7 +11,6 @@ import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewStateViewModel
 import sp.bvantur.tasky.home.domain.HomeRepository
-import kotlin.time.Duration.Companion.minutes
 
 class HomeViewModel(private val repository: HomeRepository, private val dispatcherProvider: DispatcherProvider) :
     ViewStateViewModel<HomeViewState>(HomeViewState()),
@@ -43,14 +41,8 @@ class HomeViewModel(private val repository: HomeRepository, private val dispatch
         when (userAction) {
             HomeUserAction.CreateNewEvent -> {
                 viewModelScope.launch {
-                    // TODO refactor this part
-                    val fromTime: Instant = Clock.System.now()
-                    val toTime = fromTime.plus(30.minutes).toEpochMilliseconds()
                     emitSingleEvent(
-                        HomeSingleEvent.NavigateToCreateEvent(
-                            fromTime = fromTime.toEpochMilliseconds(),
-                            toTime = toTime
-                        )
+                        HomeSingleEvent.NavigateToEventDetails(null, true)
                     )
                 }
             }
@@ -69,10 +61,14 @@ class HomeViewModel(private val repository: HomeRepository, private val dispatch
                 }
             }
             is HomeUserAction.EditAgendaItem -> {
-                // TODO
+                viewModelScope.launch {
+                    emitSingleEvent(HomeSingleEvent.NavigateToEventDetails(userAction.agendaItem.id, true))
+                }
             }
             is HomeUserAction.OpenAgendaItem -> {
-                // TODO
+                viewModelScope.launch {
+                    emitSingleEvent(HomeSingleEvent.NavigateToEventDetails(userAction.agendaItem.id, false))
+                }
             }
         }
     }

@@ -9,4 +9,5 @@ import sp.bvantur.tasky.event.domain.model.Event
 interface EventRepository {
     suspend fun getAttendee(email: String): TaskyResult<Attendee, TaskyError>
     suspend fun createEvent(event: Event): TaskyEmptyResult<TaskyError>
+    suspend fun getEventById(eventId: String): TaskyResult<Event?, TaskyError>
 }

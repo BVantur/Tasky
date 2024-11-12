@@ -63,19 +63,19 @@ import tasky.composeapp.generated.resources.open
 import tasky.composeapp.generated.resources.password_visibility_icon
 
 @Composable
-fun HomeRoute(onCreateEventAction: (Long, Long) -> Unit, onLoginAction: () -> Unit) {
+fun HomeRoute(onEventDetailsAction: (String?, Boolean) -> Unit, onLoginAction: () -> Unit) {
     val viewModel = koinViewModel<HomeViewModel>()
 
     val viewState: HomeViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
 
     CollectSingleEventsWithLifecycle(singleEventFlow = viewModel.singleEventFlow) { singleEvent ->
         when (singleEvent) {
-            is HomeSingleEvent.NavigateToCreateEvent -> {
-                onCreateEventAction(singleEvent.fromTime, singleEvent.toTime)
-            }
-
             HomeSingleEvent.NavigateToLogin -> {
                 onLoginAction()
+            }
+
+            is HomeSingleEvent.NavigateToEventDetails -> {
+                onEventDetailsAction(singleEvent.eventId, singleEvent.isEditMode)
             }
         }
     }

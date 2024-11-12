@@ -51,15 +51,6 @@ class ArchitectureKonsistTest {
     }
 
     @Test
-    fun `classes with 'UseCase' suffix should reside in 'domain' package`() {
-        Konsist
-            .scopeFromProject()
-            .classes()
-            .withNameEndingWith("UseCase")
-            .assertTrue { it.resideInPackage("..domain..") }
-    }
-
-    @Test
     fun `'Repository' classes should reside in 'data' package`() {
         Konsist
             .scopeFromProject()

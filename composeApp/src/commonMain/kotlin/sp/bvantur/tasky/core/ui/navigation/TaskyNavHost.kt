@@ -7,7 +7,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import sp.bvantur.tasky.core.ui.navigation.event.SINGLE_INPUT_DESCRIPTION_RESULT_EXTRA
 import sp.bvantur.tasky.core.ui.navigation.event.SINGLE_INPUT_TITLE_RESULT_EXTRA
 import sp.bvantur.tasky.core.ui.navigation.event.createEventScreen
-import sp.bvantur.tasky.core.ui.navigation.event.navigateToCreateEventScreen
+import sp.bvantur.tasky.core.ui.navigation.event.navigateToEventDetailsScreen
 import sp.bvantur.tasky.core.ui.navigation.event.navigateToSingleInputScreen
 import sp.bvantur.tasky.core.ui.navigation.event.singleInputScreen
 import sp.bvantur.tasky.core.ui.navigation.home.HOME_NAVIGATION_ROUTE
@@ -40,7 +40,7 @@ internal fun TaskyNavHost() {
         )
         registerScreen(onNavigateBack = navController::navigateUp)
         homeScreen(
-            onCreateEventAction = navController::navigateToCreateEventScreen,
+            onEventDetailsAction = navController::navigateToEventDetailsScreen,
             onLoginAction = navController::navigateToLogin
         )
         createEventScreen(

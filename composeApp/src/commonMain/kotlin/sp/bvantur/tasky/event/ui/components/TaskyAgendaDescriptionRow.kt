@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.dp
 import sp.bvantur.tasky.core.ui.components.TaskyAgendaText
 
 @Composable
-fun TaskyAgendaDescriptionRow(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
+fun TaskyAgendaDescriptionRow(modifier: Modifier = Modifier, text: String, isEnabled: Boolean, onClick: () -> Unit) {
     Row(
-        modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 80.dp).clickable {
+        modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 80.dp).clickable(isEnabled) {
             onClick()
         },
         verticalAlignment = Alignment.CenterVertically
@@ -29,11 +29,13 @@ fun TaskyAgendaDescriptionRow(modifier: Modifier = Modifier, text: String, onCli
             text = text
         )
 
-        Icon(
-            imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
-            modifier = Modifier.padding(end = 25.dp).size(12.dp),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
+        if (isEnabled) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
+                modifier = Modifier.padding(end = 25.dp).size(12.dp),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }

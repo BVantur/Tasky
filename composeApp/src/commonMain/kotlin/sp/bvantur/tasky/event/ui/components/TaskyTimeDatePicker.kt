@@ -24,6 +24,7 @@ fun TaskyTimeDatePicker(
     propertyName: String,
     formattedDate: String?,
     formattedTime: String?,
+    isEnabled: Boolean,
     modifier: Modifier = Modifier,
     onTimeChangeAction: () -> Unit,
     onDateChangeAction: () -> Unit
@@ -40,7 +41,7 @@ fun TaskyTimeDatePicker(
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.defaultMinSize(minHeight = 70.dp).weight(1f).clickable {
+            modifier = Modifier.defaultMinSize(minHeight = 70.dp).weight(1f).clickable(isEnabled) {
                 onTimeChangeAction()
             }
         ) {
@@ -51,16 +52,18 @@ fun TaskyTimeDatePicker(
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary
             )
-            Icon(
-                imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
-                modifier = Modifier.padding(end = 25.dp).size(12.dp),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
+            if (isEnabled) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
+                    modifier = Modifier.padding(end = 25.dp).size(12.dp),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.defaultMinSize(minHeight = 70.dp).weight(1f).clickable {
+            modifier = Modifier.defaultMinSize(minHeight = 70.dp).weight(1f).clickable(isEnabled) {
                 onDateChangeAction()
             }.padding(end = 25.dp)
         ) {
@@ -70,12 +73,14 @@ fun TaskyTimeDatePicker(
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary
             )
-            Icon(
-                imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
-                modifier = Modifier.size(12.dp),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
+            if (isEnabled) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
+                    modifier = Modifier.size(12.dp),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }

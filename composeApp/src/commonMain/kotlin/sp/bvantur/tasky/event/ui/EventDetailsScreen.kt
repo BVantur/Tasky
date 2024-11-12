@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,16 +37,17 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import sp.bvantur.tasky.core.domain.extensions.getMillis
 import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
 import sp.bvantur.tasky.core.ui.components.TaskyContentSurface
 import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
 import sp.bvantur.tasky.core.ui.theme.eventChoreType
 import sp.bvantur.tasky.core.ui.utils.CollectSingleEventsWithLifecycle
-import sp.bvantur.tasky.event.presentation.CreateEventSingleEvent
-import sp.bvantur.tasky.event.presentation.CreateEventUserAction
-import sp.bvantur.tasky.event.presentation.CreateEventViewModel
 import sp.bvantur.tasky.event.presentation.CreateEventViewState
+import sp.bvantur.tasky.event.presentation.EventDetailsSingleEvent
+import sp.bvantur.tasky.event.presentation.EventDetailsUserAction
+import sp.bvantur.tasky.event.presentation.EventDetailsViewModel
 import sp.bvantur.tasky.event.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.event.presentation.models.SingleInputModel
 import sp.bvantur.tasky.event.presentation.utils.DateTimeUtils
@@ -66,18 +68,21 @@ import tasky.composeapp.generated.resources.close
 import tasky.composeapp.generated.resources.email_address
 import tasky.composeapp.generated.resources.event
 import tasky.composeapp.generated.resources.from_word
-import tasky.composeapp.generated.resources.password_visibility_icon
 import tasky.composeapp.generated.resources.save
 import tasky.composeapp.generated.resources.select
 import tasky.composeapp.generated.resources.to_word
 
 @Composable
-fun CreateEventRoute(
+fun EventDetailsRoute(
     eventModel: CreateEventUpdatesModel,
+    eventId: String?,
+    isEdit: Boolean = false,
     onNavigateBack: () -> Unit,
     onOpenSingleInputScreen: (SingleInputModel) -> Unit
 ) {
-    val viewModel = koinViewModel<CreateEventViewModel>()
+    val viewModel = koinViewModel<EventDetailsViewModel>(parameters = {
+        parametersOf(eventId, isEdit)
+    })
 
     val viewState: CreateEventViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
 
@@ -87,12 +92,12 @@ fun CreateEventRoute(
 
     CollectSingleEventsWithLifecycle(singleEventFlow = viewModel.singleEventFlow) { singleEvent ->
         when (singleEvent) {
-            is CreateEventSingleEvent.OnOpenSingleInput -> onOpenSingleInputScreen(singleEvent.data)
-            CreateEventSingleEvent.CloseScreen -> onNavigateBack()
+            is EventDetailsSingleEvent.OnOpenDetailsSingleInput -> onOpenSingleInputScreen(singleEvent.data)
+            EventDetailsSingleEvent.CloseScreen -> onNavigateBack()
         }
     }
 
-    CreateEventScreen(
+    EventDetailsScreen(
         viewState = viewState,
         onNavigateBack = onNavigateBack,
         onUserAction = viewModel::onUserAction
@@ -101,10 +106,10 @@ fun CreateEventRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateEventScreen(
+fun EventDetailsScreen(
     viewState: CreateEventViewState,
     onNavigateBack: () -> Unit,
-    onUserAction: (CreateEventUserAction) -> Unit
+    onUserAction: (EventDetailsUserAction) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -117,7 +122,7 @@ fun CreateEventScreen(
             IconButton(onClick = onNavigateBack) {
                 Icon(
                     imageVector = Icons.Filled.Close,
-                    contentDescription = stringResource(Res.string.password_visibility_icon),
+                    contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -130,15 +135,27 @@ fun CreateEventScreen(
                 textAlign = TextAlign.Center
             )
 
-            TaskyConfirmTextButton(
-                onClick = {
-                    onUserAction(CreateEventUserAction.SaveEvent)
-                },
-                enabled = viewState.isSaveEnabled,
-                text = stringResource(Res.string.save),
-                contentColor = MaterialTheme.colorScheme.surface,
-                disabledContentColor = MaterialTheme.colorScheme.onPrimary
-            )
+            if (viewState.isEdit) {
+                TaskyConfirmTextButton(
+                    onClick = {
+                        onUserAction(EventDetailsUserAction.SaveEventDetails)
+                    },
+                    enabled = viewState.isSaveEnabled,
+                    text = stringResource(Res.string.save),
+                    contentColor = MaterialTheme.colorScheme.surface,
+                    disabledContentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            } else {
+                IconButton(onClick = {
+                    onUserAction(EventDetailsUserAction.ToEditMode)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Edit,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
         }
 
         TaskyContentSurface(
@@ -154,8 +171,9 @@ fun CreateEventScreen(
                 TaskyAgendaTitleRow(
                     modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
                     text = viewState.title.asString(),
+                    isEnabled = viewState.isEdit,
                     onClick = {
-                        onUserAction(CreateEventUserAction.TitleChange)
+                        onUserAction(EventDetailsUserAction.TitleChange)
                     }
                 )
 
@@ -164,8 +182,9 @@ fun CreateEventScreen(
                 TaskyAgendaDescriptionRow(
                     modifier = Modifier.padding(start = 16.dp),
                     text = viewState.description.asString(),
+                    isEnabled = viewState.isEdit,
                     onClick = {
-                        onUserAction(CreateEventUserAction.DescriptionChange)
+                        onUserAction(EventDetailsUserAction.DescriptionChange)
                     }
                 )
 
@@ -177,11 +196,12 @@ fun CreateEventScreen(
                     propertyName = stringResource(Res.string.from_word),
                     formattedDate = viewState.formattedFromDate,
                     formattedTime = viewState.formattedFromTime,
+                    isEnabled = viewState.isEdit,
                     onTimeChangeAction = {
-                        onUserAction(CreateEventUserAction.TimeFromChange)
+                        onUserAction(EventDetailsUserAction.TimeFromChange)
                     },
                     onDateChangeAction = {
-                        onUserAction(CreateEventUserAction.DateFromChange)
+                        onUserAction(EventDetailsUserAction.DateFromChange)
                     }
                 )
                 TaskyEventDivider()
@@ -189,30 +209,33 @@ fun CreateEventScreen(
                     propertyName = stringResource(Res.string.to_word),
                     formattedDate = viewState.formattedToDate,
                     formattedTime = viewState.formattedToTime,
+                    isEnabled = viewState.isEdit,
                     onTimeChangeAction = {
-                        onUserAction(CreateEventUserAction.TimeToChange)
+                        onUserAction(EventDetailsUserAction.TimeToChange)
                     },
                     onDateChangeAction = {
-                        onUserAction(CreateEventUserAction.DateToChange)
+                        onUserAction(EventDetailsUserAction.DateToChange)
                     }
                 )
                 TaskyEventDivider()
                 TaskyReminderPicker(
                     modifier = Modifier.padding(start = 16.dp),
                     selectedReminderValue = viewState.reminderValue,
+                    isEnabled = viewState.isEdit,
                     onReminderValueSelected = {
-                        onUserAction(CreateEventUserAction.SelectNewReminder(it))
+                        onUserAction(EventDetailsUserAction.SelectNewReminder(it))
                     }
                 )
                 TaskyEventDivider()
 
                 TaskyVisitorsSection(
                     attendees = viewState.attendees,
+                    isEnabled = viewState.isEdit,
                     onClick = {
-                        onUserAction(CreateEventUserAction.InviteNewAttendee)
+                        onUserAction(EventDetailsUserAction.InviteNewAttendee)
                     },
                     onDeleteAttendee = {
-                        onUserAction(CreateEventUserAction.OnRemoveAttendee(it))
+                        onUserAction(EventDetailsUserAction.OnRemoveAttendee(it))
                     }
                 )
             }
@@ -236,13 +259,13 @@ fun CreateEventScreen(
 
         DatePickerDialog(
             onDismissRequest = {
-                onUserAction(CreateEventUserAction.DismissDateDialog)
+                onUserAction(EventDetailsUserAction.DismissDateDialog)
             },
             confirmButton = {
                 TaskyConfirmTextButton(
                     onClick = {
                         onUserAction(
-                            CreateEventUserAction.SelectNewDate(
+                            EventDetailsUserAction.SelectNewDate(
                                 viewState.dialogDateTimeData?.copy(
                                     localDateTime = DateTimeUtils.toLocalDateTime(
                                         datePickerState.selectedDateMillis
@@ -269,13 +292,13 @@ fun CreateEventScreen(
             )
         TaskyTimePickerDialog(
             onDismissRequest = {
-                onUserAction(CreateEventUserAction.DismissTimeDialog)
+                onUserAction(EventDetailsUserAction.DismissTimeDialog)
             },
             confirmButton = {
                 TaskyConfirmTextButton(
                     onClick = {
                         onUserAction(
-                            CreateEventUserAction.SelectNewTime(
+                            EventDetailsUserAction.SelectNewTime(
                                 timePickerState.hour,
                                 timePickerState.minute,
                                 viewState.dialogDateTimeData?.isFrom
@@ -293,13 +316,13 @@ fun CreateEventScreen(
     if (viewState.showAttendeeDialog) {
         TaskyAttendeeDialog(
             onDismiss = {
-                onUserAction(CreateEventUserAction.DismissAttendeeDialog)
+                onUserAction(EventDetailsUserAction.DismissAttendeeDialog)
             },
             onConfirm = {
-                onUserAction(CreateEventUserAction.ConfirmAttendeeEmail)
+                onUserAction(EventDetailsUserAction.ConfirmAttendeeEmail)
             },
             onTextChanged = {
-                onUserAction(CreateEventUserAction.AttendeeEmailChange(it))
+                onUserAction(EventDetailsUserAction.AttendeeEmailChange(it))
             },
             isError = viewState.isAttendeeEmailError,
             inputValue = viewState.attendeeInputValue
