@@ -43,7 +43,7 @@ internal fun NavGraphBuilder.createEventScreen(
     composable(
         route = "$CREATE_EVENT_NAVIGATION_ROUTE?${CREATE_AGENDA_ID}=" +
             "{${CREATE_AGENDA_ID}}&${CREATE_AGENDA_IS_EDIT}={${CREATE_AGENDA_IS_EDIT}}&" +
-                "${CREATE_AGENDA_TYPE}={${CREATE_AGENDA_TYPE}}",
+            "${CREATE_AGENDA_TYPE}={${CREATE_AGENDA_TYPE}}",
         arguments = listOf(
             navArgument(CREATE_AGENDA_ID) {
                 type = NavType.StringType
