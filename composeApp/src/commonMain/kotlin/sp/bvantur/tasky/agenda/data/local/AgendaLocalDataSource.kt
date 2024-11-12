@@ -7,6 +7,7 @@ import sp.bvantur.tasky.core.data.TaskyDatabase
 import sp.bvantur.tasky.core.data.local.AttendeeEntity
 import sp.bvantur.tasky.core.data.local.EventEntity
 import sp.bvantur.tasky.core.data.local.SecurePersistentStorageProvider
+import sp.bvantur.tasky.core.data.local.TaskEntity
 import sp.bvantur.tasky.core.domain.TaskyEmptyResult
 import sp.bvantur.tasky.core.domain.TaskyError
 import sp.bvantur.tasky.core.domain.TaskyResult
@@ -67,5 +68,12 @@ class AgendaLocalDataSource(
         } catch (ignore: SQLiteException) {
             return TaskyResult.Error(TaskyError.SqlError)
         }
+    }
+
+    suspend fun saveTask(taskEntity: TaskEntity): TaskyEmptyResult<TaskyError> = try {
+        database.getTaskDao().insert(taskEntity)
+        TaskyResult.Success(Unit).asEmptyDataResult()
+    } catch (ignore: SQLiteException) {
+        TaskyResult.Error(TaskyError.SqlError)
     }
 }

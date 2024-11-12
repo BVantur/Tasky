@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import sp.bvantur.tasky.agenda.domain.model.AgendaType
 import sp.bvantur.tasky.core.ui.navigation.login.LOGIN_NAVIGATION_ROUTE
 import sp.bvantur.tasky.home.ui.HomeRoute
 
@@ -18,7 +19,10 @@ internal fun NavController.navigateToHome() {
     )
 }
 
-internal fun NavGraphBuilder.homeScreen(onEventDetailsAction: (String?, Boolean) -> Unit, onLoginAction: () -> Unit) {
+internal fun NavGraphBuilder.homeScreen(
+    onEventDetailsAction: (String?, Boolean, AgendaType) -> Unit,
+    onLoginAction: () -> Unit
+) {
     composable(
         route = HOME_NAVIGATION_ROUTE
     ) { _ ->

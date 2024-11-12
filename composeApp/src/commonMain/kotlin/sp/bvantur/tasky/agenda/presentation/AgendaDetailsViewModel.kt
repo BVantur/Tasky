@@ -1,11 +1,14 @@
 package sp.bvantur.tasky.agenda.presentation
 
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import sp.bvantur.tasky.agenda.data.utils.AgendaUtils
 import sp.bvantur.tasky.agenda.domain.AgendaRepository
+import sp.bvantur.tasky.agenda.domain.model.AgendaType
 import sp.bvantur.tasky.agenda.domain.model.Attendee
 import sp.bvantur.tasky.agenda.domain.model.Event
+import sp.bvantur.tasky.agenda.domain.model.Task
 import sp.bvantur.tasky.agenda.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.agenda.presentation.models.InputType
 import sp.bvantur.tasky.agenda.presentation.models.SingleInputModel
@@ -26,49 +29,122 @@ import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.TextData
 import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewStateViewModel
+import tasky.composeapp.generated.resources.Res
+import tasky.composeapp.generated.resources.at_word
+import tasky.composeapp.generated.resources.task_description
+import tasky.composeapp.generated.resources.task_title
 
 class AgendaDetailsViewModel(
-    private val eventId: String,
+    private val agendaId: String,
     private val isEditMode: Boolean,
+    private val agendaType: AgendaType,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val agendaRepository: AgendaRepository,
     dispatcherProvider: DispatcherProvider
-) : ViewStateViewModel<CreateEventViewState>(CreateEventViewState()),
+) : ViewStateViewModel<CreateEventViewState>(
+    CreateEventViewState(
+        agendaTypeDetails = AgendaTypeDetails.fromAgendaType(
+            agendaType
+        )
+    )
+),
     ViewModelUserActionHandler<AgendaDetailsUserAction>,
     SingleEventHandler<AgendaDetailsSingleEvent> by SingleEventHandlerImpl(dispatcherProvider) {
 
     override suspend fun initialLoadData() {
         super.initialLoadData()
+        setGeneralDefaultAgendaValues()
 
-        if (eventId.isNotEmpty()) {
-            viewModelScope.launch {
-                agendaRepository.getEventById(eventId).onError {
-                    // TODO handle error
-                }.onSuccess { event ->
-                    event ?: return@launch
+        when (agendaType) {
+            AgendaType.EVENT -> {
+                onLoadEventDetails(agendaId)
+            }
 
-                    emitViewState { viewState ->
-                        viewState.copy(
-                            title = TextData.DynamicString(event.title),
-                            description = TextData.DynamicString(event.description),
-                            currentFromDateTime = event.fromTime,
-                            formattedFromDate = event.fromTime.formatDate(),
-                            formattedFromTime = event.fromTime.formatTime(),
-                            currentToDateTime = event.toTime,
-                            formattedToDate = event.toTime.formatDate(),
-                            formattedToTime = event.toTime.formatTime(),
-                            reminderValue = event.reminder,
-                            attendees = event.attendees,
-                            isEdit = isEditMode,
-                            isSaveEnabled = isEditMode
-                        )
-                    }
-                }
+            AgendaType.TASK -> {
+                onLoadTaskDetails(agendaId)
+            }
+
+            AgendaType.REMINDER -> TODO()
+        }
+    }
+
+    private fun onLoadTaskDetails(agendaId: String?) {
+        if (agendaId.isNullOrBlank()) {
+            mutableViewStateFlow.update { viewState ->
+                viewState.copy(
+                    title = TextData.ResourceString(Res.string.task_title),
+                    description = TextData.ResourceString(Res.string.task_description),
+                    fromDateText = TextData.ResourceString(Res.string.at_word),
+                    isEdit = isEditMode
+                )
             }
             return
         }
+    }
 
-        onDefaultEventDetailsLoad()
+    private suspend fun onLoadEventDetails(agendaId: String?) {
+        if (agendaId.isNullOrBlank()) {
+            mutableViewStateFlow.update { viewState ->
+                val eventTypeDetails =
+                    viewState.agendaTypeDetails.getAsEventType() ?: return@update viewState
+
+                val toDateTime =
+                    DateTimeUtils.toLocalDateTime(eventTypeDetails.toDateTime.getMillis())
+
+                viewState.copy(
+                    agendaTypeDetails = eventTypeDetails.copy(
+                        toDateTime = toDateTime,
+                        formattedToDate = toDateTime.formatDate(),
+                        formattedToTime = toDateTime.formatTime()
+                    ),
+                    isEdit = isEditMode
+                )
+            }
+            return
+        }
+        agendaRepository.getEventById(agendaId).onError {
+            mutableViewStateFlow.update { viewState ->
+                val eventTypeDetails =
+                    viewState.agendaTypeDetails.getAsEventType() ?: return@update viewState
+
+                val toDateTime =
+                    DateTimeUtils.toLocalDateTime(eventTypeDetails.toDateTime.getMillis())
+
+                viewState.copy(
+                    agendaTypeDetails = eventTypeDetails.copy(
+                        toDateTime = toDateTime,
+                        formattedToDate = toDateTime.formatDate(),
+                        formattedToTime = toDateTime.formatTime()
+                    ),
+                    isEdit = isEditMode
+                )
+            }
+        }.onSuccess { event ->
+            event ?: return
+
+            mutableViewStateFlow.update { viewState ->
+                val eventTypeDetails =
+                    viewState.agendaTypeDetails.getAsEventType() ?: return@update viewState
+
+                viewState.copy(
+                    title = TextData.DynamicString(event.title),
+                    description = TextData.DynamicString(event.description),
+                    currentFromDateTime = event.fromTime,
+                    formattedFromDate = event.fromTime.formatDate(),
+                    formattedFromTime = event.fromTime.formatTime(),
+                    agendaTypeDetails = eventTypeDetails.copy(
+                        toDateTime = event.toTime,
+                        formattedToDate = event.toTime.formatDate(),
+                        attendees = event.attendees,
+                        formattedToTime = event.toTime.formatTime()
+                    ),
+                    reminderValue = event.reminder,
+                    attendees = event.attendees,
+                    isEdit = isEditMode,
+                    isSaveEnabled = isEditMode
+                )
+            }
+        }
     }
 
     fun onUpdateTextFields(eventData: CreateEventUpdatesModel) {
@@ -84,7 +160,7 @@ class AgendaDetailsViewModel(
             TextData.DynamicString(it)
         } ?: viewStateFlow.value.description
 
-        emitViewState { viewState ->
+        mutableViewStateFlow.update { viewState ->
             viewState.copy(
                 title = newTitle,
                 description = newDescription,
@@ -113,25 +189,33 @@ class AgendaDetailsViewModel(
                 userAction.isFrom
             )
 
-            is AgendaDetailsUserAction.SelectNewReminder -> emitViewState { viewState ->
-                viewState.copy(reminderValue = userAction.reminderValue)
+            is AgendaDetailsUserAction.SelectNewReminder -> {
+                mutableViewStateFlow.update { viewState ->
+                    viewState.copy(reminderValue = userAction.reminderValue)
+                }
             }
 
-            AgendaDetailsUserAction.InviteNewAttendee -> emitViewState { viewState ->
-                viewState.copy(showAttendeeDialog = true)
+            AgendaDetailsUserAction.InviteNewAttendee -> {
+                mutableViewStateFlow.update { viewState ->
+                    viewState.copy(showAttendeeDialog = true)
+                }
             }
 
             is AgendaDetailsUserAction.ConfirmAttendeeEmail -> onInviteAttendee()
 
-            AgendaDetailsUserAction.DismissAttendeeDialog -> emitViewState { viewState ->
-                viewState.copy(showAttendeeDialog = false)
+            AgendaDetailsUserAction.DismissAttendeeDialog -> {
+                mutableViewStateFlow.update { viewState ->
+                    viewState.copy(showAttendeeDialog = false)
+                }
             }
 
             is AgendaDetailsUserAction.AttendeeEmailChange -> onAttendeeEmailChange(userAction.email)
             is AgendaDetailsUserAction.OnRemoveAttendee -> onRemoveAttendee(userAction.attendee)
-            AgendaDetailsUserAction.SaveAgendaDetails -> onSaveEvent()
-            AgendaDetailsUserAction.ToEditMode -> emitViewState { viewState ->
-                viewState.copy(isEdit = true)
+            AgendaDetailsUserAction.SaveAgendaDetails -> onSaveAgendaItem()
+            AgendaDetailsUserAction.ToEditMode -> {
+                mutableViewStateFlow.update { viewState ->
+                    viewState.copy(isEdit = true)
+                }
             }
         }
     }
@@ -163,7 +247,7 @@ class AgendaDetailsViewModel(
     }
 
     private fun onDateFromChange() {
-        emitViewState { viewState ->
+        mutableViewStateFlow.update { viewState ->
             viewState.copy(
                 showDatePickerDialog = true,
                 dialogDateTimeData = DialogDateTimeData(
@@ -175,11 +259,13 @@ class AgendaDetailsViewModel(
     }
 
     private fun onDateToChange() {
-        emitViewState { viewState ->
+        mutableViewStateFlow.update { viewState ->
+            val eventTypeDetails = viewState.agendaTypeDetails.getAsEventType() ?: return@update viewState
+
             viewState.copy(
                 showDatePickerDialog = true,
                 dialogDateTimeData = DialogDateTimeData(
-                    localDateTime = viewState.currentToDateTime,
+                    localDateTime = eventTypeDetails.toDateTime,
                     isFrom = false
                 )
             )
@@ -187,7 +273,7 @@ class AgendaDetailsViewModel(
     }
 
     private fun onTimeFromChange() {
-        emitViewState { viewState ->
+        mutableViewStateFlow.update { viewState ->
             viewState.copy(
                 showTimePickerDialog = true,
                 dialogDateTimeData = DialogDateTimeData(
@@ -199,11 +285,13 @@ class AgendaDetailsViewModel(
     }
 
     private fun onTimeToChange() {
-        emitViewState { viewState ->
+        mutableViewStateFlow.update { viewState ->
+            val eventTypeDetails = viewState.agendaTypeDetails.getAsEventType() ?: return@update viewState
+
             viewState.copy(
                 showTimePickerDialog = true,
                 dialogDateTimeData = DialogDateTimeData(
-                    localDateTime = viewState.currentToDateTime,
+                    localDateTime = eventTypeDetails.toDateTime,
                     isFrom = false
                 )
             )
@@ -214,7 +302,7 @@ class AgendaDetailsViewModel(
         showDatePickerDialog: Boolean = viewStateFlow.value.showDatePickerDialog,
         showTimePickerDialog: Boolean = viewStateFlow.value.showTimePickerDialog
     ) {
-        emitViewState { viewState ->
+        mutableViewStateFlow.update { viewState ->
             viewState.copy(
                 showTimePickerDialog = showTimePickerDialog,
                 showDatePickerDialog = showDatePickerDialog
@@ -225,51 +313,59 @@ class AgendaDetailsViewModel(
     private fun onNewDateSelected(dialogDateTimeData: DialogDateTimeData?) {
         dialogDateTimeData ?: return
 
-        emitViewState { viewState ->
+        mutableViewStateFlow.update { viewState ->
+            val eventTypeDetails = viewState.agendaTypeDetails.getAsEventType() ?: return@update viewState
+
             val (fromDateTime, toDateTime) = if (dialogDateTimeData.isFrom) {
                 val newFromDate = viewState.currentFromDateTime.changeOnlyDate(dialogDateTimeData.localDateTime)
-                newFromDate to newFromDate.adoptToDate(viewState.currentToDateTime)
+                newFromDate to newFromDate.adoptToDate(eventTypeDetails.toDateTime)
             } else {
-                val newToDateTime = viewState.currentToDateTime.changeOnlyDate(dialogDateTimeData.localDateTime)
+                val newToDateTime = eventTypeDetails.toDateTime.changeOnlyDate(dialogDateTimeData.localDateTime)
                 newToDateTime.adoptFromDate(viewState.currentFromDateTime) to newToDateTime
             }
 
             viewState.copy(
                 showDatePickerDialog = false,
                 currentFromDateTime = fromDateTime,
-                currentToDateTime = toDateTime,
+                agendaTypeDetails = eventTypeDetails.copy(
+                    toDateTime = toDateTime,
+                    formattedToDate = toDateTime.formatDate(),
+                    formattedToTime = toDateTime.formatTime()
+                ),
                 formattedFromDate = fromDateTime.formatDate(),
-                formattedFromTime = fromDateTime.formatTime(),
-                formattedToDate = toDateTime.formatDate(),
-                formattedToTime = toDateTime.formatTime()
+                formattedFromTime = fromDateTime.formatTime()
             )
         }
     }
 
     private fun onNewTimeSelected(selectedHour: Int, selectedMinutes: Int, isFrom: Boolean?) {
-        emitViewState { viewState ->
+        mutableViewStateFlow.update { viewState ->
+            val eventTypeDetails = viewState.agendaTypeDetails.getAsEventType() ?: return@update viewState
+
             val (fromDateTime, toDateTime) = if (isFrom == true) {
                 val newFromDate = viewState.currentFromDateTime.changeOnlyTime(selectedHour, selectedMinutes)
-                newFromDate to newFromDate.adoptToDate(viewState.currentToDateTime)
+                newFromDate to newFromDate.adoptToDate(eventTypeDetails.toDateTime)
             } else {
-                val newToDateTime = viewState.currentToDateTime.changeOnlyTime(selectedHour, selectedMinutes)
+                val newToDateTime = eventTypeDetails.toDateTime.changeOnlyTime(selectedHour, selectedMinutes)
                 newToDateTime.adoptFromDate(viewState.currentFromDateTime) to newToDateTime
             }
 
             viewState.copy(
                 showTimePickerDialog = false,
                 currentFromDateTime = fromDateTime,
-                currentToDateTime = toDateTime,
+                agendaTypeDetails = eventTypeDetails.copy(
+                    toDateTime = toDateTime,
+                    formattedToDate = toDateTime.formatDate(),
+                    formattedToTime = toDateTime.formatTime()
+                ),
                 formattedFromDate = fromDateTime.formatDate(),
-                formattedFromTime = fromDateTime.formatTime(),
-                formattedToDate = toDateTime.formatDate(),
-                formattedToTime = toDateTime.formatTime()
+                formattedFromTime = fromDateTime.formatTime()
             )
         }
     }
 
     private fun onAttendeeEmailChange(text: String) {
-        emitViewState { viewState ->
+        mutableViewStateFlow.update { viewState ->
             viewState.copy(
                 isAttendeeEmailError = if (viewStateFlow.value.isAttendeeEmailError) {
                     !validateEmailUseCase(
@@ -287,7 +383,7 @@ class AgendaDetailsViewModel(
         val email = viewStateFlow.value.attendeeInputValue
         val isEmailValid = validateEmailUseCase(email)
         if (!isEmailValid) {
-            emitViewState { viewState ->
+            mutableViewStateFlow.update { viewState ->
                 viewState.copy(isAttendeeEmailError = true)
             }
             return
@@ -295,13 +391,13 @@ class AgendaDetailsViewModel(
 
         viewModelScope.launch {
             agendaRepository.getAttendee(email).onError {
-                emitViewState { viewState ->
+                mutableViewStateFlow.update { viewState ->
                     viewState.copy(
                         isAttendeeEmailError = true
                     )
                 }
             }.onSuccess { data ->
-                emitViewState { viewState ->
+                mutableViewStateFlow.update { viewState ->
                     if (viewStateFlow.value.attendees.any {
                             data.userId == it.userId
                         }
@@ -323,29 +419,66 @@ class AgendaDetailsViewModel(
     }
 
     private fun onRemoveAttendee(attendee: Attendee) {
-        emitViewState { viewState ->
+        mutableViewStateFlow.update { viewState ->
             viewState.copy(
                 attendees = viewState.attendees.filter { attendee.userId != it.userId }
             )
         }
     }
 
-    private fun onSaveEvent() {
-        if (eventId.isNotEmpty()) {
+    private fun onSaveAgendaItem() {
+        if (agendaId.isNotEmpty()) {
             // TODO patch
             return
         }
+        when (agendaType) {
+            AgendaType.EVENT -> onSaveEvent()
+            AgendaType.TASK -> onSaveTask()
+            AgendaType.REMINDER -> TODO()
+        }
+    }
+
+    private fun onSaveEvent() {
         viewModelScope.launch {
             val currentViewState = viewStateFlow.value
+            val eventTypeDetails = currentViewState.agendaTypeDetails.getAsEventType() ?: return@launch
+
             agendaRepository.createEvent(
                 Event(
                     eventId = AgendaUtils.generateAgendaId(),
                     title = currentViewState.title.getFromDynamicStringOrNull() ?: "",
                     description = currentViewState.description.getFromDynamicStringOrNull() ?: "",
                     fromTime = currentViewState.currentFromDateTime,
-                    toTime = currentViewState.currentToDateTime,
+                    toTime = eventTypeDetails.toDateTime,
                     reminder = currentViewState.reminderValue,
                     attendees = currentViewState.attendees,
+                )
+            ).onError {
+                if (it.isSyncError()) {
+                    // TODO send a message that event will be saved after phone gets back internet connection
+                    emitSingleEvent(AgendaDetailsSingleEvent.CloseScreen)
+                    return@onError
+                }
+                println("ERROR: $it")
+                // TODO handle error
+            }.onSuccess {
+                emitSingleEvent(AgendaDetailsSingleEvent.CloseScreen)
+            }
+        }
+    }
+
+    private fun onSaveTask() {
+        viewModelScope.launch {
+            val currentViewState = viewStateFlow.value
+
+            agendaRepository.createTask(
+                Task(
+                    taskId = AgendaUtils.generateAgendaId(),
+                    title = currentViewState.title.getFromDynamicStringOrNull() ?: "",
+                    description = currentViewState.description.getFromDynamicStringOrNull() ?: "",
+                    time = currentViewState.currentFromDateTime,
+                    reminder = currentViewState.reminderValue,
+                    isDone = false
                 )
             ).onError {
                 if (it.isSyncError()) {
@@ -364,26 +497,21 @@ class AgendaDetailsViewModel(
     private fun canEventBeSaved(title: TextData, description: TextData): Boolean =
         title.getFromDynamicStringOrNull() != null && description.getFromDynamicStringOrNull() != null
 
-    private fun onDefaultEventDetailsLoad() {
+    private fun setGeneralDefaultAgendaValues() {
         val fromDateTime = DateTimeUtils.toLocalDateTime(viewStateFlow.value.currentFromDateTime.getMillis())
-        val toDateTime =
-            DateTimeUtils.toLocalDateTime(viewStateFlow.value.currentToDateTime.getMillis())
-
-        emitViewState { viewState ->
+        mutableViewStateFlow.update { viewState ->
             viewState.copy(
                 currentFromDateTime = fromDateTime,
                 formattedFromDate = fromDateTime.formatDate(),
                 formattedFromTime = fromDateTime.formatTime(),
-                currentToDateTime = toDateTime,
-                formattedToDate = toDateTime.formatDate(),
-                formattedToTime = toDateTime.formatTime(),
                 isEdit = isEditMode
             )
         }
     }
 
     companion object {
-        const val CREATE_EVENT_AGENDA_ID = "create_event_agenda_id"
-        const val CREATE_EVENT_IS_EDIT = "create_event_is_edit"
+        const val CREATE_AGENDA_ID = "create_agenda_id"
+        const val CREATE_AGENDA_IS_EDIT = "create_agenda_is_edit"
+        const val CREATE_AGENDA_TYPE = "create_agenda_type"
     }
 }

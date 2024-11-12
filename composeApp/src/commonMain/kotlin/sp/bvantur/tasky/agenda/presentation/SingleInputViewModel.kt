@@ -11,10 +11,10 @@ import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
 import sp.bvantur.tasky.core.presentation.TextData
 import sp.bvantur.tasky.core.presentation.ViewStateViewModel
 import tasky.composeapp.generated.resources.Res
+import tasky.composeapp.generated.resources.edit_description
+import tasky.composeapp.generated.resources.edit_title
 import tasky.composeapp.generated.resources.enter_description
 import tasky.composeapp.generated.resources.enter_title
-import tasky.composeapp.generated.resources.event_description
-import tasky.composeapp.generated.resources.event_title
 
 class SingleInputViewModel(dispatcherProvider: DispatcherProvider, savedStateHandle: SavedStateHandle) :
     ViewStateViewModel<SingleInputViewState>(SingleInputViewState()),
@@ -28,7 +28,7 @@ class SingleInputViewModel(dispatcherProvider: DispatcherProvider, savedStateHan
             emitViewState { viewState ->
                 viewState.copy(
                     title = TextData.ResourceString(
-                        if (inputModel.inputType.isTitle()) Res.string.event_title else Res.string.event_description
+                        if (inputModel.inputType.isTitle()) Res.string.edit_title else Res.string.edit_description
                     ),
                     isTitle = inputModel.inputType.isTitle(),
                     placeholder = TextData.ResourceString(

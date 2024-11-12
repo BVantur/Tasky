@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 
 abstract class ViewStateViewModel<State : ViewState>(initialViewState: State) : ViewModel() {
 
-    private val mutableViewStateFlow = MutableStateFlow(initialViewState)
+    protected val mutableViewStateFlow = MutableStateFlow(initialViewState)
     val viewStateFlow: StateFlow<State> = mutableViewStateFlow.onStart { initialLoadData() }
         .stateIn(
             viewModelScope,

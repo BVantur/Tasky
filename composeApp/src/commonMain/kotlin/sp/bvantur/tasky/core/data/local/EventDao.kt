@@ -30,5 +30,5 @@ interface EventDao {
     fun getAllEvents(syncStepDelete: Int = SyncStep.DELETE.ordinal): Flow<List<EventEntity>>
 
     @Query("SELECT * FROM ${Event.TABLE_NAME} WHERE ${Event.COLUMN_SYNC_STEP} != :syncStepNone")
-    fun getPendingEvents(syncStepNone: Int = SyncStep.NONE.ordinal): Flow<List<EventEntity>>
+    fun getPendingEvents(syncStepNone: Int = SyncStep.FULL_SYNCED.ordinal): Flow<List<EventEntity>>
 }

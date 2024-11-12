@@ -5,6 +5,7 @@ import sp.bvantur.tasky.home.domain.model.AgendaItem
 
 sealed interface HomeUserAction : UserAction {
     data object CreateNewEvent : HomeUserAction
+    data object CreateNewTask : HomeUserAction
     data object LogoutUser : HomeUserAction
     data class OpenAgendaItem(val agendaItem: AgendaItem) : HomeUserAction
     data class EditAgendaItem(val agendaItem: AgendaItem) : HomeUserAction

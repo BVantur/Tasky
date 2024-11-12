@@ -30,7 +30,7 @@ class HomeLocalDataSource(
 
     fun getEvents(): Flow<List<EventEntity>> = database.getEventDao().getAllEvents()
 
-    fun getPendingAgendaItems(): Flow<List<EventEntity>> = database.getEventDao().getPendingEvents()
+    fun getPendingEventItems(): Flow<List<EventEntity>> = database.getEventDao().getPendingEvents()
 
     fun getProfileName(): String? = securePersistentStorageProvider.kVault.string(SecurePersistentStorageProvider.NAME)
 

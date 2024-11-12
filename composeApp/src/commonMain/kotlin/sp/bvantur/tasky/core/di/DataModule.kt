@@ -42,6 +42,8 @@ val dataModule = module {
             }
             install(InspektifyKtor) {
                 logLevel = LogLevel.All
+
+                shortcutEnabled = true
             }
 
             install(Auth) {
