@@ -1,12 +1,10 @@
 package sp.bvantur.tasky.agenda.presentation
 
-import androidx.compose.ui.graphics.Color
 import kotlinx.datetime.LocalDateTime
-import org.jetbrains.compose.resources.StringResource
-import sp.bvantur.tasky.agenda.domain.model.AgendaType
 import sp.bvantur.tasky.agenda.domain.model.Attendee
 import sp.bvantur.tasky.agenda.domain.model.ReminderValue
 import sp.bvantur.tasky.agenda.presentation.utils.DateTimeUtils
+import sp.bvantur.tasky.core.domain.model.AgendaType
 import sp.bvantur.tasky.core.presentation.TextData
 import sp.bvantur.tasky.core.presentation.ViewState
 import tasky.composeapp.generated.resources.Res
@@ -38,7 +36,7 @@ data class CreateEventViewState(
 
 data class DialogDateTimeData(val localDateTime: LocalDateTime, val isFrom: Boolean)
 
-sealed class AgendaTypeDetails(val agendaTypeText: StringResource, val agendaTypeColor: Color) {
+sealed class AgendaTypeDetails(val agendaType: AgendaType) {
     data class Event(
         val toDateTime: LocalDateTime = DateTimeUtils.getCurrentLocalDateTime(addDuration = 30.minutes),
         val formattedToDate: String = "",
@@ -47,18 +45,9 @@ sealed class AgendaTypeDetails(val agendaTypeText: StringResource, val agendaTyp
         val isAttendeeEmailError: Boolean = false,
         val attendeeInputValue: String = "",
         val attendees: List<Attendee> = listOf()
-    ) : AgendaTypeDetails(
-        AgendaType.EVENT.text,
-        AgendaType.EVENT.color
-    )
-    data object Task : AgendaTypeDetails(
-        AgendaType.TASK.text,
-        AgendaType.TASK.color
-    )
-    data object Reminder : AgendaTypeDetails(
-        AgendaType.REMINDER.text,
-        AgendaType.REMINDER.color
-    )
+    ) : AgendaTypeDetails(AgendaType.EVENT)
+    data object Task : AgendaTypeDetails(AgendaType.TASK)
+    data object Reminder : AgendaTypeDetails(AgendaType.REMINDER)
 
     fun getAsEventType(): Event? = this as? Event
 

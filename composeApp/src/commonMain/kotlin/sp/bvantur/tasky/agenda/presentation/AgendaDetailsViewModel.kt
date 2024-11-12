@@ -3,15 +3,14 @@ package sp.bvantur.tasky.agenda.presentation
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import sp.bvantur.tasky.agenda.data.utils.AgendaUtils
 import sp.bvantur.tasky.agenda.domain.AgendaRepository
-import sp.bvantur.tasky.agenda.domain.model.AgendaType
 import sp.bvantur.tasky.agenda.domain.model.Attendee
 import sp.bvantur.tasky.agenda.domain.model.Event
 import sp.bvantur.tasky.agenda.domain.model.Task
 import sp.bvantur.tasky.agenda.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.agenda.presentation.models.InputType
 import sp.bvantur.tasky.agenda.presentation.models.SingleInputModel
+import sp.bvantur.tasky.agenda.presentation.utils.AgendaDetailsUtils
 import sp.bvantur.tasky.agenda.presentation.utils.DateTimeUtils
 import sp.bvantur.tasky.core.domain.DispatcherProvider
 import sp.bvantur.tasky.core.domain.ValidateEmailUseCase
@@ -22,6 +21,7 @@ import sp.bvantur.tasky.core.domain.extensions.changeOnlyTime
 import sp.bvantur.tasky.core.domain.extensions.formatDate
 import sp.bvantur.tasky.core.domain.extensions.formatTime
 import sp.bvantur.tasky.core.domain.extensions.getMillis
+import sp.bvantur.tasky.core.domain.model.AgendaType
 import sp.bvantur.tasky.core.domain.onError
 import sp.bvantur.tasky.core.domain.onSuccess
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
@@ -445,7 +445,7 @@ class AgendaDetailsViewModel(
 
             agendaRepository.createEvent(
                 Event(
-                    eventId = AgendaUtils.generateAgendaId(),
+                    eventId = AgendaDetailsUtils.generateAgendaId(),
                     title = currentViewState.title.getFromDynamicStringOrNull() ?: "",
                     description = currentViewState.description.getFromDynamicStringOrNull() ?: "",
                     fromTime = currentViewState.currentFromDateTime,
@@ -473,7 +473,7 @@ class AgendaDetailsViewModel(
 
             agendaRepository.createTask(
                 Task(
-                    taskId = AgendaUtils.generateAgendaId(),
+                    taskId = AgendaDetailsUtils.generateAgendaId(),
                     title = currentViewState.title.getFromDynamicStringOrNull() ?: "",
                     description = currentViewState.description.getFromDynamicStringOrNull() ?: "",
                     time = currentViewState.currentFromDateTime,

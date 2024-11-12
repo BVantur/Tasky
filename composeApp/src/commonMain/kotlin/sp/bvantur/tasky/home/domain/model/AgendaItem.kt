@@ -1,6 +1,6 @@
 package sp.bvantur.tasky.home.domain.model
 
-import sp.bvantur.tasky.agenda.domain.model.AgendaType
+import sp.bvantur.tasky.core.domain.model.AgendaType
 
 data class AgendaItem(
     val id: String,

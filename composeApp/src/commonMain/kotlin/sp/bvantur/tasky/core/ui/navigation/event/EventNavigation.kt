@@ -7,7 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import sp.bvantur.tasky.agenda.domain.model.AgendaType
 import sp.bvantur.tasky.agenda.presentation.AgendaDetailsViewModel.Companion.CREATE_AGENDA_ID
 import sp.bvantur.tasky.agenda.presentation.AgendaDetailsViewModel.Companion.CREATE_AGENDA_IS_EDIT
 import sp.bvantur.tasky.agenda.presentation.AgendaDetailsViewModel.Companion.CREATE_AGENDA_TYPE
@@ -17,6 +16,7 @@ import sp.bvantur.tasky.agenda.presentation.models.SingleInputModel
 import sp.bvantur.tasky.agenda.ui.AgendaDetailsRoute
 import sp.bvantur.tasky.agenda.ui.SingleInputRoute
 import sp.bvantur.tasky.agenda.ui.model.SingleInputModelNavType
+import sp.bvantur.tasky.core.domain.model.AgendaType
 
 internal const val CREATE_EVENT_NAVIGATION_ROUTE = "create_event_navigation_route"
 internal const val SINGLE_INPUT_NAVIGATION_ROUTE = "single_input_navigation_route"

@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import sp.bvantur.tasky.agenda.domain.model.AgendaType
 import sp.bvantur.tasky.core.domain.DispatcherProvider
+import sp.bvantur.tasky.core.domain.model.AgendaType
 import sp.bvantur.tasky.core.domain.onSuccess
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
 import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl

@@ -41,7 +41,7 @@ import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import sp.bvantur.tasky.agenda.domain.model.AgendaType
+import sp.bvantur.tasky.core.domain.model.AgendaType
 import sp.bvantur.tasky.core.ui.components.TaskyAgendaText
 import sp.bvantur.tasky.core.ui.components.TaskyContentSurface
 import sp.bvantur.tasky.core.ui.components.TaskyEventTitle

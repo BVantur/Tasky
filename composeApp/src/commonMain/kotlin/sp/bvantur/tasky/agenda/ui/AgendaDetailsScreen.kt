@@ -35,11 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import sp.bvantur.tasky.agenda.domain.model.AgendaType
 import sp.bvantur.tasky.agenda.presentation.AgendaDetailsSingleEvent
 import sp.bvantur.tasky.agenda.presentation.AgendaDetailsUserAction
 import sp.bvantur.tasky.agenda.presentation.AgendaDetailsViewModel
@@ -58,7 +56,10 @@ import sp.bvantur.tasky.agenda.ui.components.TaskyReminderPicker
 import sp.bvantur.tasky.agenda.ui.components.TaskyTimeDatePicker
 import sp.bvantur.tasky.agenda.ui.components.TaskyTimePickerDialog
 import sp.bvantur.tasky.agenda.ui.components.TaskyVisitorsSection
+import sp.bvantur.tasky.agenda.ui.utils.toAgendaColor
+import sp.bvantur.tasky.agenda.ui.utils.toAgendaText
 import sp.bvantur.tasky.core.domain.extensions.getMillis
+import sp.bvantur.tasky.core.domain.model.AgendaType
 import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
 import sp.bvantur.tasky.core.ui.components.TaskyContentSurface
 import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
@@ -165,8 +166,8 @@ fun AgendaDetailsScreen(
             Column(modifier = Modifier.fillMaxWidth().padding(top = 30.dp)) {
                 TaskyEventType(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = stringResource(viewState.agendaTypeDetails.agendaTypeText),
-                    choreColor = viewState.agendaTypeDetails.agendaTypeColor
+                    text = stringResource(viewState.agendaTypeDetails.agendaType.toAgendaText()),
+                    choreColor = viewState.agendaTypeDetails.agendaType.toAgendaColor()
                 )
 
                 TaskyAgendaTitleRow(
