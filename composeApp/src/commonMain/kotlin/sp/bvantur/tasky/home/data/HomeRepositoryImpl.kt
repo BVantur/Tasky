@@ -49,9 +49,10 @@ class HomeRepositoryImpl(
     }
 
     override suspend fun syncPendingAgendaItems() {
-        localDataSource.getPendingAgendaItems().collect { items ->
+        localDataSource.getPendingEventItems().collect { items ->
             syncScheduler.scheduleAgendaSync(items)
         }
+        // TODO sync Tasks
     }
 
     override suspend fun getProfileName(): String? = localDataSource.getProfileName()

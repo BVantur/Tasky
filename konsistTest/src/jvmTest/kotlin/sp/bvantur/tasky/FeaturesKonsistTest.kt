@@ -14,7 +14,7 @@ class FeaturesKonsistTest {
         Layer("Register", "sp.bvantur.tasky.register.."),
         Layer("Login", "sp.bvantur.tasky.login.."),
         Layer("Home", "sp.bvantur.tasky.home.."),
-        Layer("Event", "sp.bvantur.tasky.event..")
+        Layer("Event", "sp.bvantur.tasky.agenda..")
     )
 
     @Test

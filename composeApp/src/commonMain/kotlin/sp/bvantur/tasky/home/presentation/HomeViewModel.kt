@@ -5,6 +5,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import sp.bvantur.tasky.core.domain.DispatcherProvider
+import sp.bvantur.tasky.core.domain.model.AgendaType
 import sp.bvantur.tasky.core.domain.onSuccess
 import sp.bvantur.tasky.core.presentation.SingleEventHandler
 import sp.bvantur.tasky.core.presentation.SingleEventHandlerImpl
@@ -42,7 +43,7 @@ class HomeViewModel(private val repository: HomeRepository, private val dispatch
             HomeUserAction.CreateNewEvent -> {
                 viewModelScope.launch {
                     emitSingleEvent(
-                        HomeSingleEvent.NavigateToEventDetails(null, true)
+                        HomeSingleEvent.NavigateToEventDetails(null, true, AgendaType.EVENT)
                     )
                 }
             }
@@ -62,12 +63,32 @@ class HomeViewModel(private val repository: HomeRepository, private val dispatch
             }
             is HomeUserAction.EditAgendaItem -> {
                 viewModelScope.launch {
-                    emitSingleEvent(HomeSingleEvent.NavigateToEventDetails(userAction.agendaItem.id, true))
+                    emitSingleEvent(
+                        HomeSingleEvent.NavigateToEventDetails(
+                            userAction.agendaItem.id,
+                            true,
+                            userAction.agendaItem.type
+                        )
+                    )
                 }
             }
             is HomeUserAction.OpenAgendaItem -> {
                 viewModelScope.launch {
-                    emitSingleEvent(HomeSingleEvent.NavigateToEventDetails(userAction.agendaItem.id, false))
+                    emitSingleEvent(
+                        HomeSingleEvent.NavigateToEventDetails(
+                            userAction.agendaItem.id,
+                            false,
+                            userAction.agendaItem.type
+                        )
+                    )
+                }
+            }
+
+            HomeUserAction.CreateNewTask -> {
+                viewModelScope.launch {
+                    emitSingleEvent(
+                        HomeSingleEvent.NavigateToEventDetails(null, true, AgendaType.TASK)
+                    )
                 }
             }
         }

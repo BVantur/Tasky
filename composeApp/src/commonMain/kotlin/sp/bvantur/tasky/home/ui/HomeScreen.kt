@@ -41,6 +41,7 @@ import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import sp.bvantur.tasky.core.domain.model.AgendaType
 import sp.bvantur.tasky.core.ui.components.TaskyAgendaText
 import sp.bvantur.tasky.core.ui.components.TaskyContentSurface
 import sp.bvantur.tasky.core.ui.components.TaskyEventTitle
@@ -61,9 +62,10 @@ import tasky.composeapp.generated.resources.event
 import tasky.composeapp.generated.resources.logout
 import tasky.composeapp.generated.resources.open
 import tasky.composeapp.generated.resources.password_visibility_icon
+import tasky.composeapp.generated.resources.task
 
 @Composable
-fun HomeRoute(onEventDetailsAction: (String?, Boolean) -> Unit, onLoginAction: () -> Unit) {
+fun HomeRoute(onEventDetailsAction: (String?, Boolean, AgendaType) -> Unit, onLoginAction: () -> Unit) {
     val viewModel = koinViewModel<HomeViewModel>()
 
     val viewState: HomeViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
@@ -75,7 +77,7 @@ fun HomeRoute(onEventDetailsAction: (String?, Boolean) -> Unit, onLoginAction: (
             }
 
             is HomeSingleEvent.NavigateToEventDetails -> {
-                onEventDetailsAction(singleEvent.eventId, singleEvent.isEditMode)
+                onEventDetailsAction(singleEvent.eventId, singleEvent.isEditMode, singleEvent.agendaType)
             }
         }
     }
@@ -94,6 +96,9 @@ private fun HomeScreen(viewState: HomeViewState, onUserAction: (HomeUserAction) 
             FloatingActionButtonWithDropdown(
                 onCreateEventAction = {
                     onUserAction(HomeUserAction.CreateNewEvent)
+                },
+                onCreateTaskAction = {
+                    onUserAction(HomeUserAction.CreateNewTask)
                 }
             )
         }
@@ -135,7 +140,7 @@ private fun HomeScreen(viewState: HomeViewState, onUserAction: (HomeUserAction) 
 }
 
 @Composable
-fun FloatingActionButtonWithDropdown(onCreateEventAction: () -> Unit) {
+fun FloatingActionButtonWithDropdown(onCreateEventAction: () -> Unit, onCreateTaskAction: () -> Unit) {
     var showMenu by remember { mutableStateOf(false) }
 
     Box(
@@ -167,6 +172,13 @@ fun FloatingActionButtonWithDropdown(onCreateEventAction: () -> Unit) {
                 onClick = {
                     showMenu = false
                     onCreateEventAction()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(Res.string.task)) },
+                onClick = {
+                    showMenu = false
+                    onCreateTaskAction()
                 }
             )
         }

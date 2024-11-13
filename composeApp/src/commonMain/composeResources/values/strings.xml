@@ -36,4 +36,11 @@
     <string name="open">Open</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="task">Task</string>
+    <string name="reminder">Reminder</string>
+    <string name="task_description">Task description</string>
+    <string name="task_title">Task title</string>
+    <string name="edit_title">Edit title</string>
+    <string name="edit_description">Edit description</string>
+    <string name="at_word">At</string>
 </resources>

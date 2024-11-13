@@ -1,7 +1,7 @@
 package sp.bvantur.tasky.core.data.local
 
 enum class SyncStep {
-    NONE,
+    FULL_SYNCED,
     CREATE,
     EDIT,
     DELETE;

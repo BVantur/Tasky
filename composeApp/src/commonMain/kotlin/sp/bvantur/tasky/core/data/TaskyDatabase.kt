@@ -12,20 +12,23 @@ import sp.bvantur.tasky.core.data.local.AttendeeDao
 import sp.bvantur.tasky.core.data.local.AttendeeEntity
 import sp.bvantur.tasky.core.data.local.EventDao
 import sp.bvantur.tasky.core.data.local.EventEntity
+import sp.bvantur.tasky.core.data.local.TaskDao
+import sp.bvantur.tasky.core.data.local.TaskEntity
 import sp.bvantur.tasky.core.data.local.converter.SyncStepConverter
 import sp.bvantur.tasky.core.domain.TaskyError
 import sp.bvantur.tasky.core.domain.TaskyResult
 import sp.bvantur.tasky.core.domain.asEmptyDataResult
 
 @Database(
-    entities = [AttendeeEntity::class, EventEntity::class],
-    version = 2
+    entities = [AttendeeEntity::class, EventEntity::class, TaskEntity::class],
+    version = 3
 )
 @TypeConverters(SyncStepConverter::class)
 @ConstructedBy(TaskyDatabaseConstructor::class)
 abstract class TaskyDatabase : RoomDatabase() {
     abstract fun getAttendeeDao(): AttendeeDao
     abstract fun getEventDao(): EventDao
+    abstract fun getTaskDao(): TaskDao
 
     suspend fun clearDatabase(): TaskyResult<Unit, TaskyError> = try {
         useWriterConnection {
@@ -73,6 +76,19 @@ object TaskyDatabaseConstants {
         const val COLUMN_REMIND_AT = "eventRemindAt"
         const val COLUMN_HOST = "eventHost"
         const val COLUMN_IS_USER_EVENT_CREATOR = "eventIsUserEventCreator"
+        const val COLUMN_SYNC_STEP = "sync_step"
+    }
+
+    object Task {
+        const val TABLE_NAME = "TaskEntity"
+
+        const val COLUMN_ID = "taskId"
+        const val COLUMN_TITLE = "taskTitle"
+        const val COLUMN_DESCRIPTION = "taskDescription"
+        const val COLUMN_TIME = "taskTime"
+        const val COLUMN_DATE = "taskDate"
+        const val COLUMN_REMINDER = "taskReminder"
+        const val COLUMN_IS_DONE = "taskIsDone"
         const val COLUMN_SYNC_STEP = "sync_step"
     }
 }

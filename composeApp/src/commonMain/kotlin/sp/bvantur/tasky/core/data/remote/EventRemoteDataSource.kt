@@ -14,6 +14,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import sp.bvantur.tasky.agenda.data.remote.CheckAttendeeResponse
 import sp.bvantur.tasky.agenda.data.remote.CreateEventRequest
+import sp.bvantur.tasky.agenda.data.remote.CreateTaskRequest
 import sp.bvantur.tasky.core.data.safeApiCall
 import sp.bvantur.tasky.core.domain.TaskyError
 import sp.bvantur.tasky.core.domain.TaskyResult
@@ -31,7 +32,7 @@ class EventRemoteDataSource(private val httpClient: HttpClient, private val json
         }
     }
 
-    suspend fun createEvent(createEvent: CreateEventRequest): TaskyResult<EventResponse, TaskyError> = safeApiCall {
+    suspend fun createEvent(createEvent: CreateEventRequest): TaskyResult<Unit, TaskyError> = safeApiCall {
         httpClient.request {
             url {
                 method = HttpMethod.Post
@@ -54,6 +55,17 @@ class EventRemoteDataSource(private val httpClient: HttpClient, private val json
                 method = HttpMethod.Delete
                 path("event")
                 parameters.append("eventId", id)
+            }
+        }
+    }
+
+    suspend fun createTask(createTask: CreateTaskRequest): TaskyResult<Unit, TaskyError> = safeApiCall {
+        httpClient.request {
+            url {
+                method = HttpMethod.Post
+                path("task")
+                contentType(ContentType.Application.Json)
+                setBody(createTask)
             }
         }
     }

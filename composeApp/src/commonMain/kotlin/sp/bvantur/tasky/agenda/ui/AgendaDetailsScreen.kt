@@ -41,6 +41,7 @@ import org.koin.core.parameter.parametersOf
 import sp.bvantur.tasky.agenda.presentation.AgendaDetailsSingleEvent
 import sp.bvantur.tasky.agenda.presentation.AgendaDetailsUserAction
 import sp.bvantur.tasky.agenda.presentation.AgendaDetailsViewModel
+import sp.bvantur.tasky.agenda.presentation.AgendaTypeDetails
 import sp.bvantur.tasky.agenda.presentation.CreateEventViewState
 import sp.bvantur.tasky.agenda.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.agenda.presentation.models.SingleInputModel
@@ -55,33 +56,34 @@ import sp.bvantur.tasky.agenda.ui.components.TaskyReminderPicker
 import sp.bvantur.tasky.agenda.ui.components.TaskyTimeDatePicker
 import sp.bvantur.tasky.agenda.ui.components.TaskyTimePickerDialog
 import sp.bvantur.tasky.agenda.ui.components.TaskyVisitorsSection
+import sp.bvantur.tasky.agenda.ui.utils.toAgendaColor
+import sp.bvantur.tasky.agenda.ui.utils.toAgendaText
 import sp.bvantur.tasky.core.domain.extensions.getMillis
+import sp.bvantur.tasky.core.domain.model.AgendaType
 import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
 import sp.bvantur.tasky.core.ui.components.TaskyContentSurface
 import sp.bvantur.tasky.core.ui.components.TaskyUserDataTextField
-import sp.bvantur.tasky.core.ui.theme.eventChoreType
 import sp.bvantur.tasky.core.ui.utils.CollectSingleEventsWithLifecycle
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.add
 import tasky.composeapp.generated.resources.add_visitor
 import tasky.composeapp.generated.resources.close
 import tasky.composeapp.generated.resources.email_address
-import tasky.composeapp.generated.resources.event
-import tasky.composeapp.generated.resources.from_word
 import tasky.composeapp.generated.resources.save
 import tasky.composeapp.generated.resources.select
 import tasky.composeapp.generated.resources.to_word
 
 @Composable
-fun EventDetailsRoute(
+fun AgendaDetailsRoute(
     eventModel: CreateEventUpdatesModel,
     eventId: String?,
     isEdit: Boolean = false,
+    agendaType: AgendaType = AgendaType.EVENT,
     onNavigateBack: () -> Unit,
     onOpenSingleInputScreen: (SingleInputModel) -> Unit
 ) {
     val viewModel = koinViewModel<AgendaDetailsViewModel>(parameters = {
-        parametersOf(eventId, isEdit)
+        parametersOf(eventId, isEdit, agendaType)
     })
 
     val viewState: CreateEventViewState by viewModel.viewStateFlow.collectAsStateWithLifecycle()
@@ -97,7 +99,7 @@ fun EventDetailsRoute(
         }
     }
 
-    EventDetailsScreen(
+    AgendaDetailsScreen(
         viewState = viewState,
         onNavigateBack = onNavigateBack,
         onUserAction = viewModel::onUserAction
@@ -106,7 +108,7 @@ fun EventDetailsRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventDetailsScreen(
+fun AgendaDetailsScreen(
     viewState: CreateEventViewState,
     onNavigateBack: () -> Unit,
     onUserAction: (AgendaDetailsUserAction) -> Unit
@@ -164,8 +166,8 @@ fun EventDetailsScreen(
             Column(modifier = Modifier.fillMaxWidth().padding(top = 30.dp)) {
                 TaskyEventType(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = stringResource(Res.string.event),
-                    choreColor = MaterialTheme.colorScheme.eventChoreType
+                    text = stringResource(viewState.agendaTypeDetails.agendaType.toAgendaText()),
+                    choreColor = viewState.agendaTypeDetails.agendaType.toAgendaColor()
                 )
 
                 TaskyAgendaTitleRow(
@@ -187,13 +189,13 @@ fun EventDetailsScreen(
                         onUserAction(AgendaDetailsUserAction.DescriptionChange)
                     }
                 )
-
-                TaskyAddImagesSection()
-
-                TaskyEventDivider(modifier = Modifier.padding(top = 30.dp))
+                if (viewState.agendaTypeDetails is AgendaTypeDetails.Event) {
+                    TaskyAddImagesSection()
+                    TaskyEventDivider(modifier = Modifier.padding(top = 30.dp))
+                }
 
                 TaskyTimeDatePicker(
-                    propertyName = stringResource(Res.string.from_word),
+                    propertyName = viewState.fromDateText.asString(),
                     formattedDate = viewState.formattedFromDate,
                     formattedTime = viewState.formattedFromTime,
                     isEnabled = viewState.isEdit,
@@ -205,19 +207,21 @@ fun EventDetailsScreen(
                     }
                 )
                 TaskyEventDivider()
-                TaskyTimeDatePicker(
-                    propertyName = stringResource(Res.string.to_word),
-                    formattedDate = viewState.formattedToDate,
-                    formattedTime = viewState.formattedToTime,
-                    isEnabled = viewState.isEdit,
-                    onTimeChangeAction = {
-                        onUserAction(AgendaDetailsUserAction.TimeToChange)
-                    },
-                    onDateChangeAction = {
-                        onUserAction(AgendaDetailsUserAction.DateToChange)
-                    }
-                )
-                TaskyEventDivider()
+                if (viewState.agendaTypeDetails is AgendaTypeDetails.Event) {
+                    TaskyTimeDatePicker(
+                        propertyName = stringResource(Res.string.to_word),
+                        formattedDate = viewState.agendaTypeDetails.getAsEventType()?.formattedToDate,
+                        formattedTime = viewState.agendaTypeDetails.getAsEventType()?.formattedToTime,
+                        isEnabled = viewState.isEdit,
+                        onTimeChangeAction = {
+                            onUserAction(AgendaDetailsUserAction.TimeToChange)
+                        },
+                        onDateChangeAction = {
+                            onUserAction(AgendaDetailsUserAction.DateToChange)
+                        }
+                    )
+                    TaskyEventDivider()
+                }
                 TaskyReminderPicker(
                     modifier = Modifier.padding(start = 16.dp),
                     selectedReminderValue = viewState.reminderValue,
@@ -227,17 +231,18 @@ fun EventDetailsScreen(
                     }
                 )
                 TaskyEventDivider()
-
-                TaskyVisitorsSection(
-                    attendees = viewState.attendees,
-                    isEnabled = viewState.isEdit,
-                    onClick = {
-                        onUserAction(AgendaDetailsUserAction.InviteNewAttendee)
-                    },
-                    onDeleteAttendee = {
-                        onUserAction(AgendaDetailsUserAction.OnRemoveAttendee(it))
-                    }
-                )
+                if (viewState.agendaTypeDetails is AgendaTypeDetails.Event) {
+                    TaskyVisitorsSection(
+                        attendees = viewState.attendees,
+                        isEnabled = viewState.isEdit,
+                        onClick = {
+                            onUserAction(AgendaDetailsUserAction.InviteNewAttendee)
+                        },
+                        onDeleteAttendee = {
+                            onUserAction(AgendaDetailsUserAction.OnRemoveAttendee(it))
+                        }
+                    )
+                }
             }
         }
     }

@@ -3,11 +3,14 @@ package sp.bvantur.tasky.agenda.data
 import sp.bvantur.tasky.agenda.data.local.AgendaLocalDataSource
 import sp.bvantur.tasky.agenda.data.mappers.asAttendee
 import sp.bvantur.tasky.agenda.data.mappers.asCreateEventRequest
+import sp.bvantur.tasky.agenda.data.mappers.asCreateTaskRequest
 import sp.bvantur.tasky.agenda.data.mappers.asEvent
 import sp.bvantur.tasky.agenda.data.mappers.asEventEntity
+import sp.bvantur.tasky.agenda.data.mappers.asTaskEntity
 import sp.bvantur.tasky.agenda.domain.AgendaRepository
 import sp.bvantur.tasky.agenda.domain.model.Attendee
 import sp.bvantur.tasky.agenda.domain.model.Event
+import sp.bvantur.tasky.agenda.domain.model.Task
 import sp.bvantur.tasky.core.data.local.SyncStep
 import sp.bvantur.tasky.core.data.mappers.asAttendeeEntity
 import sp.bvantur.tasky.core.data.remote.EventRemoteDataSource
@@ -80,7 +83,25 @@ class AgendaRepositoryImpl(
         ).onError {
             localDataSource.saveEvent(eventEntity.copy(syncStep = SyncStep.CREATE))
         }.onSuccess {
-            localDataSource.saveEvent(eventEntity.copy(syncStep = SyncStep.NONE))
+            localDataSource.saveEvent(eventEntity.copy(syncStep = SyncStep.FULL_SYNCED))
+        }.asEmptyDataResult()
+    }
+
+    override suspend fun createTask(task: Task): TaskyEmptyResult<TaskyError> {
+        val taskEntity = task.asTaskEntity()
+
+        val saveTaskResponse = localDataSource.saveTask(taskEntity)
+
+        if (saveTaskResponse.isError()) {
+            return saveTaskResponse.asEmptyDataResult()
+        }
+
+        return remoteDataSource.createTask(
+            taskEntity.asCreateTaskRequest()
+        ).onError {
+            localDataSource.saveTask(taskEntity.copy(syncStep = SyncStep.CREATE))
+        }.onSuccess {
+            localDataSource.saveTask(taskEntity.copy(syncStep = SyncStep.FULL_SYNCED))
         }.asEmptyDataResult()
     }
 

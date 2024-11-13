@@ -1,5 +1,7 @@
 package sp.bvantur.tasky.home.domain.model
 
+import sp.bvantur.tasky.core.domain.model.AgendaType
+
 data class AgendaItem(
     val id: String,
     val title: String,
@@ -7,9 +9,3 @@ data class AgendaItem(
     val duration: String,
     val type: AgendaType
 )
-
-enum class AgendaType {
-    EVENT,
-    TASK,
-    REMINDER
-}
