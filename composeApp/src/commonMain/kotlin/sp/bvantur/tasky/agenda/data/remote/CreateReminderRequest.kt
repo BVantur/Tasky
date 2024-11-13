@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreateTaskRequest(
+data class CreateReminderRequest(
     @SerialName("id")
     val id: String,
     @SerialName("title")
@@ -14,7 +14,5 @@ data class CreateTaskRequest(
     @SerialName("time")
     val time: Long,
     @SerialName("remindAt")
-    val remindAt: Long,
-    @SerialName("isDone")
-    val isDone: Boolean
+    val remindAt: Long
 )

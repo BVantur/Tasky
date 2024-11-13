@@ -12,6 +12,8 @@ import sp.bvantur.tasky.core.data.local.AttendeeDao
 import sp.bvantur.tasky.core.data.local.AttendeeEntity
 import sp.bvantur.tasky.core.data.local.EventDao
 import sp.bvantur.tasky.core.data.local.EventEntity
+import sp.bvantur.tasky.core.data.local.ReminderDao
+import sp.bvantur.tasky.core.data.local.ReminderEntity
 import sp.bvantur.tasky.core.data.local.TaskDao
 import sp.bvantur.tasky.core.data.local.TaskEntity
 import sp.bvantur.tasky.core.data.local.converter.SyncStepConverter
@@ -20,8 +22,8 @@ import sp.bvantur.tasky.core.domain.TaskyResult
 import sp.bvantur.tasky.core.domain.asEmptyDataResult
 
 @Database(
-    entities = [AttendeeEntity::class, EventEntity::class, TaskEntity::class],
-    version = 3
+    entities = [AttendeeEntity::class, EventEntity::class, TaskEntity::class, ReminderEntity::class],
+    version = 4
 )
 @TypeConverters(SyncStepConverter::class)
 @ConstructedBy(TaskyDatabaseConstructor::class)
@@ -29,6 +31,7 @@ abstract class TaskyDatabase : RoomDatabase() {
     abstract fun getAttendeeDao(): AttendeeDao
     abstract fun getEventDao(): EventDao
     abstract fun getTaskDao(): TaskDao
+    abstract fun getReminderDao(): ReminderDao
 
     suspend fun clearDatabase(): TaskyResult<Unit, TaskyError> = try {
         useWriterConnection {
@@ -57,38 +60,48 @@ object TaskyDatabaseConstants {
     object Attendee {
         const val TABLE_NAME = "AttendeeEntity"
 
-        const val COLUMN_ID = "attendeeId"
-        const val COLUMN_NAME = "attendeeName"
-        const val COLUMN_EMAIL = "attendeeEmail"
-        const val COLUMN_EVENT_ID = "attendeeEventId"
-        const val COLUMN_IS_GOING = "attendeeIsGoing"
-        const val COLUMN_REMIND_AT = "attendeeRemindAt"
+        const val COLUMN_ID = "id"
+        const val COLUMN_NAME = "name"
+        const val COLUMN_EMAIL = "email"
+        const val COLUMN_EVENT_ID = "eventId"
+        const val COLUMN_IS_GOING = "isGoing"
+        const val COLUMN_REMIND_AT = "remindAt"
     }
 
     object Event {
         const val TABLE_NAME = "EventEntity"
 
-        const val COLUMN_ID = "eventId"
-        const val COLUMN_TITLE = "eventTitle"
-        const val COLUMN_DESCRIPTION = "eventDescription"
-        const val COLUMN_FROM = "eventFrom"
-        const val COLUMN_TO = "eventTo"
-        const val COLUMN_REMIND_AT = "eventRemindAt"
-        const val COLUMN_HOST = "eventHost"
-        const val COLUMN_IS_USER_EVENT_CREATOR = "eventIsUserEventCreator"
-        const val COLUMN_SYNC_STEP = "sync_step"
+        const val COLUMN_ID = "id"
+        const val COLUMN_TITLE = "title"
+        const val COLUMN_DESCRIPTION = "description"
+        const val COLUMN_FROM = "from"
+        const val COLUMN_TO = "to"
+        const val COLUMN_REMIND_AT = "remindAt"
+        const val COLUMN_HOST = "host"
+        const val COLUMN_IS_USER_EVENT_CREATOR = "isUserEventCreator"
+        const val COLUMN_SYNC_STEP = "syncStep"
     }
 
     object Task {
         const val TABLE_NAME = "TaskEntity"
 
-        const val COLUMN_ID = "taskId"
-        const val COLUMN_TITLE = "taskTitle"
-        const val COLUMN_DESCRIPTION = "taskDescription"
-        const val COLUMN_TIME = "taskTime"
-        const val COLUMN_DATE = "taskDate"
-        const val COLUMN_REMINDER = "taskReminder"
-        const val COLUMN_IS_DONE = "taskIsDone"
-        const val COLUMN_SYNC_STEP = "sync_step"
+        const val COLUMN_ID = "id"
+        const val COLUMN_TITLE = "title"
+        const val COLUMN_DESCRIPTION = "description"
+        const val COLUMN_TIME = "time"
+        const val COLUMN_REMINDER = "reminder"
+        const val COLUMN_IS_DONE = "isDone"
+        const val COLUMN_SYNC_STEP = "syncStep"
+    }
+
+    object Reminder {
+        const val TABLE_NAME = "ReminderEntity"
+
+        const val COLUMN_ID = "id"
+        const val COLUMN_TITLE = "title"
+        const val COLUMN_DESCRIPTION = "description"
+        const val COLUMN_TIME = "time"
+        const val COLUMN_REMINDER = "reminder"
+        const val COLUMN_SYNC_STEP = "syncStep"
     }
 }

@@ -91,6 +91,14 @@ class HomeViewModel(private val repository: HomeRepository, private val dispatch
                     )
                 }
             }
+
+            HomeUserAction.CreateNewReminder -> {
+                viewModelScope.launch {
+                    emitSingleEvent(
+                        HomeSingleEvent.NavigateToEventDetails(null, true, AgendaType.REMINDER)
+                    )
+                }
+            }
         }
     }
 }

@@ -8,14 +8,12 @@ import sp.bvantur.tasky.core.domain.model.AgendaType
 import sp.bvantur.tasky.core.presentation.TextData
 import sp.bvantur.tasky.core.presentation.ViewState
 import tasky.composeapp.generated.resources.Res
-import tasky.composeapp.generated.resources.event_description
-import tasky.composeapp.generated.resources.event_title
 import tasky.composeapp.generated.resources.from_word
 import kotlin.time.Duration.Companion.minutes
 
 data class CreateEventViewState(
-    val title: TextData = TextData.ResourceString(Res.string.event_title),
-    val description: TextData = TextData.ResourceString(Res.string.event_description),
+    val title: String? = null,
+    val description: String? = null,
     val showDatePickerDialog: Boolean = false,
     val showTimePickerDialog: Boolean = false,
     val dialogDateTimeData: DialogDateTimeData? = null,

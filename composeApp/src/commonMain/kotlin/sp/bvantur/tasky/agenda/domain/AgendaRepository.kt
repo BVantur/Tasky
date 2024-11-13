@@ -2,6 +2,7 @@ package sp.bvantur.tasky.agenda.domain
 
 import sp.bvantur.tasky.agenda.domain.model.Attendee
 import sp.bvantur.tasky.agenda.domain.model.Event
+import sp.bvantur.tasky.agenda.domain.model.Reminder
 import sp.bvantur.tasky.agenda.domain.model.Task
 import sp.bvantur.tasky.core.domain.TaskyEmptyResult
 import sp.bvantur.tasky.core.domain.TaskyError
@@ -12,4 +13,5 @@ interface AgendaRepository {
     suspend fun createEvent(event: Event): TaskyEmptyResult<TaskyError>
     suspend fun getEventById(eventId: String): TaskyResult<Event?, TaskyError>
     suspend fun createTask(task: Task): TaskyEmptyResult<TaskyError>
+    suspend fun createReminder(reminder: Reminder): TaskyEmptyResult<TaskyError>
 }

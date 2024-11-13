@@ -6,6 +6,7 @@ import kotlinx.coroutines.launch
 import sp.bvantur.tasky.agenda.domain.AgendaRepository
 import sp.bvantur.tasky.agenda.domain.model.Attendee
 import sp.bvantur.tasky.agenda.domain.model.Event
+import sp.bvantur.tasky.agenda.domain.model.Reminder
 import sp.bvantur.tasky.agenda.domain.model.Task
 import sp.bvantur.tasky.agenda.presentation.models.CreateEventUpdatesModel
 import sp.bvantur.tasky.agenda.presentation.models.InputType
@@ -31,8 +32,6 @@ import sp.bvantur.tasky.core.presentation.ViewModelUserActionHandler
 import sp.bvantur.tasky.core.presentation.ViewStateViewModel
 import tasky.composeapp.generated.resources.Res
 import tasky.composeapp.generated.resources.at_word
-import tasky.composeapp.generated.resources.task_description
-import tasky.composeapp.generated.resources.task_title
 
 class AgendaDetailsViewModel(
     private val agendaId: String,
@@ -64,7 +63,9 @@ class AgendaDetailsViewModel(
                 onLoadTaskDetails(agendaId)
             }
 
-            AgendaType.REMINDER -> TODO()
+            AgendaType.REMINDER -> {
+                onLoadReminderDetails(agendaId)
+            }
         }
     }
 
@@ -72,14 +73,28 @@ class AgendaDetailsViewModel(
         if (agendaId.isNullOrBlank()) {
             mutableViewStateFlow.update { viewState ->
                 viewState.copy(
-                    title = TextData.ResourceString(Res.string.task_title),
-                    description = TextData.ResourceString(Res.string.task_description),
                     fromDateText = TextData.ResourceString(Res.string.at_word),
                     isEdit = isEditMode
                 )
             }
             return
         }
+
+        // TODO load from database
+    }
+
+    private fun onLoadReminderDetails(agendaId: String?) {
+        if (agendaId.isNullOrBlank()) {
+            mutableViewStateFlow.update { viewState ->
+                viewState.copy(
+                    fromDateText = TextData.ResourceString(Res.string.at_word),
+                    isEdit = isEditMode
+                )
+            }
+            return
+        }
+
+        // TODO load from database
     }
 
     private suspend fun onLoadEventDetails(agendaId: String?) {
@@ -127,8 +142,8 @@ class AgendaDetailsViewModel(
                     viewState.agendaTypeDetails.getAsEventType() ?: return@update viewState
 
                 viewState.copy(
-                    title = TextData.DynamicString(event.title),
-                    description = TextData.DynamicString(event.description),
+                    title = event.title,
+                    description = event.description,
                     currentFromDateTime = event.fromTime,
                     formattedFromDate = event.fromTime.formatDate(),
                     formattedFromTime = event.fromTime.formatTime(),
@@ -150,15 +165,8 @@ class AgendaDetailsViewModel(
     fun onUpdateTextFields(eventData: CreateEventUpdatesModel) {
         val (title, description) = eventData
 
-        if (title == null && description == null) return
-
-        val newTitle = title?.let {
-            TextData.DynamicString(it)
-        } ?: viewStateFlow.value.title
-
-        val newDescription = description?.let {
-            TextData.DynamicString(it)
-        } ?: viewStateFlow.value.description
+        val newTitle = title ?: viewStateFlow.value.title
+        val newDescription = description ?: viewStateFlow.value.description
 
         mutableViewStateFlow.update { viewState ->
             viewState.copy(
@@ -225,7 +233,7 @@ class AgendaDetailsViewModel(
             emitSingleEvent(
                 AgendaDetailsSingleEvent.OnOpenDetailsSingleInput(
                     SingleInputModel(
-                        value = viewStateFlow.value.title.getFromDynamicStringOrNull(),
+                        value = viewStateFlow.value.title,
                         inputType = InputType.TITLE
                     )
                 )
@@ -238,7 +246,7 @@ class AgendaDetailsViewModel(
             emitSingleEvent(
                 AgendaDetailsSingleEvent.OnOpenDetailsSingleInput(
                     SingleInputModel(
-                        value = viewStateFlow.value.description.getFromDynamicStringOrNull(),
+                        value = viewStateFlow.value.description,
                         inputType = InputType.DESCRIPTION
                     )
                 )
@@ -434,7 +442,31 @@ class AgendaDetailsViewModel(
         when (agendaType) {
             AgendaType.EVENT -> onSaveEvent()
             AgendaType.TASK -> onSaveTask()
-            AgendaType.REMINDER -> TODO()
+            AgendaType.REMINDER -> onSaveReminder()
+        }
+    }
+
+    private fun onSaveReminder() {
+        viewModelScope.launch {
+            agendaRepository.createReminder(
+                Reminder(
+                    reminderId = AgendaDetailsUtils.generateAgendaId(),
+                    title = viewStateFlow.value.title ?: "",
+                    description = viewStateFlow.value.description ?: "",
+                    time = viewStateFlow.value.currentFromDateTime,
+                    reminder = viewStateFlow.value.reminderValue
+                )
+            ).onError {
+                if (it.isSyncError()) {
+                    // TODO send a message that event will be saved after phone gets back internet connection
+                    emitSingleEvent(AgendaDetailsSingleEvent.CloseScreen)
+                    return@onError
+                }
+                println("ERROR: $it")
+                // TODO handle error
+            }.onSuccess {
+                emitSingleEvent(AgendaDetailsSingleEvent.CloseScreen)
+            }
         }
     }
 
@@ -446,8 +478,8 @@ class AgendaDetailsViewModel(
             agendaRepository.createEvent(
                 Event(
                     eventId = AgendaDetailsUtils.generateAgendaId(),
-                    title = currentViewState.title.getFromDynamicStringOrNull() ?: "",
-                    description = currentViewState.description.getFromDynamicStringOrNull() ?: "",
+                    title = currentViewState.title ?: "",
+                    description = currentViewState.description ?: "",
                     fromTime = currentViewState.currentFromDateTime,
                     toTime = eventTypeDetails.toDateTime,
                     reminder = currentViewState.reminderValue,
@@ -474,8 +506,8 @@ class AgendaDetailsViewModel(
             agendaRepository.createTask(
                 Task(
                     taskId = AgendaDetailsUtils.generateAgendaId(),
-                    title = currentViewState.title.getFromDynamicStringOrNull() ?: "",
-                    description = currentViewState.description.getFromDynamicStringOrNull() ?: "",
+                    title = currentViewState.title ?: "",
+                    description = currentViewState.description ?: "",
                     time = currentViewState.currentFromDateTime,
                     reminder = currentViewState.reminderValue,
                     isDone = false
@@ -494,8 +526,7 @@ class AgendaDetailsViewModel(
         }
     }
 
-    private fun canEventBeSaved(title: TextData, description: TextData): Boolean =
-        title.getFromDynamicStringOrNull() != null && description.getFromDynamicStringOrNull() != null
+    private fun canEventBeSaved(title: String?, description: String?): Boolean = title != null && description != null
 
     private fun setGeneralDefaultAgendaValues() {
         val fromDateTime = DateTimeUtils.toLocalDateTime(viewStateFlow.value.currentFromDateTime.getMillis())

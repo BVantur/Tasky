@@ -14,6 +14,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import sp.bvantur.tasky.agenda.data.remote.CheckAttendeeResponse
 import sp.bvantur.tasky.agenda.data.remote.CreateEventRequest
+import sp.bvantur.tasky.agenda.data.remote.CreateReminderRequest
 import sp.bvantur.tasky.agenda.data.remote.CreateTaskRequest
 import sp.bvantur.tasky.core.data.safeApiCall
 import sp.bvantur.tasky.core.domain.TaskyError
@@ -66,6 +67,17 @@ class EventRemoteDataSource(private val httpClient: HttpClient, private val json
                 path("task")
                 contentType(ContentType.Application.Json)
                 setBody(createTask)
+            }
+        }
+    }
+
+    suspend fun createReminder(createReminder: CreateReminderRequest): TaskyResult<Unit, TaskyError> = safeApiCall {
+        httpClient.request {
+            url {
+                method = HttpMethod.Post
+                path("reminder")
+                contentType(ContentType.Application.Json)
+                setBody(createReminder)
             }
         }
     }
