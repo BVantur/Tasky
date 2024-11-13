@@ -18,6 +18,8 @@ data class TaskEntity(
     val time: Long,
     @ColumnInfo(name = TaskyDatabaseConstants.Task.COLUMN_REMINDER)
     val reminder: Long,
+    @ColumnInfo(name = TaskyDatabaseConstants.Task.COLUMN_IS_DONE)
+    val isDone: Boolean,
     @ColumnInfo(name = TaskyDatabaseConstants.Task.COLUMN_SYNC_STEP)
     val syncStep: SyncStep = SyncStep.FULL_SYNCED
 )

@@ -6,6 +6,7 @@ import androidx.sqlite.SQLiteException
 import sp.bvantur.tasky.core.data.TaskyDatabase
 import sp.bvantur.tasky.core.data.local.AttendeeEntity
 import sp.bvantur.tasky.core.data.local.EventEntity
+import sp.bvantur.tasky.core.data.local.ReminderEntity
 import sp.bvantur.tasky.core.data.local.SecurePersistentStorageProvider
 import sp.bvantur.tasky.core.data.local.TaskEntity
 import sp.bvantur.tasky.core.domain.TaskyEmptyResult
@@ -72,6 +73,13 @@ class AgendaLocalDataSource(
 
     suspend fun saveTask(taskEntity: TaskEntity): TaskyEmptyResult<TaskyError> = try {
         database.getTaskDao().insert(taskEntity)
+        TaskyResult.Success(Unit).asEmptyDataResult()
+    } catch (ignore: SQLiteException) {
+        TaskyResult.Error(TaskyError.SqlError)
+    }
+
+    suspend fun saveReminder(reminderEntity: ReminderEntity): TaskyEmptyResult<TaskyError> = try {
+        database.getReminderDao().insert(reminderEntity)
         TaskyResult.Success(Unit).asEmptyDataResult()
     } catch (ignore: SQLiteException) {
         TaskyResult.Error(TaskyError.SqlError)

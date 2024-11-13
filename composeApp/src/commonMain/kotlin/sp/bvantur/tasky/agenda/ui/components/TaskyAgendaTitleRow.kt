@@ -17,14 +17,20 @@ import androidx.compose.ui.unit.dp
 import sp.bvantur.tasky.core.ui.components.TaskyEventTitle
 
 @Composable
-fun TaskyAgendaTitleRow(modifier: Modifier = Modifier, text: String, isEnabled: Boolean, onClick: () -> Unit) {
+fun TaskyAgendaTitleRow(
+    modifier: Modifier = Modifier,
+    text: String?,
+    placeholder: String = "",
+    isEnabled: Boolean,
+    onClick: () -> Unit
+) {
     Row(
         modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 80.dp).clickable(isEnabled) {
             onClick()
         },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TaskyEventTitle(modifier = Modifier.weight(1f), text = text)
+        TaskyEventTitle(modifier = Modifier.weight(1f), text = text ?: placeholder)
 
         if (isEnabled) {
             Icon(

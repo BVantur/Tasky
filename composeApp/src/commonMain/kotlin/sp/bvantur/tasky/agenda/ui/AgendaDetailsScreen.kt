@@ -57,7 +57,9 @@ import sp.bvantur.tasky.agenda.ui.components.TaskyTimeDatePicker
 import sp.bvantur.tasky.agenda.ui.components.TaskyTimePickerDialog
 import sp.bvantur.tasky.agenda.ui.components.TaskyVisitorsSection
 import sp.bvantur.tasky.agenda.ui.utils.toAgendaColor
+import sp.bvantur.tasky.agenda.ui.utils.toAgendaDescriptionPlaceholder
 import sp.bvantur.tasky.agenda.ui.utils.toAgendaText
+import sp.bvantur.tasky.agenda.ui.utils.toAgendaTitlePlaceholder
 import sp.bvantur.tasky.core.domain.extensions.getMillis
 import sp.bvantur.tasky.core.domain.model.AgendaType
 import sp.bvantur.tasky.core.ui.components.TaskyConfirmationButton
@@ -172,7 +174,8 @@ fun AgendaDetailsScreen(
 
                 TaskyAgendaTitleRow(
                     modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
-                    text = viewState.title.asString(),
+                    text = viewState.title,
+                    placeholder = stringResource(viewState.agendaTypeDetails.agendaType.toAgendaTitlePlaceholder()),
                     isEnabled = viewState.isEdit,
                     onClick = {
                         onUserAction(AgendaDetailsUserAction.TitleChange)
@@ -183,7 +186,10 @@ fun AgendaDetailsScreen(
 
                 TaskyAgendaDescriptionRow(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = viewState.description.asString(),
+                    text = viewState.description,
+                    placeholder = stringResource(
+                        viewState.agendaTypeDetails.agendaType.toAgendaDescriptionPlaceholder()
+                    ),
                     isEnabled = viewState.isEdit,
                     onClick = {
                         onUserAction(AgendaDetailsUserAction.DescriptionChange)

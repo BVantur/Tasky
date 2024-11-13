@@ -62,6 +62,7 @@ import tasky.composeapp.generated.resources.event
 import tasky.composeapp.generated.resources.logout
 import tasky.composeapp.generated.resources.open
 import tasky.composeapp.generated.resources.password_visibility_icon
+import tasky.composeapp.generated.resources.reminder
 import tasky.composeapp.generated.resources.task
 
 @Composable
@@ -99,6 +100,9 @@ private fun HomeScreen(viewState: HomeViewState, onUserAction: (HomeUserAction) 
                 },
                 onCreateTaskAction = {
                     onUserAction(HomeUserAction.CreateNewTask)
+                },
+                onCreateReminderAction = {
+                    onUserAction(HomeUserAction.CreateNewReminder)
                 }
             )
         }
@@ -140,7 +144,11 @@ private fun HomeScreen(viewState: HomeViewState, onUserAction: (HomeUserAction) 
 }
 
 @Composable
-fun FloatingActionButtonWithDropdown(onCreateEventAction: () -> Unit, onCreateTaskAction: () -> Unit) {
+fun FloatingActionButtonWithDropdown(
+    onCreateEventAction: () -> Unit,
+    onCreateTaskAction: () -> Unit,
+    onCreateReminderAction: () -> Unit
+) {
     var showMenu by remember { mutableStateOf(false) }
 
     Box(
@@ -179,6 +187,13 @@ fun FloatingActionButtonWithDropdown(onCreateEventAction: () -> Unit, onCreateTa
                 onClick = {
                     showMenu = false
                     onCreateTaskAction()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(Res.string.reminder)) },
+                onClick = {
+                    showMenu = false
+                    onCreateReminderAction()
                 }
             )
         }

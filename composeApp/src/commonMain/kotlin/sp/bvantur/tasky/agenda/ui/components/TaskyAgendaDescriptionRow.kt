@@ -17,7 +17,13 @@ import androidx.compose.ui.unit.dp
 import sp.bvantur.tasky.core.ui.components.TaskyAgendaText
 
 @Composable
-fun TaskyAgendaDescriptionRow(modifier: Modifier = Modifier, text: String, isEnabled: Boolean, onClick: () -> Unit) {
+fun TaskyAgendaDescriptionRow(
+    modifier: Modifier = Modifier,
+    text: String?,
+    placeholder: String = "",
+    isEnabled: Boolean,
+    onClick: () -> Unit
+) {
     Row(
         modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 80.dp).clickable(isEnabled) {
             onClick()
@@ -26,7 +32,7 @@ fun TaskyAgendaDescriptionRow(modifier: Modifier = Modifier, text: String, isEna
     ) {
         TaskyAgendaText(
             modifier = Modifier.padding(horizontal = 10.dp).weight(1f),
-            text = text
+            text = text ?: placeholder
         )
 
         if (isEnabled) {

@@ -43,4 +43,6 @@
     <string name="edit_title">Edit title</string>
     <string name="edit_description">Edit description</string>
     <string name="at_word">At</string>
+    <string name="reminder_description">Reminder description</string>
+    <string name="reminder_title">Reminder title</string>
 </resources>
